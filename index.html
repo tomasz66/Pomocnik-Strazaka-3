@@ -459,6 +459,55 @@ body { background: var(--bg); color: var(--text); }
 
 /* ── UTILS ── */
 .hidden { display: none !important; }
+
+/* ── EDYCJA ── */
+.edit-row-actions{display:none;gap:6px;flex-shrink:0;margin-right:2px}
+.edit-mode .edit-row-actions{display:flex}
+.edit-icon-btn{width:32px;height:32px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;background:var(--surface-2);color:var(--text-muted)}
+.edit-icon-btn:active{opacity:.6}
+.edit-icon-btn.danger{color:var(--accent)}
+.edit-only-btn{display:none}
+.edit-mode .edit-only-btn{display:flex}
+.edit-toggle-btn.active{color:#fff;background:var(--accent);border-radius:50%}
+.edit-mode .comp-tile{position:relative}
+.comp-tile-edit-actions{display:none;position:absolute;top:8px;right:8px;gap:6px;z-index:2}
+.edit-mode .comp-tile-edit-actions{display:flex}
+.edit-fab-add{display:none;width:calc(100% - 32px);margin:2px 16px 16px;height:48px;border-radius:var(--radius-sm);border:1.5px dashed var(--border-2);background:none;color:var(--accent);font-size:15px;font-weight:700;cursor:pointer;align-items:center;justify-content:center;gap:8px}
+.edit-mode .edit-fab-add{display:flex}
+.edit-tools-panel{display:none;flex-direction:column;gap:10px;margin:2px 16px 24px;padding:14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+.edit-mode .edit-tools-panel{display:flex}
+.edit-tools-panel-title{font-size:12px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+
+/* ── EDIT SHEET ── */
+.edit-sheet-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);align-items:flex-end;justify-content:center}
+.edit-sheet-overlay.open{display:flex}
+.edit-sheet{background:var(--surface);width:100%;max-width:430px;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:20px 20px 0 0;padding:8px 20px calc(20px + env(safe-area-inset-bottom))}
+.edit-sheet-handle{width:36px;height:5px;border-radius:3px;background:var(--border-2);margin:6px auto 14px}
+.edit-sheet-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:14px}
+.edit-field{margin-bottom:14px}
+.edit-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:block}
+.edit-input,.edit-textarea{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 12px;font-size:15px;color:var(--text);font-family:inherit}
+select.edit-input{-webkit-appearance:none;appearance:none}
+.edit-textarea{min-height:70px;resize:vertical}
+.edit-kv-row{display:flex;gap:8px;margin-bottom:8px}
+.edit-kv-row .edit-input{flex:1;min-width:0}
+.edit-kv-del{flex-shrink:0;width:36px;height:36px;border-radius:var(--radius-sm);border:none;background:var(--surface-2);color:var(--accent);font-size:16px}
+.edit-kv-add{width:100%;height:40px;border-radius:var(--radius-sm);border:1.5px dashed var(--border-2);background:none;color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;margin-top:2px}
+.edit-photo-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2px}
+.edit-photo-thumb{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--surface-2)}
+.edit-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.edit-photo-thumb-del{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;border:none;font-size:11px;display:flex;align-items:center;justify-content:center}
+.edit-photo-add-btn{width:72px;height:72px;border-radius:10px;border:1.5px dashed var(--border-2);background:none;color:var(--accent);font-size:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.edit-actions{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.edit-btn{height:48px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer}
+.edit-btn-save{background:var(--accent);color:#fff}
+.edit-btn-delete{background:var(--surface-2);color:var(--accent)}
+.edit-btn-cancel{background:none;color:var(--text-muted)}
+.item-photos{display:flex;gap:6px;flex-wrap:wrap;padding:12px 0 4px}
+.item-photo-thumb{width:56px;height:56px;border-radius:8px;overflow:hidden;border:1px solid var(--border);cursor:zoom-in;flex-shrink:0}
+.item-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.item-note{white-space:pre-wrap;font-size:13px;line-height:1.5;color:var(--text-2);background:var(--accent-bg);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:9px 12px;margin:0 0 12px}
+.item-note-flag{font-size:12px;vertical-align:1px}
 </style>
 </head>
 <body>
@@ -474,6 +523,7 @@ body { background: var(--bg); color: var(--text); }
         <div class="nav-title-text" style="font-size:28px;font-weight:800">Pomocnik Strażaka</div>
       </div>
       <div class="nav-right">
+        <button class="nav-btn edit-toggle-btn" onclick="toggleEditMode()" id="edit-toggle-btn" style="font-size:17px" title="Edytuj dane">✎</button>
         <button class="nav-btn" onclick="toggleTheme()" id="theme-btn" style="font-size:20px">☾</button>
       </div>
     </div>
@@ -488,9 +538,17 @@ body { background: var(--bg); color: var(--text); }
   <div class="scroll-content">
     <div id="browse-content">
       <div class="list-group" id="vehicles-list"></div>
+      <button type="button" class="edit-fab-add" onclick="openVehicleSheet(null)">+ Dodaj pojazd</button>
       <div class="list-group" id="sensors-list"></div>
       <div class="list-group" id="quiz-section-list"></div>
       <div class="list-group" id="other-list"></div>
+      <div class="edit-tools-panel">
+        <div class="edit-tools-panel-title">Kopia zapasowa Twoich zmian</div>
+        <button type="button" class="edit-btn edit-btn-cancel" style="background:var(--surface-2);color:var(--text)" onclick="exportBackup()">⬇ Eksportuj kopię zapasową</button>
+        <button type="button" class="edit-btn edit-btn-cancel" style="background:var(--surface-2);color:var(--text)" onclick="document.getElementById('import-backup-input').click()">⬆ Wczytaj kopię zapasową</button>
+        <input type="file" id="import-backup-input" accept="application/json" class="hidden" onchange="importBackupFile(this.files[0]);this.value=''">
+        <button type="button" class="edit-btn edit-btn-cancel" style="color:var(--accent)" onclick="resetAllEdits()">Usuń wszystkie zmiany (przywróć oryginał)</button>
+      </div>
       <div style="height:16px"></div>
     </div>
     <div id="results-content" class="hidden">
@@ -513,7 +571,7 @@ body { background: var(--bg); color: var(--text); }
       <div class="nav-title">
         <div class="nav-title-text" id="v-title"></div>
       </div>
-      <div class="nav-right"></div>
+      <div class="nav-right"><button class="nav-btn edit-only-btn" onclick="openVehicleSheet(curV)" style="font-size:17px">✎</button></div>
     </div>
   </div>
   <div class="scroll-content">
@@ -536,6 +594,8 @@ body { background: var(--bg); color: var(--text); }
       <div class="spec-body" id="service-body"></div>
     </div>
     <div id="comp-grid-wrap" class="comp-grid"></div>
+    <div id="extra-comp-wrap" class="comp-grid"></div>
+    <button type="button" class="edit-fab-add" onclick="openCompartmentSheet(null)">+ Dodaj skrytkę</button>
     <div style="height:16px"></div>
   </div>
 </div>
@@ -555,11 +615,13 @@ body { background: var(--bg); color: var(--text); }
         <div class="nav-title-text" id="c-title"></div>
         <div class="nav-title-sub" id="c-sub"></div>
       </div>
-      <div class="nav-right"></div>
+      <div class="nav-right"><button class="nav-btn edit-only-btn" onclick="openCompartmentSheet(curV+':'+curC)" style="font-size:17px">✎</button></div>
     </div>
   </div>
   <div class="scroll-content">
     <div class="items-wrap" id="items-wrap"></div>
+    <button type="button" class="edit-fab-add" onclick="openItemSheet(null)">+ Dodaj sprzęt</button>
+    <button type="button" class="edit-fab-add" onclick="openGroupSheet(null)">+ Dodaj grupę (worek)</button>
   </div>
 </div>
 
@@ -739,6 +801,14 @@ body { background: var(--bg); color: var(--text); }
   <button class="photo-lightbox-close" onclick="closePhotoLightbox()">✕</button>
 </div>
 
+<div class="edit-sheet-overlay" id="edit-sheet-overlay" onclick="if(event.target===this)closeEditSheet()">
+  <div class="edit-sheet" onclick="event.stopPropagation()">
+    <div class="edit-sheet-handle"></div>
+    <div class="edit-sheet-title" id="edit-sheet-title"></div>
+    <div id="edit-sheet-body"></div>
+  </div>
+</div>
+
 <div class="tab-bar">
   <button class="tab-item active" id="tab-home" onclick="showHome()">
     <span class="tab-icon">⌂</span>
@@ -763,6 +833,513 @@ body { background: var(--bg); color: var(--text); }
 <script>
 var D=JSON.parse(document.getElementById('app-data').textContent);
 var curV='v1',curC=null,scrollPos={};
+
+/* ══════════════ EDYCJA — WARSTWA DANYCH ══════════════
+   Oryginalne dane (BASE_D) zostają nietknięte w kodzie strony.
+   Twoje zmiany (dodane/edytowane/usunięte pozycje) trzymane są
+   osobno w pamięci telefonu (localStorage) i przy każdym starcie
+   nakładane na oryginał — stąd EDITS (nadpisania/usunięcia/dodania)
+   i rebuildD(), która na nowo składa D z tych dwóch warstw. */
+var BASE_D=D;
+var EDIT_MODE=false;
+var EDITS_KEY='psp_edits_v1';
+function emptyEdits(){
+  return {
+    overrides:{vehicles:{},items:{},groups:{},sensors:{},compartments:{}},
+    deletions:{vehicles:[],items:[],groups:[],sensors:[],compartments:[]},
+    additions:{vehicles:{},items:[],groups:[],sensors:[],compartments:[]}
+  };
+}
+function loadEdits(){
+  try{
+    var raw=localStorage.getItem(EDITS_KEY);
+    if(raw){
+      var parsed=JSON.parse(raw), base=emptyEdits();
+      Object.keys(base.overrides).forEach(function(k){parsed.overrides[k]=parsed.overrides[k]||{};});
+      Object.keys(base.deletions).forEach(function(k){parsed.deletions[k]=parsed.deletions[k]||[];});
+      Object.keys(base.additions).forEach(function(k){parsed.additions[k]=parsed.additions[k]||(k==='vehicles'?{}:[]);});
+      return parsed;
+    }
+  }catch(e){}
+  return emptyEdits();
+}
+var EDITS=loadEdits();
+function saveEdits(){
+  try{ localStorage.setItem(EDITS_KEY, JSON.stringify(EDITS)); }
+  catch(e){ alert('Nie udało się zapisać zmian w pamięci telefonu (może zabrakło miejsca).'); }
+}
+function uid(p){ return p+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7); }
+
+function rebuildD(){
+  var vehicles={};
+  Object.keys(BASE_D.vehicles).forEach(function(id){
+    if(EDITS.deletions.vehicles.indexOf(id)>=0) return;
+    var v=JSON.parse(JSON.stringify(BASE_D.vehicles[id]));
+    if(EDITS.overrides.vehicles[id]) Object.assign(v,EDITS.overrides.vehicles[id]);
+    vehicles[id]=v;
+  });
+  Object.keys(EDITS.additions.vehicles).forEach(function(id){
+    if(EDITS.deletions.vehicles.indexOf(id)>=0) return;
+    var v=JSON.parse(JSON.stringify(EDITS.additions.vehicles[id]));
+    if(EDITS.overrides.vehicles[id]) Object.assign(v,EDITS.overrides.vehicles[id]);
+    vehicles[id]=v;
+  });
+  Object.keys(vehicles).forEach(function(vid){
+    var v=vehicles[vid];
+    v.compartments=(v.compartments||[]).filter(function(c){
+      return EDITS.deletions.compartments.indexOf(vid+':'+c.id)<0;
+    }).map(function(c){
+      var key=vid+':'+c.id;
+      return EDITS.overrides.compartments[key]?Object.assign({},c,EDITS.overrides.compartments[key]):c;
+    });
+  });
+  EDITS.additions.compartments.forEach(function(c){
+    if(vehicles[c.v] && EDITS.deletions.compartments.indexOf(c.v+':'+c.id)<0){
+      var key=c.v+':'+c.id;
+      vehicles[c.v].compartments.push(EDITS.overrides.compartments[key]?Object.assign({},c,EDITS.overrides.compartments[key]):c);
+    }
+  });
+
+  var items=BASE_D.items.filter(function(it){return EDITS.deletions.items.indexOf(it.id)<0;})
+    .map(function(it){return EDITS.overrides.items[it.id]?Object.assign({},it,EDITS.overrides.items[it.id]):it;});
+  EDITS.additions.items.forEach(function(it){
+    if(EDITS.deletions.items.indexOf(it.id)<0){
+      items.push(EDITS.overrides.items[it.id]?Object.assign({},it,EDITS.overrides.items[it.id]):it);
+    }
+  });
+
+  var groups=(BASE_D.groups||[]).filter(function(g){return EDITS.deletions.groups.indexOf(g.id)<0;})
+    .map(function(g){return EDITS.overrides.groups[g.id]?Object.assign({},g,EDITS.overrides.groups[g.id]):g;});
+  EDITS.additions.groups.forEach(function(g){
+    if(EDITS.deletions.groups.indexOf(g.id)<0){
+      groups.push(EDITS.overrides.groups[g.id]?Object.assign({},g,EDITS.overrides.groups[g.id]):g);
+    }
+  });
+
+  D={vehicles:vehicles, items:items, groups:groups, quiz:BASE_D.quiz, quiz_meta:BASE_D.quiz_meta};
+}
+rebuildD();
+
+function rerenderCurrentView(){
+  renderHome();
+  if(document.getElementById('view-vehicle').classList.contains('active') && curV) showVehicle(curV);
+  else if(document.getElementById('view-comp').classList.contains('active') && curV && curC) showCompartment(curV,curC);
+}
+function toggleEditMode(){
+  EDIT_MODE=!EDIT_MODE;
+  document.querySelector('.app').classList.toggle('edit-mode',EDIT_MODE);
+  document.getElementById('edit-toggle-btn').classList.toggle('active',EDIT_MODE);
+  rerenderCurrentView();
+}
+
+/* ── EDIT SHEET (generyczny dolny panel) ── */
+function openSheet(title,bodyHtml){
+  document.getElementById('edit-sheet-title').textContent=title;
+  document.getElementById('edit-sheet-body').innerHTML=bodyHtml;
+  document.getElementById('edit-sheet-overlay').classList.add('open');
+}
+function closeEditSheet(){
+  document.getElementById('edit-sheet-overlay').classList.remove('open');
+  document.getElementById('edit-sheet-body').innerHTML='';
+}
+function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function kvRowHtml(k,v){
+  return '<div class="edit-kv-row"><input class="edit-input kv-key" placeholder="Nazwa pola" value="'+escAttr(k)+'"><input class="edit-input kv-val" placeholder="Wartość" value="'+escAttr(v)+'"><button type="button" class="edit-kv-del" onclick="this.parentElement.remove()">✕</button></div>';
+}
+function addKvRow(wrapId){
+  var wrap=document.getElementById(wrapId);
+  var tmp=document.createElement('div');
+  tmp.innerHTML=kvRowHtml('','');
+  wrap.insertBefore(tmp.firstChild, wrap.lastElementChild);
+}
+function collectKv(wrapId){
+  var wrap=document.getElementById(wrapId);
+  var obj={};
+  wrap.querySelectorAll('.edit-kv-row').forEach(function(row){
+    var k=row.querySelector('.kv-key').value.trim();
+    var v=row.querySelector('.kv-val').value.trim();
+    if(k) obj[k]=v;
+  });
+  return obj;
+}
+
+/* ── ZDJĘCIA — IndexedDB + kompresja ── */
+var PHOTO_DB_NAME='psp_photos_db', PHOTO_STORE='blobs';
+var _photoDbPromise=null;
+function openPhotoDB(){
+  if(_photoDbPromise) return _photoDbPromise;
+  _photoDbPromise=new Promise(function(resolve,reject){
+    var req=indexedDB.open(PHOTO_DB_NAME,1);
+    req.onupgradeneeded=function(){ req.result.createObjectStore(PHOTO_STORE); };
+    req.onsuccess=function(){ resolve(req.result); };
+    req.onerror=function(){ reject(req.error); };
+  });
+  return _photoDbPromise;
+}
+function putPhotoBlob(id,blob){
+  return openPhotoDB().then(function(db){
+    return new Promise(function(resolve,reject){
+      var tx=db.transaction(PHOTO_STORE,'readwrite');
+      tx.objectStore(PHOTO_STORE).put(blob,id);
+      tx.oncomplete=function(){resolve();};
+      tx.onerror=function(){reject(tx.error);};
+    });
+  });
+}
+function getPhotoBlob(id){
+  return openPhotoDB().then(function(db){
+    return new Promise(function(resolve){
+      var tx=db.transaction(PHOTO_STORE,'readonly');
+      var req=tx.objectStore(PHOTO_STORE).get(id);
+      req.onsuccess=function(){resolve(req.result||null);};
+      req.onerror=function(){resolve(null);};
+    });
+  });
+}
+function deletePhotoBlob(id){
+  return openPhotoDB().then(function(db){
+    return new Promise(function(resolve){
+      var tx=db.transaction(PHOTO_STORE,'readwrite');
+      tx.objectStore(PHOTO_STORE).delete(id);
+      tx.oncomplete=function(){resolve();};
+      tx.onerror=function(){resolve();};
+    });
+  });
+}
+function getAllPhotoEntries(){
+  return openPhotoDB().then(function(db){
+    return new Promise(function(resolve){
+      var tx=db.transaction(PHOTO_STORE,'readonly');
+      var store=tx.objectStore(PHOTO_STORE);
+      var out={};
+      var req=store.openCursor();
+      req.onsuccess=function(e){
+        var cur=e.target.result;
+        if(cur){ out[cur.key]=cur.value; cur.continue(); } else resolve(out);
+      };
+      req.onerror=function(){resolve(out);};
+    });
+  });
+}
+function clearAllPhotos(){
+  return openPhotoDB().then(function(db){
+    return new Promise(function(resolve){
+      var tx=db.transaction(PHOTO_STORE,'readwrite');
+      tx.objectStore(PHOTO_STORE).clear();
+      tx.oncomplete=function(){resolve();};
+      tx.onerror=function(){resolve();};
+    });
+  });
+}
+function drawAndCompress(source,w0,h0){
+  var maxDim=1280;
+  var w=w0,h=h0;
+  if(w>h && w>maxDim){ h=Math.round(h*maxDim/w); w=maxDim; }
+  else if(h>=w && h>maxDim){ w=Math.round(w*maxDim/h); h=maxDim; }
+  var canvas=document.createElement('canvas');
+  canvas.width=w; canvas.height=h;
+  canvas.getContext('2d').drawImage(source,0,0,w,h);
+  return new Promise(function(resolve,reject){
+    canvas.toBlob(function(blob){ blob?resolve(blob):reject(new Error('toBlob failed')); },'image/jpeg',0.72);
+  });
+}
+function compressImageFileFallback(file){
+  return new Promise(function(resolve,reject){
+    var img=new Image();
+    var url=URL.createObjectURL(file);
+    img.onload=function(){ URL.revokeObjectURL(url); drawAndCompress(img,img.naturalWidth,img.naturalHeight).then(resolve,reject); };
+    img.onerror=function(e){ URL.revokeObjectURL(url); reject(e); };
+    img.src=url;
+  });
+}
+function compressImageFile(file){
+  if(window.createImageBitmap){
+    return createImageBitmap(file,{imageOrientation:'from-image'}).then(function(bmp){
+      return drawAndCompress(bmp,bmp.width,bmp.height);
+    }).catch(function(){ return compressImageFileFallback(file); });
+  }
+  return compressImageFileFallback(file);
+}
+
+/* ── KOPIA ZAPASOWA ── */
+function blobToBase64(blob){
+  return new Promise(function(resolve,reject){
+    var reader=new FileReader();
+    reader.onload=function(){resolve(reader.result);};
+    reader.onerror=reject;
+    reader.readAsDataURL(blob);
+  });
+}
+function base64ToBlob(dataUrl){ return fetch(dataUrl).then(function(r){return r.blob();}); }
+function exportBackup(){
+  getAllPhotoEntries().then(function(photoMap){
+    var ids=Object.keys(photoMap);
+    Promise.all(ids.map(function(pid){ return blobToBase64(photoMap[pid]).then(function(b64){return [pid,b64];}); }))
+      .then(function(pairs){
+        var photos={};
+        pairs.forEach(function(p){photos[p[0]]=p[1];});
+        var payload={version:1,exportedAt:new Date().toISOString(),edits:EDITS,photos:photos};
+        var blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
+        var url=URL.createObjectURL(blob);
+        var a=document.createElement('a');
+        a.href=url; a.download='pomocnik-strazaka-kopia-'+new Date().toISOString().slice(0,10)+'.json';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function(){URL.revokeObjectURL(url);},2000);
+      });
+  });
+}
+function importBackupFile(file){
+  if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    var payload;
+    try{ payload=JSON.parse(reader.result); }catch(e){ alert('Nie udało się odczytać pliku kopii zapasowej.'); return; }
+    if(!payload || !payload.edits){ alert('To nie jest plik kopii zapasowej tej aplikacji.'); return; }
+    if(!confirm('Wczytanie kopii zapasowej NADPISZE obecne zmiany w aplikacji na tym telefonie. Kontynuować?')) return;
+    EDITS=payload.edits;
+    saveEdits();
+    var ids=Object.keys(payload.photos||{});
+    Promise.all(ids.map(function(pid){ return base64ToBlob(payload.photos[pid]).then(function(blob){return putPhotoBlob(pid,blob);}); }))
+      .then(function(){ alert('Kopia zapasowa wczytana.'); location.reload(); })
+      .catch(function(){ alert('Kopia częściowo wczytana — sprawdź zdjęcia.'); location.reload(); });
+  };
+  reader.readAsText(file);
+}
+function resetAllEdits(){
+  if(!confirm('Usunąć WSZYSTKIE Twoje zmiany (dodany/edytowany sprzęt, zdjęcia) i wrócić do oryginalnej wersji aplikacji? Zrób najpierw kopię zapasową, jeśli nie masz jej jeszcze. Tej operacji nie można cofnąć.')) return;
+  EDITS=emptyEdits();
+  saveEdits();
+  clearAllPhotos().then(function(){ location.reload(); });
+}
+
+/* ── EDYCJA: POJAZD ── */
+function openVehicleSheet(id){
+  var v=id?D.vehicles[id]:{name:'',sub:'',icon:'',specs:{}};
+  var specsRows=Object.keys(v.specs||{}).map(function(k){return kvRowHtml(k,v.specs[k]);}).join('');
+  var html=
+    '<div class="edit-field"><label class="edit-label">Nazwa pojazdu</label><input class="edit-input" id="ev-name" value="'+escAttr(v.name)+'" placeholder="np. GBA 3/16"></div>'+
+    '<div class="edit-field"><label class="edit-label">Podtytuł (marka, nr rej.)</label><input class="edit-input" id="ev-sub" value="'+escAttr(v.sub)+'" placeholder="np. Volvo · SW55034"></div>'+
+    '<div class="edit-field"><label class="edit-label">Skrót na ikonie</label><input class="edit-input" id="ev-icon" maxlength="6" value="'+escAttr(v.icon)+'" placeholder="np. GBA"></div>'+
+    '<div class="edit-field"><label class="edit-label">Specyfikacja techniczna</label><div id="ev-specs">'+specsRows+'<button type="button" class="edit-kv-add" onclick="addKvRow(\'ev-specs\')">+ Dodaj pole</button></div></div>'+
+    '<div class="edit-actions">'+
+      '<button type="button" class="edit-btn edit-btn-save" onclick="saveVehicleSheet('+(id?"'"+id+"'":'null')+')">Zapisz</button>'+
+      (id?'<button type="button" class="edit-btn edit-btn-delete" onclick="deleteVehicleConfirm(\''+id+'\')">Usuń pojazd</button>':'')+
+      '<button type="button" class="edit-btn edit-btn-cancel" onclick="closeEditSheet()">Anuluj</button>'+
+    '</div>';
+  openSheet(id?'Edytuj pojazd':'Nowy pojazd', html);
+}
+function saveVehicleSheet(id){
+  var name=document.getElementById('ev-name').value.trim();
+  if(!name){ alert('Podaj nazwę pojazdu.'); return; }
+  var sub=document.getElementById('ev-sub').value.trim();
+  var icon=document.getElementById('ev-icon').value.trim().toUpperCase()||name.slice(0,3).toUpperCase();
+  var specs=collectKv('ev-specs');
+  if(!id){
+    id=uid('v');
+    EDITS.additions.vehicles[id]={name:name,sub:sub,icon:icon,specs:specs,service:{},compartments:[]};
+  } else {
+    EDITS.overrides.vehicles[id]=Object.assign({},EDITS.overrides.vehicles[id],{name:name,sub:sub,icon:icon,specs:specs});
+  }
+  closeEditSheet(); rebuildD(); saveEdits();
+  renderHome();
+  if(document.getElementById('view-vehicle').classList.contains('active')) showVehicle(id);
+}
+function deleteVehicleConfirm(id){
+  var v=D.vehicles[id];
+  var cnt=D.items.filter(function(it){return it.v===id;}).length;
+  if(!confirm('Usunąć pojazd „'+v.name+'” wraz z '+cnt+' pozycjami sprzętu? Cofniesz to tylko pełnym resetem zmian.')) return;
+  EDITS.deletions.vehicles.push(id);
+  closeEditSheet(); rebuildD(); saveEdits();
+  showHome();
+}
+
+/* ── EDYCJA: SKRYTKA ── */
+function openCompartmentSheet(ckey){
+  var vid=curV, c=null;
+  if(ckey){
+    vid=ckey.split(':')[0];
+    var cid=ckey.slice(vid.length+1);
+    c=D.vehicles[vid].compartments.find(function(x){return x.id===cid;});
+  }
+  var html=
+    '<div class="edit-field"><label class="edit-label">Etykieta (np. K1, D2, TYŁ)</label><input class="edit-input" id="ec-label" value="'+escAttr(c?c.label:'')+'"></div>'+
+    '<div class="edit-field"><label class="edit-label">Nazwa skrytki</label><input class="edit-input" id="ec-name" value="'+escAttr(c?c.name:'')+'" placeholder="np. Skrytka 4"></div>'+
+    '<div class="edit-field"><label class="edit-label">Zawartość (opis typu)</label><input class="edit-input" id="ec-type" value="'+escAttr(c?c.type:'')+'" placeholder="np. Ratownictwo wysokościowe"></div>'+
+    '<div class="edit-field"><label class="edit-label">Strona / położenie</label><input class="edit-input" id="ec-side" value="'+escAttr(c?c.side:'')+'" placeholder="np. za dow."></div>'+
+    '<div class="edit-actions">'+
+      '<button type="button" class="edit-btn edit-btn-save" onclick="saveCompartmentSheet(\''+vid+'\''+(c?",'"+c.id+"'":',null')+')">Zapisz</button>'+
+      (c?'<button type="button" class="edit-btn edit-btn-delete" onclick="deleteCompartmentConfirm(\''+vid+'\',\''+c.id+'\')">Usuń skrytkę</button>':'')+
+      '<button type="button" class="edit-btn edit-btn-cancel" onclick="closeEditSheet()">Anuluj</button>'+
+    '</div>';
+  openSheet(c?'Edytuj skrytkę':'Nowa skrytka', html);
+}
+function saveCompartmentSheet(vid,cid){
+  var label=document.getElementById('ec-label').value.trim()||'?';
+  var name=document.getElementById('ec-name').value.trim()||label;
+  var type=document.getElementById('ec-type').value.trim();
+  var side=document.getElementById('ec-side').value.trim();
+  if(!cid){
+    cid=uid('c');
+    EDITS.additions.compartments.push({id:cid,v:vid,label:label,name:name,type:type,side:side});
+  } else {
+    var key=vid+':'+cid;
+    EDITS.overrides.compartments[key]=Object.assign({},EDITS.overrides.compartments[key],{label:label,name:name,type:type,side:side});
+  }
+  closeEditSheet(); rebuildD(); saveEdits();
+  showVehicle(vid);
+}
+function deleteCompartmentConfirm(vid,cid){
+  var cnt=D.items.filter(function(it){return it.v===vid&&it.comp===cid;}).length;
+  if(!confirm('Usunąć tę skrytkę wraz z '+cnt+' pozycjami sprzętu?')) return;
+  EDITS.deletions.compartments.push(vid+':'+cid);
+  closeEditSheet(); rebuildD(); saveEdits();
+  showVehicle(vid);
+}
+
+/* ── EDYCJA: GRUPA (WOREK) ── */
+function openGroupSheet(groupId){
+  var g=groupId?D.groups.find(function(x){return x.id===groupId;}):{name:'',nr:''};
+  var html=
+    '<div class="edit-field"><label class="edit-label">Nazwa grupy (np. worka)</label><input class="edit-input" id="eg-name" value="'+escAttr(g.name)+'" placeholder="np. Worek ratownictwa wysokościowego X70"></div>'+
+    '<div class="edit-field"><label class="edit-label">Numer</label><input class="edit-input" id="eg-nr" value="'+escAttr(g.nr)+'" placeholder="np. 621-22/X70"></div>'+
+    '<div class="edit-actions">'+
+      '<button type="button" class="edit-btn edit-btn-save" onclick="saveGroupSheet('+(groupId?"'"+groupId+"'":'null')+')">Zapisz</button>'+
+      (groupId?'<button type="button" class="edit-btn edit-btn-delete" onclick="deleteGroupConfirm(\''+groupId+'\')">Usuń grupę</button>':'')+
+      '<button type="button" class="edit-btn edit-btn-cancel" onclick="closeEditSheet()">Anuluj</button>'+
+    '</div>';
+  openSheet(groupId?'Edytuj grupę':'Nowa grupa (worek)', html);
+}
+function saveGroupSheet(groupId){
+  var name=document.getElementById('eg-name').value.trim();
+  if(!name){ alert('Podaj nazwę grupy.'); return; }
+  var nr=document.getElementById('eg-nr').value.trim();
+  if(!groupId){
+    groupId=uid('g');
+    EDITS.additions.groups.push({id:groupId,v:curV,comp:curC,name:name,nr:nr});
+  } else {
+    EDITS.overrides.groups[groupId]=Object.assign({},EDITS.overrides.groups[groupId],{name:name,nr:nr});
+  }
+  closeEditSheet(); rebuildD(); saveEdits();
+  showCompartment(curV,curC);
+}
+function deleteGroupConfirm(groupId){
+  var itemsInGroup=D.items.filter(function(it){return it.group===groupId;});
+  var msg=itemsInGroup.length?('Usunąć grupę wraz z '+itemsInGroup.length+' pozycjami sprzętu w niej?'):'Usunąć tę pustą grupę?';
+  if(!confirm(msg)) return;
+  itemsInGroup.forEach(function(it){
+    (it.photoIds||[]).forEach(function(pid){deletePhotoBlob(pid);});
+    EDITS.deletions.items.push(it.id);
+  });
+  EDITS.deletions.groups.push(groupId);
+  closeEditSheet(); rebuildD(); saveEdits();
+  showCompartment(curV,curC);
+}
+
+/* ── EDYCJA: SPRZĘT + ZDJĘCIA ── */
+var EDIT_SHEET_PHOTO_IDS=[];
+function openItemSheet(itemId){
+  var it=itemId?D.items.find(function(x){return x.id===itemId;}):{name:'',qty:'',nr:'',notes:'',specs:{},group:'',photoIds:[]};
+  var specsRows=Object.keys(it.specs||{}).map(function(k){return kvRowHtml(k,it.specs[k]);}).join('');
+  var groupsHere=(D.groups||[]).filter(function(g){return g.v===curV&&g.comp===curC;});
+  var groupOptions='<option value="">— sprzęt samodzielny —</option>'+groupsHere.map(function(g){
+    return '<option value="'+g.id+'"'+(it.group===g.id?' selected':'')+'>'+escAttr(g.name)+'</option>';
+  }).join('');
+  EDIT_SHEET_PHOTO_IDS=(it.photoIds||[]).slice();
+  var photosHtml='<div class="edit-photo-row" id="ei-photos">'+
+    EDIT_SHEET_PHOTO_IDS.map(function(pid){return '<div class="edit-photo-thumb" data-pid="'+pid+'"><img data-pid-img="'+pid+'"><button type="button" class="edit-photo-thumb-del" onclick="removeEditPhoto(this,\''+pid+'\')">✕</button></div>';}).join('')+
+    '<button type="button" class="edit-photo-add-btn" onclick="document.getElementById(\'ei-photo-input\').click()">+</button>'+
+    '</div><input type="file" id="ei-photo-input" accept="image/*" multiple class="hidden" onchange="addEditPhotos(this.files);this.value=\'\'">';
+  var html=
+    '<div class="edit-field"><label class="edit-label">Nazwa sprzętu</label><input class="edit-input" id="ei-name" value="'+escAttr(it.name)+'"></div>'+
+    '<div class="edit-field"><label class="edit-label">Ilość</label><input class="edit-input" id="ei-qty" value="'+escAttr(it.qty)+'" placeholder="np. 2 szt."></div>'+
+    '<div class="edit-field"><label class="edit-label">Numer operacyjny</label><input class="edit-input" id="ei-nr" value="'+escAttr(it.nr)+'"></div>'+
+    (groupsHere.length?'<div class="edit-field"><label class="edit-label">Przypisz do grupy</label><select class="edit-input" id="ei-group">'+groupOptions+'</select></div>':'')+
+    '<div class="edit-field"><label class="edit-label">Zdjęcia</label>'+photosHtml+'</div>'+
+    '<div class="edit-field"><label class="edit-label">Uwagi</label><textarea class="edit-textarea" id="ei-notes" placeholder="np. brakuje jednej sprzączki, sprawdzić przy przeglądzie">'+escAttr(it.notes)+'</textarea></div>'+
+    '<div class="edit-field"><label class="edit-label">Dodatkowe dane</label><div id="ei-specs">'+specsRows+'<button type="button" class="edit-kv-add" onclick="addKvRow(\'ei-specs\')">+ Dodaj pole</button></div></div>'+
+    '<div class="edit-actions">'+
+      '<button type="button" class="edit-btn edit-btn-save" onclick="saveItemSheet('+(itemId?"'"+itemId+"'":'null')+')">Zapisz</button>'+
+      (itemId?'<button type="button" class="edit-btn edit-btn-delete" onclick="deleteItemConfirm(\''+itemId+'\')">Usuń sprzęt</button>':'')+
+      '<button type="button" class="edit-btn edit-btn-cancel" onclick="closeEditSheet()">Anuluj</button>'+
+    '</div>';
+  openSheet(itemId?'Edytuj sprzęt':'Nowy sprzęt', html);
+  EDIT_SHEET_PHOTO_IDS.forEach(function(pid){ fillEditPhotoThumb(pid); });
+}
+function fillEditPhotoThumb(pid){
+  getPhotoBlob(pid).then(function(blob){
+    if(!blob) return;
+    var img=document.querySelector('[data-pid-img="'+pid+'"]');
+    if(img) img.src=URL.createObjectURL(blob);
+  });
+}
+function removeEditPhoto(btn,pid){
+  var idx=EDIT_SHEET_PHOTO_IDS.indexOf(pid);
+  if(idx>=0) EDIT_SHEET_PHOTO_IDS.splice(idx,1);
+  btn.parentElement.remove();
+  deletePhotoBlob(pid);
+}
+function addEditPhoto(file){
+  if(!file) return;
+  compressImageFile(file).then(function(blob){
+    var pid=uid('p');
+    return putPhotoBlob(pid,blob).then(function(){
+      EDIT_SHEET_PHOTO_IDS.push(pid);
+      var wrap=document.getElementById('ei-photos');
+      var tmp=document.createElement('div');
+      tmp.innerHTML='<div class="edit-photo-thumb" data-pid="'+pid+'"><img data-pid-img="'+pid+'"><button type="button" class="edit-photo-thumb-del" onclick="removeEditPhoto(this,\''+pid+'\')">✕</button></div>';
+      wrap.insertBefore(tmp.firstChild, wrap.lastElementChild);
+      fillEditPhotoThumb(pid);
+    });
+  }).catch(function(){ alert('Nie udało się przetworzyć zdjęcia.'); });
+}
+function addEditPhotos(fileList){
+  Array.prototype.slice.call(fileList||[]).forEach(function(file){ addEditPhoto(file); });
+}
+function saveItemSheet(itemId){
+  var name=document.getElementById('ei-name').value.trim();
+  if(!name){ alert('Podaj nazwę sprzętu.'); return; }
+  var qty=document.getElementById('ei-qty').value.trim();
+  var nr=document.getElementById('ei-nr').value.trim();
+  var notes=document.getElementById('ei-notes').value.trim();
+  var specs=collectKv('ei-specs');
+  var groupEl=document.getElementById('ei-group');
+  var group=groupEl?groupEl.value:'';
+  var photoIds=EDIT_SHEET_PHOTO_IDS.slice();
+  if(!itemId){
+    itemId=uid('it');
+    EDITS.additions.items.push({id:itemId,v:curV,comp:curC,name:name,qty:qty,nr:nr,notes:notes,specs:specs,group:group,photoIds:photoIds});
+  } else {
+    EDITS.overrides.items[itemId]=Object.assign({},EDITS.overrides.items[itemId],{name:name,qty:qty,nr:nr,notes:notes,specs:specs,group:group,photoIds:photoIds});
+  }
+  closeEditSheet(); rebuildD(); saveEdits();
+  showCompartment(curV,curC);
+}
+function deleteItemConfirm(itemId){
+  var it=D.items.find(function(x){return x.id===itemId;});
+  if(!confirm('Usunąć „'+it.name+'”?')) return;
+  (it.photoIds||[]).forEach(function(pid){deletePhotoBlob(pid);});
+  EDITS.deletions.items.push(itemId);
+  closeEditSheet(); rebuildD(); saveEdits();
+  showCompartment(curV,curC);
+}
+function loadItemPhotos(items){
+  items.forEach(function(it){
+    if(!it.photoIds || !it.photoIds.length) return;
+    var host=document.getElementById('ip-'+it.id);
+    if(!host) return;
+    it.photoIds.forEach(function(pid){
+      getPhotoBlob(pid).then(function(blob){
+        if(!blob || !host.isConnected) return;
+        var url=URL.createObjectURL(blob);
+        var div=document.createElement('div');
+        div.className='item-photo-thumb';
+        div.innerHTML='<img src="'+url+'">';
+        div.onclick=function(e){ e.stopPropagation(); openPhotoLightbox(url); };
+        host.appendChild(div);
+      });
+    });
+  });
+}
 
 /* ── UTILS ── */
 function norm(s){
@@ -856,6 +1433,10 @@ function renderHome(){
       '<div class="vehicle-info">'+
         '<div class="vehicle-name">'+v.name+'</div>'+
         '<div class="vehicle-meta">'+v.sub+water+(cnt?' · '+cnt+' poz.':'')+'</div>'+
+      '</div>'+
+      '<div class="edit-row-actions">'+
+        '<button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openVehicleSheet(\''+id+'\')">✎</button>'+
+        '<button type="button" class="edit-icon-btn danger" onclick="event.stopPropagation();deleteVehicleConfirm(\''+id+'\')">🗑</button>'+
       '</div>'+
       '<div class="vehicle-arrow">›</div>';
     (isGar?ol:vl).appendChild(row);
@@ -1050,7 +1631,8 @@ function showVehicle(id){
           '<div class="comp-type">'+c.type+'</div>'+
         '</div>'+
       '</div>'+
-      '<div class="comp-count">'+(isEmpty?'<span style="color:var(--text-faint);font-style:italic">pusta</span>':cnt+' pozycji')+'</div>';
+      '<div class="comp-count">'+(isEmpty?'<span style="color:var(--text-faint);font-style:italic">pusta</span>':cnt+' pozycji')+'</div>'+
+      '<div class="comp-tile-edit-actions"><button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openCompartmentSheet(\''+id+':'+c.id+'\')">✎</button></div>';
     return tile;
   }
   function addRow(tiles,cls){
@@ -1137,6 +1719,34 @@ function showVehicle(id){
       var tiles2=[makeTile(comps[i])];
       if(comps[i+1])tiles2.push(makeTile(comps[i+1]));
       addRow(tiles2,tiles2.length===2?'comp-row-2':'comp-row-1');
+    }
+  }
+  // Skrytki dopisane ręcznie do pojazdów o stałym (rysowanym) układzie — v1/v2/v3 mają
+  // schemat SVG rysowany po znanych z góry id skrytek, więc nowe id trzeba pokazać osobno,
+  // jako zwykłą, zawsze widoczną listę (garaż i pojazdy generyczne już pokazują wszystko same).
+  var HANDLED_COMPS={
+    v1:['kab','k1','d1','k2','d2','k3','d3','tyl','dach'],
+    v2:['przod','kab','k1','d1','k2','d2','k3','d3','tyl','dach'],
+    v3:['kab','k1','d1','k2','d2','k3','d3','k4','d4','nad']
+  };
+  var extraWrap=document.getElementById('extra-comp-wrap');
+  extraWrap.innerHTML='';
+  if(HANDLED_COMPS[id]){
+    var handled=HANDLED_COMPS[id];
+    var extra=v.compartments.filter(function(c){return handled.indexOf(c.id)<0;});
+    if(extra.length){
+      var exHdr=document.createElement('div');
+      exHdr.style.cssText='padding:14px 4px 6px;font-size:12px;font-weight:700;text-transform:uppercase;color:var(--text-faint);letter-spacing:.6px';
+      exHdr.textContent='Dodatkowe skrytki';
+      extraWrap.appendChild(exHdr);
+      for(var ei=0;ei<extra.length;ei+=2){
+        var exTiles=[makeTile(extra[ei])];
+        if(extra[ei+1]) exTiles.push(makeTile(extra[ei+1]));
+        var exRow=document.createElement('div');
+        exRow.className=exTiles.length===2?'comp-row-2':'comp-row-1';
+        exTiles.forEach(function(t){exRow.appendChild(t);});
+        extraWrap.appendChild(exRow);
+      }
     }
   }
   switchView('view-vehicle');
@@ -1232,6 +1842,7 @@ function renderItems(){
         '<div class="group-hdr-sub">'+grp.nr+'</div>'+
       '</div>'+
       '<div class="group-hdr-count">'+grpItems.length+' poz.</div>'+
+      '<div class="edit-row-actions"><button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openGroupSheet(\''+grp.id+'\')">✎</button></div>'+
       '<div class="group-hdr-chev">›</div>';
     var body=document.createElement('div');
     body.className='group-items';
@@ -1244,6 +1855,7 @@ function renderItems(){
     card.appendChild(hdr);card.appendChild(body);
     wrap.appendChild(card);
   });
+  loadItemPhotos(allIt);
 }
 
 function makeItemRow(it){
@@ -1277,16 +1889,20 @@ function makeItemRow(it){
       });
     });
   }
+  var photoIds=it.photoIds||[];
   row.innerHTML=
     '<div class="item-head" onclick="toggleItem(\''+it.id+'\')">' +
       '<div class="item-info">'+
-        '<div class="item-name'+(it.name.length>45?' long':'')+'" >'+it.name+'</div>'+
+        '<div class="item-name'+(it.name.length>45?' long':'')+'" >'+it.name+(it.notes?' <span class="item-note-flag" title="Ma uwagę">📝</span>':'')+'</div>'+
         (it.nr?'<div class="item-nr">'+it.nr+'</div>':'')+
       '</div>'+
       (it.qty?'<div class="item-qty-badge">'+it.qty+'</div>':'')+
+      '<div class="edit-row-actions"><button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openItemSheet(\''+it.id+'\')">✎</button></div>'+
       '<div class="item-chev">›</div>'+
     '</div>'+
     '<div class="item-body">'+
+      (photoIds.length?'<div class="item-photos" id="ip-'+it.id+'"></div>':'')+
+      (it.notes?'<div class="item-note">'+escAttr(it.notes)+'</div>':'')+
       '<div class="spec-row"><span class="spec-k">Nr operacyjny</span><span class="spec-v">'+(it.nr||'—')+'</span></div>'+
       '<div class="spec-row"><span class="spec-k">Ilość</span><span class="spec-v">'+it.qty+'</span></div>'+
       specsHtml+
@@ -1298,6 +1914,17 @@ function makeItemRow(it){
 function toggleItem(id){document.getElementById('ir-'+id).classList.toggle('open');}
 
 /* ── SEARCH ── */
+function itemMatchesQuery(it,nq){
+  if(norm(it.name).indexOf(nq)>=0) return true;
+  if(norm(it.nr||'').indexOf(nq)>=0) return true;
+  if(it.notes && norm(it.notes).indexOf(nq)>=0) return true;
+  if(it.specs){
+    for(var k in it.specs){
+      if(norm(k).indexOf(nq)>=0 || norm(it.specs[k]).indexOf(nq)>=0) return true;
+    }
+  }
+  return false;
+}
 function handleSearch(e){
   var q=e.target.value;
   var bc=document.getElementById('browse-content');
@@ -1306,7 +1933,7 @@ function handleSearch(e){
   if(!q.trim()){bc.classList.remove('hidden');rc.classList.add('hidden');cl.classList.remove('visible');return;}
   bc.classList.add('hidden');rc.classList.remove('hidden');cl.classList.add('visible');
   var nq=norm(q.trim());
-  var res=D.items.filter(function(it){return norm(it.name).indexOf(nq)>=0||norm(it.nr||'').indexOf(nq)>=0;});
+  var res=D.items.filter(function(it){return itemMatchesQuery(it,nq);});
   var qres=(D.quiz||[]).filter(function(it){
     return norm(it.q).indexOf(nq)>=0 || String(it.num).indexOf(nq)>=0;
   }).slice(0,30);
