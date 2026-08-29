@@ -510,6 +510,24 @@ select.edit-input{-webkit-appearance:none;appearance:none}
 .item-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .item-note{white-space:pre-wrap;font-size:13px;line-height:1.5;color:var(--text-2);background:var(--accent-bg);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:9px 12px;margin:0 0 12px}
 .item-note-flag{font-size:12px;vertical-align:1px}
+
+/* ── BIURO / KOMUNIKATY ── */
+.notice-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.notice-head{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;min-height:60px}
+.notice-head:active{background:var(--surface-2)}
+.notice-info{flex:1;min-width:0}
+.notice-tags{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.notice-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:3px 9px;border-radius:99px;color:#fff;flex-shrink:0}
+.notice-cat-sekretariat{background:#8e44ad}
+.notice-cat-kadry{background:#2874a6}
+.notice-cat-technika{background:#b9770e}
+.notice-cat-inne{background:#616a6b}
+.notice-date{font-size:12px;color:var(--text-muted);font-family:"SF Mono","Fira Code",monospace}
+.notice-title{font-size:15px;font-weight:600;color:var(--text);line-height:1.35}
+.notice-chev{color:var(--text-faint);font-size:15px;transition:transform .2s;flex-shrink:0}
+.notice-card.open .notice-chev{transform:rotate(90deg)}
+.notice-body-text{display:none;padding:0 16px 16px;font-size:14px;color:var(--text-2);line-height:1.55;white-space:pre-wrap;border-top:1px solid var(--border);margin-top:2px;padding-top:12px}
+.notice-card.open .notice-body-text{display:block}
 </style>
 </head>
 <body>
@@ -544,6 +562,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       <button type="button" class="edit-fab-add" onclick="openVehicleSheet(null)">+ Dodaj pojazd</button>
       <div class="list-group" id="sensors-list"></div>
       <div class="list-group" id="quiz-section-list"></div>
+      <div class="list-group" id="biuro-list"></div>
       <div class="list-group" id="other-list"></div>
       <div class="edit-tools-panel">
         <div class="edit-tools-panel-title">Dane zapisują się w chmurze na bieżąco</div>
@@ -747,6 +766,28 @@ select.edit-input{-webkit-appearance:none;appearance:none}
     <div id="sensor-list-wrap" style="padding:8px 16px 0"></div>
     <button type="button" class="edit-fab-add" onclick="openSensorSheet(null)">+ Dodaj czujnik</button>
     <div id="sensor-cards-wrap" style="padding:8px 16px"></div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══ BIURO ═══ -->
+<div class="view" id="view-biuro">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>JRG</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text">Biuro</div>
+        <div class="nav-title-sub">Komunikaty</div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div id="notice-list-wrap" style="padding:12px 16px 0"></div>
+    <button type="button" class="edit-fab-add" onclick="openNoticeSheet(null)">+ Dodaj komunikat</button>
     <div style="height:16px"></div>
   </div>
 </div>
@@ -1529,6 +1570,21 @@ function renderHome(){
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
   ql.appendChild(qrow);
+
+  // Biuro — komunikaty z sekretariatu/kadr/techniki
+  var bl=document.getElementById('biuro-list');
+  bl.innerHTML='';
+  var brow=document.createElement('div');
+  brow.className='vehicle-row';
+  brow.onclick=function(){showBiuro();};
+  brow.innerHTML=
+    '<div class="vehicle-badge" style="background:#148f77">BIU</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">Biuro</div>'+
+      '<div class="vehicle-meta">'+(NOTICES.length?NOTICES.length+' komunikat'+(NOTICES.length===1?'':(NOTICES.length<5?'y':'ów')):'Brak komunikatów')+'</div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  bl.appendChild(brow);
 }
 
 /* ── SVG ── */
@@ -2260,6 +2316,87 @@ function deleteSensorConfirm(sensorId){
   showSensors();
 }
 
+/* ── BIURO / KOMUNIKATY ── */
+var NOTICES_MAP={};
+var NOTICES=[];
+var NOTICE_CATEGORIES=['Sekretariat','Kadry','Technika','Inne'];
+function catClass(cat){
+  return NOTICE_CATEGORIES.slice(0,3).indexOf(cat)>=0 ? cat.toLowerCase() : 'inne';
+}
+function applyNoticeChange(id,data,removed){
+  if(removed || (data && data._deleted)){ delete NOTICES_MAP[id]; return; }
+  NOTICES_MAP[id]=Object.assign({},data,{id:id});
+}
+function rebuildNotices(){
+  NOTICES=Object.keys(NOTICES_MAP).map(function(id){return NOTICES_MAP[id];})
+    .sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+}
+function onNoticesChanged(){
+  rebuildNotices();
+  renderHome();
+  if(document.getElementById('view-biuro').classList.contains('active')) showBiuro();
+}
+function showBiuro(){
+  switchView('view-biuro');
+  var wrap=document.getElementById('notice-list-wrap');
+  wrap.innerHTML='';
+  if(!NOTICES.length){ wrap.innerHTML='<div class="empty">Brak komunikatów</div>'; return; }
+  NOTICES.forEach(function(n){
+    var card=document.createElement('div');
+    card.className='notice-card';
+    card.innerHTML=
+      '<div class="notice-head" onclick="this.parentElement.classList.toggle(\'open\')">'+
+        '<div class="notice-info">'+
+          '<div class="notice-tags"><span class="notice-cat notice-cat-'+catClass(n.category)+'">'+escAttr(n.category)+'</span><span class="notice-date">'+escAttr(n.date)+'</span></div>'+
+          '<div class="notice-title">'+escAttr(n.title)+'</div>'+
+        '</div>'+
+        '<div class="edit-row-actions"><button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openNoticeSheet(\''+n.id+'\')">✎</button></div>'+
+        '<div class="notice-chev">›</div>'+
+      '</div>'+
+      '<div class="notice-body-text">'+(n.body?escAttr(n.body):'<span style="color:var(--text-faint);font-style:italic">Brak treści</span>')+'</div>';
+    wrap.appendChild(card);
+  });
+}
+function openNoticeSheet(id){
+  var n=id?NOTICES_MAP[id]:{category:'Sekretariat',title:'',date:new Date().toISOString().slice(0,10),body:''};
+  var catOptions=NOTICE_CATEGORIES.map(function(c){
+    return '<option value="'+c+'"'+(n.category===c?' selected':'')+'>'+c+'</option>';
+  }).join('');
+  var html=
+    '<div class="edit-field"><label class="edit-label">Kategoria</label><select class="edit-input" id="en-category">'+catOptions+'</select></div>'+
+    '<div class="edit-field"><label class="edit-label">Data</label><input class="edit-input" id="en-date" type="date" value="'+escAttr(n.date)+'"></div>'+
+    '<div class="edit-field"><label class="edit-label">Tytuł</label><input class="edit-input" id="en-title" value="'+escAttr(n.title)+'" placeholder="np. Zmiana godzin pracy sekretariatu"></div>'+
+    '<div class="edit-field"><label class="edit-label">Treść</label><textarea class="edit-textarea" id="en-body" style="min-height:120px" placeholder="Szczegóły komunikatu...">'+escAttr(n.body)+'</textarea></div>'+
+    '<div class="edit-actions">'+
+      '<button type="button" class="edit-btn edit-btn-save" onclick="saveNoticeSheet('+(id?"'"+id+"'":'null')+')">Zapisz</button>'+
+      (id?'<button type="button" class="edit-btn edit-btn-delete" onclick="deleteNoticeConfirm(\''+id+'\')">Usuń komunikat</button>':'')+
+      '<button type="button" class="edit-btn edit-btn-cancel" onclick="closeEditSheet()">Anuluj</button>'+
+    '</div>';
+  openSheet(id?'Edytuj komunikat':'Nowy komunikat', html);
+}
+function saveNoticeSheet(id){
+  var title=document.getElementById('en-title').value.trim();
+  if(!title){ alert('Podaj tytuł komunikatu.'); return; }
+  var category=document.getElementById('en-category').value;
+  var date=document.getElementById('en-date').value || new Date().toISOString().slice(0,10);
+  var body=document.getElementById('en-body').value.trim();
+  var isNew=!id;
+  if(isNew) id=uid('bz');
+  var payload={category:category,date:date,title:title,body:body};
+  window.FB.setDoc('notices',id,payload).catch(fbShowError);
+  applyNoticeChange(id,payload,false); rebuildNotices();
+  closeEditSheet();
+  showBiuro();
+}
+function deleteNoticeConfirm(id){
+  var n=NOTICES_MAP[id];
+  if(!confirm('Usunąć komunikat „'+n.title+'”?')) return;
+  window.FB.deleteDocRecord('notices',id).catch(fbShowError);
+  applyNoticeChange(id,null,true); rebuildNotices();
+  closeEditSheet();
+  showBiuro();
+}
+
 function showTaktyka(){
   switchView('view-taktyka');
   document.getElementById('tab-taktyka').classList.add('active');
@@ -2530,6 +2667,16 @@ function subscribeAll(){
       window.onRemoteDataChanged();
     }, function(err){ console.error('Blad nasluchu '+colName, err); });
   });
+  onSnapshot(collection(db, 'notices'), function(snapshot){
+    snapshot.docChanges().forEach(function(change){
+      if(change.type === 'removed'){
+        window.applyNoticeChange(change.doc.id, null, true);
+      } else {
+        window.applyNoticeChange(change.doc.id, change.doc.data(), false);
+      }
+    });
+    window.onNoticesChanged();
+  }, function(err){ console.error('Blad nasluchu notices', err); });
 }
 
 var _subscribedOnce = false;
@@ -2557,7 +2704,7 @@ window.FB = {
     return signOut(auth);
   },
   resetAllData: function(){
-    var allCols = DATA_COLLECTIONS.concat(['photos']);
+    var allCols = DATA_COLLECTIONS.concat(['photos','notices']);
     return Promise.all(allCols.map(function(colName){
       return getDocs(collection(db, colName)).then(function(snap){
         var batch = writeBatch(db);
