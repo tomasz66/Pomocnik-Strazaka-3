@@ -597,6 +597,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
     </div>
     <div id="comp-grid-wrap" class="comp-grid"></div>
     <div id="extra-comp-wrap" class="comp-grid"></div>
+    <button type="button" class="edit-fab-add" id="garaz-add-item-btn" onclick="addItemDirectToVehicle()">+ Dodaj sprzęt</button>
     <button type="button" class="edit-fab-add" onclick="openCompartmentSheet(null)">+ Dodaj skrytkę</button>
     <div style="height:16px"></div>
   </div>
@@ -1180,6 +1181,21 @@ function deleteVehicleConfirm(id){
 }
 
 /* ── EDYCJA: SKRYTKA ── */
+/* Szybkie dodanie sprzętu bez wybierania konkretnej skrytki najpierw - ląduje w domyślnej
+   skrytce "Inny sprzęt" danego pojazdu, tworzonej automatycznie przy pierwszym użyciu.
+   Przydatne gdy nie chce się od razu decydować do której numerowanej skrytki coś trafi. */
+function addItemDirectToVehicle(){
+  var vid=curV, cid='inne';
+  var exists=D.vehicles[vid].compartments.some(function(c){return c.id===cid;});
+  if(!exists){
+    var key=vid+':'+cid;
+    var payload={label:'INNE',name:'Inny sprzęt',type:'',side:vid==='garaz'?'garaż':''};
+    window.FB.setDoc('compartments',key,payload).catch(fbShowError);
+    applyRemoteChange('compartments',key,payload,false); rebuildD();
+  }
+  curV=vid; curC=cid;
+  openItemSheet(null);
+}
 function openCompartmentSheet(ckey){
   var vid=curV, c=null;
   if(ckey){
