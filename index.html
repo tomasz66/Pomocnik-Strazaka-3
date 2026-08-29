@@ -543,11 +543,10 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       <div class="list-group" id="quiz-section-list"></div>
       <div class="list-group" id="other-list"></div>
       <div class="edit-tools-panel">
-        <div class="edit-tools-panel-title">Kopia zapasowa Twoich zmian</div>
-        <button type="button" class="edit-btn edit-btn-cancel" style="background:var(--surface-2);color:var(--text)" onclick="exportBackup()">⬇ Eksportuj kopię zapasową</button>
-        <button type="button" class="edit-btn edit-btn-cancel" style="background:var(--surface-2);color:var(--text)" onclick="document.getElementById('import-backup-input').click()">⬆ Wczytaj kopię zapasową</button>
-        <input type="file" id="import-backup-input" accept="application/json" class="hidden" onchange="importBackupFile(this.files[0]);this.value=''">
+        <div class="edit-tools-panel-title">Dane zapisują się w chmurze na bieżąco</div>
+        <button type="button" class="edit-btn edit-btn-cancel" style="background:var(--surface-2);color:var(--text)" onclick="exportBackup()">⬇ Eksportuj kopię zapasową (plik na telefon)</button>
         <button type="button" class="edit-btn edit-btn-cancel" style="color:var(--accent)" onclick="resetAllEdits()">Usuń wszystkie zmiany (przywróć oryginał)</button>
+        <button type="button" class="edit-btn edit-btn-cancel" onclick="doLogout()">Wyloguj się</button>
       </div>
       <div style="height:16px"></div>
     </div>
@@ -834,41 +833,65 @@ select.edit-input{-webkit-appearance:none;appearance:none}
 var D=JSON.parse(document.getElementById('app-data').textContent);
 var curV='v1',curC=null,scrollPos={};
 
-/* ══════════════ EDYCJA — WARSTWA DANYCH ══════════════
+/* ══════════════ EDYCJA — WARSTWA DANYCH (Firebase) ══════════════
    Oryginalne dane (BASE_D) zostają nietknięte w kodzie strony.
    Twoje zmiany (dodane/edytowane/usunięte pozycje) trzymane są
-   osobno w pamięci telefonu (localStorage) i przy każdym starcie
-   nakładane na oryginał — stąd EDITS (nadpisania/usunięcia/dodania)
-   i rebuildD(), która na nowo składa D z tych dwóch warstw. */
+   w chmurze (Firestore, kolekcje vehicles/compartments/items/groups/photos)
+   i odbierane na żywo przez nasłuchy (onSnapshot) do lokalnego EDITS
+   (nadpisania/usunięcia/dodania), a rebuildD() na nowo składa z tego D. */
 var BASE_D=D;
 var EDIT_MODE=false;
-var EDITS_KEY='psp_edits_v1';
+var IS_AUTHED=false;
 function emptyEdits(){
   return {
     overrides:{vehicles:{},items:{},groups:{},sensors:{},compartments:{}},
     deletions:{vehicles:[],items:[],groups:[],sensors:[],compartments:[]},
-    additions:{vehicles:{},items:[],groups:[],sensors:[],compartments:[]}
+    additions:{vehicles:{},items:{},groups:{},sensors:{},compartments:{}}
   };
 }
-function loadEdits(){
-  try{
-    var raw=localStorage.getItem(EDITS_KEY);
-    if(raw){
-      var parsed=JSON.parse(raw), base=emptyEdits();
-      Object.keys(base.overrides).forEach(function(k){parsed.overrides[k]=parsed.overrides[k]||{};});
-      Object.keys(base.deletions).forEach(function(k){parsed.deletions[k]=parsed.deletions[k]||[];});
-      Object.keys(base.additions).forEach(function(k){parsed.additions[k]=parsed.additions[k]||(k==='vehicles'?{}:[]);});
-      return parsed;
-    }
-  }catch(e){}
-  return emptyEdits();
-}
-var EDITS=loadEdits();
-function saveEdits(){
-  try{ localStorage.setItem(EDITS_KEY, JSON.stringify(EDITS)); }
-  catch(e){ alert('Nie udało się zapisać zmian w pamięci telefonu (może zabrakło miejsca).'); }
-}
+var EDITS=emptyEdits();
 function uid(p){ return p+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7); }
+
+function isBaseRecord(colName,docId){
+  if(colName==='vehicles') return !!BASE_D.vehicles[docId];
+  if(colName==='items') return BASE_D.items.some(function(it){return it.id===docId;});
+  if(colName==='groups') return (BASE_D.groups||[]).some(function(g){return g.id===docId;});
+  if(colName==='compartments'){
+    var vid=docId.split(':')[0], cid=docId.slice(vid.length+1);
+    return !!(BASE_D.vehicles[vid] && BASE_D.vehicles[vid].compartments.some(function(c){return c.id===cid;}));
+  }
+  return false;
+}
+/* Wołane przez nasłuch Firestore przy każdej zmianie dokumentu (dodanie/edycja/usunięcie) */
+function applyRemoteChange(colName,docId,data,removed){
+  var base=isBaseRecord(colName,docId);
+  if(removed){
+    delete EDITS.overrides[colName][docId];
+    delete EDITS.additions[colName][docId];
+    var idx=EDITS.deletions[colName].indexOf(docId);
+    if(idx>=0) EDITS.deletions[colName].splice(idx,1);
+    return;
+  }
+  if(data._deleted){
+    delete EDITS.overrides[colName][docId];
+    delete EDITS.additions[colName][docId];
+    if(EDITS.deletions[colName].indexOf(docId)<0) EDITS.deletions[colName].push(docId);
+    return;
+  }
+  var di=EDITS.deletions[colName].indexOf(docId);
+  if(di>=0) EDITS.deletions[colName].splice(di,1);
+  if(base){
+    EDITS.overrides[colName][docId]=Object.assign({},EDITS.overrides[colName][docId],data);
+  } else {
+    var prev=EDITS.additions[colName][docId]||{};
+    var full=Object.assign({},prev,data,{id:docId});
+    if(colName==='compartments'){
+      var vid=docId.split(':')[0];
+      full.v=vid; full.id=docId.slice(vid.length+1);
+    }
+    EDITS.additions[colName][docId]=full;
+  }
+}
 
 function rebuildD(){
   var vehicles={};
@@ -893,26 +916,28 @@ function rebuildD(){
       return EDITS.overrides.compartments[key]?Object.assign({},c,EDITS.overrides.compartments[key]):c;
     });
   });
-  EDITS.additions.compartments.forEach(function(c){
-    if(vehicles[c.v] && EDITS.deletions.compartments.indexOf(c.v+':'+c.id)<0){
-      var key=c.v+':'+c.id;
+  Object.keys(EDITS.additions.compartments).forEach(function(key){
+    var c=EDITS.additions.compartments[key];
+    if(vehicles[c.v] && EDITS.deletions.compartments.indexOf(key)<0){
       vehicles[c.v].compartments.push(EDITS.overrides.compartments[key]?Object.assign({},c,EDITS.overrides.compartments[key]):c);
     }
   });
 
   var items=BASE_D.items.filter(function(it){return EDITS.deletions.items.indexOf(it.id)<0;})
     .map(function(it){return EDITS.overrides.items[it.id]?Object.assign({},it,EDITS.overrides.items[it.id]):it;});
-  EDITS.additions.items.forEach(function(it){
-    if(EDITS.deletions.items.indexOf(it.id)<0){
-      items.push(EDITS.overrides.items[it.id]?Object.assign({},it,EDITS.overrides.items[it.id]):it);
+  Object.keys(EDITS.additions.items).forEach(function(id){
+    if(EDITS.deletions.items.indexOf(id)<0){
+      var it=EDITS.additions.items[id];
+      items.push(EDITS.overrides.items[id]?Object.assign({},it,EDITS.overrides.items[id]):it);
     }
   });
 
   var groups=(BASE_D.groups||[]).filter(function(g){return EDITS.deletions.groups.indexOf(g.id)<0;})
     .map(function(g){return EDITS.overrides.groups[g.id]?Object.assign({},g,EDITS.overrides.groups[g.id]):g;});
-  EDITS.additions.groups.forEach(function(g){
-    if(EDITS.deletions.groups.indexOf(g.id)<0){
-      groups.push(EDITS.overrides.groups[g.id]?Object.assign({},g,EDITS.overrides.groups[g.id]):g);
+  Object.keys(EDITS.additions.groups).forEach(function(id){
+    if(EDITS.deletions.groups.indexOf(id)<0){
+      var g=EDITS.additions.groups[id];
+      groups.push(EDITS.overrides.groups[id]?Object.assign({},g,EDITS.overrides.groups[id]):g);
     }
   });
 
@@ -925,11 +950,52 @@ function rerenderCurrentView(){
   if(document.getElementById('view-vehicle').classList.contains('active') && curV) showVehicle(curV);
   else if(document.getElementById('view-comp').classList.contains('active') && curV && curC) showCompartment(curV,curC);
 }
+function onRemoteDataChanged(){
+  rebuildD();
+  rerenderCurrentView();
+}
+function fbShowError(e){
+  console.error(e);
+  alert('Coś poszło nie tak z zapisem do chmury: '+(e&&e.message?e.message:e));
+}
 function toggleEditMode(){
+  if(!EDIT_MODE && !IS_AUTHED){ openLoginSheet(); return; }
   EDIT_MODE=!EDIT_MODE;
   document.querySelector('.app').classList.toggle('edit-mode',EDIT_MODE);
   document.getElementById('edit-toggle-btn').classList.toggle('active',EDIT_MODE);
   rerenderCurrentView();
+}
+function openLoginSheet(){
+  var html=
+    '<div class="edit-field"><label class="edit-label">E-mail</label><input class="edit-input" id="login-email" type="email" autocomplete="username"></div>'+
+    '<div class="edit-field"><label class="edit-label">Hasło</label><input class="edit-input" id="login-password" type="password" autocomplete="current-password"></div>'+
+    '<div class="edit-actions">'+
+      '<button type="button" class="edit-btn edit-btn-save" onclick="doLogin()">Zaloguj się</button>'+
+      '<button type="button" class="edit-btn edit-btn-cancel" onclick="closeEditSheet()">Anuluj</button>'+
+    '</div>';
+  openSheet('Zaloguj się do edycji', html);
+}
+function doLogin(){
+  var email=document.getElementById('login-email').value.trim();
+  var pw=document.getElementById('login-password').value;
+  if(!email||!pw){ alert('Podaj e-mail i hasło.'); return; }
+  window.FB.signIn(email,pw).then(function(){
+    closeEditSheet();
+    EDIT_MODE=true;
+    document.querySelector('.app').classList.add('edit-mode');
+    document.getElementById('edit-toggle-btn').classList.add('active');
+    rerenderCurrentView();
+  }).catch(function(e){
+    alert('Nie udało się zalogować: sprawdź e-mail i hasło.');
+  });
+}
+function doLogout(){
+  window.FB.signOutUser().then(function(){
+    EDIT_MODE=false;
+    document.querySelector('.app').classList.remove('edit-mode');
+    document.getElementById('edit-toggle-btn').classList.remove('active');
+    rerenderCurrentView();
+  });
 }
 
 /* ── EDIT SHEET (generyczny dolny panel) ── */
@@ -963,73 +1029,23 @@ function collectKv(wrapId){
   return obj;
 }
 
-/* ── ZDJĘCIA — IndexedDB + kompresja ── */
-var PHOTO_DB_NAME='psp_photos_db', PHOTO_STORE='blobs';
-var _photoDbPromise=null;
-function openPhotoDB(){
-  if(_photoDbPromise) return _photoDbPromise;
-  _photoDbPromise=new Promise(function(resolve,reject){
-    var req=indexedDB.open(PHOTO_DB_NAME,1);
-    req.onupgradeneeded=function(){ req.result.createObjectStore(PHOTO_STORE); };
-    req.onsuccess=function(){ resolve(req.result); };
-    req.onerror=function(){ reject(req.error); };
-  });
-  return _photoDbPromise;
-}
+/* ── ZDJĘCIA — Firestore (kolekcja "photos") + kompresja ── */
+var _photoCache={};
 function putPhotoBlob(id,blob){
-  return openPhotoDB().then(function(db){
-    return new Promise(function(resolve,reject){
-      var tx=db.transaction(PHOTO_STORE,'readwrite');
-      tx.objectStore(PHOTO_STORE).put(blob,id);
-      tx.oncomplete=function(){resolve();};
-      tx.onerror=function(){reject(tx.error);};
-    });
-  });
+  return blobToBase64(blob).then(function(b64){
+    return window.FB.setDoc('photos',id,{data:b64,type:blob.type});
+  }).then(function(){ _photoCache[id]=blob; });
 }
 function getPhotoBlob(id){
-  return openPhotoDB().then(function(db){
-    return new Promise(function(resolve){
-      var tx=db.transaction(PHOTO_STORE,'readonly');
-      var req=tx.objectStore(PHOTO_STORE).get(id);
-      req.onsuccess=function(){resolve(req.result||null);};
-      req.onerror=function(){resolve(null);};
-    });
-  });
+  if(_photoCache[id]) return Promise.resolve(_photoCache[id]);
+  return window.FB.getDocData('photos',id).then(function(data){
+    if(!data) return null;
+    return base64ToBlob(data.data).then(function(blob){ _photoCache[id]=blob; return blob; });
+  }).catch(function(){ return null; });
 }
 function deletePhotoBlob(id){
-  return openPhotoDB().then(function(db){
-    return new Promise(function(resolve){
-      var tx=db.transaction(PHOTO_STORE,'readwrite');
-      tx.objectStore(PHOTO_STORE).delete(id);
-      tx.oncomplete=function(){resolve();};
-      tx.onerror=function(){resolve();};
-    });
-  });
-}
-function getAllPhotoEntries(){
-  return openPhotoDB().then(function(db){
-    return new Promise(function(resolve){
-      var tx=db.transaction(PHOTO_STORE,'readonly');
-      var store=tx.objectStore(PHOTO_STORE);
-      var out={};
-      var req=store.openCursor();
-      req.onsuccess=function(e){
-        var cur=e.target.result;
-        if(cur){ out[cur.key]=cur.value; cur.continue(); } else resolve(out);
-      };
-      req.onerror=function(){resolve(out);};
-    });
-  });
-}
-function clearAllPhotos(){
-  return openPhotoDB().then(function(db){
-    return new Promise(function(resolve){
-      var tx=db.transaction(PHOTO_STORE,'readwrite');
-      tx.objectStore(PHOTO_STORE).clear();
-      tx.oncomplete=function(){resolve();};
-      tx.onerror=function(){resolve();};
-    });
-  });
+  delete _photoCache[id];
+  return window.FB.deleteDocRecord('photos',id);
 }
 function drawAndCompress(source,w0,h0){
   var maxDim=1280;
@@ -1072,44 +1088,29 @@ function blobToBase64(blob){
 }
 function base64ToBlob(dataUrl){ return fetch(dataUrl).then(function(r){return r.blob();}); }
 function exportBackup(){
-  getAllPhotoEntries().then(function(photoMap){
-    var ids=Object.keys(photoMap);
-    Promise.all(ids.map(function(pid){ return blobToBase64(photoMap[pid]).then(function(b64){return [pid,b64];}); }))
-      .then(function(pairs){
-        var photos={};
-        pairs.forEach(function(p){photos[p[0]]=p[1];});
-        var payload={version:1,exportedAt:new Date().toISOString(),edits:EDITS,photos:photos};
-        var blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
-        var url=URL.createObjectURL(blob);
-        var a=document.createElement('a');
-        a.href=url; a.download='pomocnik-strazaka-kopia-'+new Date().toISOString().slice(0,10)+'.json';
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        setTimeout(function(){URL.revokeObjectURL(url);},2000);
-      });
+  var photoIds=[];
+  D.items.forEach(function(it){ (it.photoIds||[]).forEach(function(pid){ photoIds.push(pid); }); });
+  Promise.all(photoIds.map(function(pid){
+    return window.FB.getDocData('photos',pid).then(function(data){ return [pid,data?data.data:null]; });
+  })).then(function(pairs){
+    var photos={};
+    pairs.forEach(function(p){ if(p[1]) photos[p[0]]=p[1]; });
+    var payload={version:2,exportedAt:new Date().toISOString(),data:{vehicles:D.vehicles,items:D.items,groups:D.groups},photos:photos};
+    var blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url; a.download='pomocnik-strazaka-kopia-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url);},2000);
   });
 }
-function importBackupFile(file){
-  if(!file) return;
-  var reader=new FileReader();
-  reader.onload=function(){
-    var payload;
-    try{ payload=JSON.parse(reader.result); }catch(e){ alert('Nie udało się odczytać pliku kopii zapasowej.'); return; }
-    if(!payload || !payload.edits){ alert('To nie jest plik kopii zapasowej tej aplikacji.'); return; }
-    if(!confirm('Wczytanie kopii zapasowej NADPISZE obecne zmiany w aplikacji na tym telefonie. Kontynuować?')) return;
-    EDITS=payload.edits;
-    saveEdits();
-    var ids=Object.keys(payload.photos||{});
-    Promise.all(ids.map(function(pid){ return base64ToBlob(payload.photos[pid]).then(function(blob){return putPhotoBlob(pid,blob);}); }))
-      .then(function(){ alert('Kopia zapasowa wczytana.'); location.reload(); })
-      .catch(function(){ alert('Kopia częściowo wczytana — sprawdź zdjęcia.'); location.reload(); });
-  };
-  reader.readAsText(file);
-}
 function resetAllEdits(){
-  if(!confirm('Usunąć WSZYSTKIE Twoje zmiany (dodany/edytowany sprzęt, zdjęcia) i wrócić do oryginalnej wersji aplikacji? Zrób najpierw kopię zapasową, jeśli nie masz jej jeszcze. Tej operacji nie można cofnąć.')) return;
-  EDITS=emptyEdits();
-  saveEdits();
-  clearAllPhotos().then(function(){ location.reload(); });
+  if(!confirm('Usunąć WSZYSTKIE Twoje zmiany w chmurze (dodany/edytowany sprzęt, zdjęcia) i wrócić do oryginalnej wersji aplikacji? Zrób najpierw kopię zapasową, jeśli nie masz jej jeszcze. Tej operacji nie można cofnąć.')) return;
+  if(!IS_AUTHED){ alert('Musisz być zalogowany, żeby to zrobić.'); return; }
+  window.FB.resetAllData().then(function(){
+    alert('Wszystkie zmiany usunięte, wracam do oryginału.');
+    location.reload();
+  }).catch(fbShowError);
 }
 
 /* ── EDYCJA: POJAZD ── */
@@ -1134,22 +1135,26 @@ function saveVehicleSheet(id){
   var sub=document.getElementById('ev-sub').value.trim();
   var icon=document.getElementById('ev-icon').value.trim().toUpperCase()||name.slice(0,3).toUpperCase();
   var specs=collectKv('ev-specs');
-  if(!id){
-    id=uid('v');
-    EDITS.additions.vehicles[id]={name:name,sub:sub,icon:icon,specs:specs,service:{},compartments:[]};
-  } else {
-    EDITS.overrides.vehicles[id]=Object.assign({},EDITS.overrides.vehicles[id],{name:name,sub:sub,icon:icon,specs:specs});
-  }
-  closeEditSheet(); rebuildD(); saveEdits();
+  var isNew=!id;
+  if(isNew) id=uid('v');
+  var payload=isNew
+    ? {name:name,sub:sub,icon:icon,specs:specs,service:{},compartments:[]}
+    : {name:name,sub:sub,icon:icon,specs:specs};
+  window.FB.setDoc('vehicles',id,payload).catch(fbShowError);
+  applyRemoteChange('vehicles',id,payload,false); rebuildD();
+  closeEditSheet();
   renderHome();
   if(document.getElementById('view-vehicle').classList.contains('active')) showVehicle(id);
 }
 function deleteVehicleConfirm(id){
   var v=D.vehicles[id];
   var cnt=D.items.filter(function(it){return it.v===id;}).length;
-  if(!confirm('Usunąć pojazd „'+v.name+'” wraz z '+cnt+' pozycjami sprzętu? Cofniesz to tylko pełnym resetem zmian.')) return;
-  EDITS.deletions.vehicles.push(id);
-  closeEditSheet(); rebuildD(); saveEdits();
+  if(!confirm('Usunąć pojazd „'+v.name+'” wraz z '+cnt+' pozycjami sprzętu?')) return;
+  var base=isBaseRecord('vehicles',id);
+  if(base) window.FB.setDoc('vehicles',id,{_deleted:true}).catch(fbShowError);
+  else window.FB.deleteDocRecord('vehicles',id).catch(fbShowError);
+  applyRemoteChange('vehicles',id,{_deleted:true},false); rebuildD();
+  closeEditSheet();
   showHome();
 }
 
@@ -1178,21 +1183,24 @@ function saveCompartmentSheet(vid,cid){
   var name=document.getElementById('ec-name').value.trim()||label;
   var type=document.getElementById('ec-type').value.trim();
   var side=document.getElementById('ec-side').value.trim();
-  if(!cid){
-    cid=uid('c');
-    EDITS.additions.compartments.push({id:cid,v:vid,label:label,name:name,type:type,side:side});
-  } else {
-    var key=vid+':'+cid;
-    EDITS.overrides.compartments[key]=Object.assign({},EDITS.overrides.compartments[key],{label:label,name:name,type:type,side:side});
-  }
-  closeEditSheet(); rebuildD(); saveEdits();
+  var isNew=!cid;
+  if(isNew) cid=uid('c');
+  var key=vid+':'+cid;
+  var payload={label:label,name:name,type:type,side:side};
+  window.FB.setDoc('compartments',key,payload).catch(fbShowError);
+  applyRemoteChange('compartments',key,payload,false); rebuildD();
+  closeEditSheet();
   showVehicle(vid);
 }
 function deleteCompartmentConfirm(vid,cid){
   var cnt=D.items.filter(function(it){return it.v===vid&&it.comp===cid;}).length;
   if(!confirm('Usunąć tę skrytkę wraz z '+cnt+' pozycjami sprzętu?')) return;
-  EDITS.deletions.compartments.push(vid+':'+cid);
-  closeEditSheet(); rebuildD(); saveEdits();
+  var key=vid+':'+cid;
+  var base=isBaseRecord('compartments',key);
+  if(base) window.FB.setDoc('compartments',key,{_deleted:true}).catch(fbShowError);
+  else window.FB.deleteDocRecord('compartments',key).catch(fbShowError);
+  applyRemoteChange('compartments',key,{_deleted:true},false); rebuildD();
+  closeEditSheet();
   showVehicle(vid);
 }
 
@@ -1213,13 +1221,12 @@ function saveGroupSheet(groupId){
   var name=document.getElementById('eg-name').value.trim();
   if(!name){ alert('Podaj nazwę grupy.'); return; }
   var nr=document.getElementById('eg-nr').value.trim();
-  if(!groupId){
-    groupId=uid('g');
-    EDITS.additions.groups.push({id:groupId,v:curV,comp:curC,name:name,nr:nr});
-  } else {
-    EDITS.overrides.groups[groupId]=Object.assign({},EDITS.overrides.groups[groupId],{name:name,nr:nr});
-  }
-  closeEditSheet(); rebuildD(); saveEdits();
+  var isNew=!groupId;
+  if(isNew) groupId=uid('g');
+  var payload=isNew ? {v:curV,comp:curC,name:name,nr:nr} : {name:name,nr:nr};
+  window.FB.setDoc('groups',groupId,payload).catch(fbShowError);
+  applyRemoteChange('groups',groupId,payload,false); rebuildD();
+  closeEditSheet();
   showCompartment(curV,curC);
 }
 function deleteGroupConfirm(groupId){
@@ -1228,10 +1235,16 @@ function deleteGroupConfirm(groupId){
   if(!confirm(msg)) return;
   itemsInGroup.forEach(function(it){
     (it.photoIds||[]).forEach(function(pid){deletePhotoBlob(pid);});
-    EDITS.deletions.items.push(it.id);
+    var itBase=isBaseRecord('items',it.id);
+    if(itBase) window.FB.setDoc('items',it.id,{_deleted:true}).catch(fbShowError);
+    else window.FB.deleteDocRecord('items',it.id).catch(fbShowError);
+    applyRemoteChange('items',it.id,{_deleted:true},false);
   });
-  EDITS.deletions.groups.push(groupId);
-  closeEditSheet(); rebuildD(); saveEdits();
+  var base=isBaseRecord('groups',groupId);
+  if(base) window.FB.setDoc('groups',groupId,{_deleted:true}).catch(fbShowError);
+  else window.FB.deleteDocRecord('groups',groupId).catch(fbShowError);
+  applyRemoteChange('groups',groupId,{_deleted:true},false); rebuildD();
+  closeEditSheet();
   showCompartment(curV,curC);
 }
 
@@ -1305,21 +1318,25 @@ function saveItemSheet(itemId){
   var groupEl=document.getElementById('ei-group');
   var group=groupEl?groupEl.value:'';
   var photoIds=EDIT_SHEET_PHOTO_IDS.slice();
-  if(!itemId){
-    itemId=uid('it');
-    EDITS.additions.items.push({id:itemId,v:curV,comp:curC,name:name,qty:qty,nr:nr,notes:notes,specs:specs,group:group,photoIds:photoIds});
-  } else {
-    EDITS.overrides.items[itemId]=Object.assign({},EDITS.overrides.items[itemId],{name:name,qty:qty,nr:nr,notes:notes,specs:specs,group:group,photoIds:photoIds});
-  }
-  closeEditSheet(); rebuildD(); saveEdits();
+  var isNew=!itemId;
+  if(isNew) itemId=uid('it');
+  var payload=isNew
+    ? {v:curV,comp:curC,name:name,qty:qty,nr:nr,notes:notes,specs:specs,group:group,photoIds:photoIds}
+    : {name:name,qty:qty,nr:nr,notes:notes,specs:specs,group:group,photoIds:photoIds};
+  window.FB.setDoc('items',itemId,payload).catch(fbShowError);
+  applyRemoteChange('items',itemId,payload,false); rebuildD();
+  closeEditSheet();
   showCompartment(curV,curC);
 }
 function deleteItemConfirm(itemId){
   var it=D.items.find(function(x){return x.id===itemId;});
   if(!confirm('Usunąć „'+it.name+'”?')) return;
   (it.photoIds||[]).forEach(function(pid){deletePhotoBlob(pid);});
-  EDITS.deletions.items.push(itemId);
-  closeEditSheet(); rebuildD(); saveEdits();
+  var base=isBaseRecord('items',itemId);
+  if(base) window.FB.setDoc('items',itemId,{_deleted:true}).catch(fbShowError);
+  else window.FB.deleteDocRecord('items',itemId).catch(fbShowError);
+  applyRemoteChange('items',itemId,{_deleted:true},false); rebuildD();
+  closeEditSheet();
   showCompartment(curV,curC);
 }
 function loadItemPhotos(items){
@@ -2333,6 +2350,85 @@ loadTheme();renderHome();
 document.getElementById('search-input').addEventListener('input',handleSearch);
 document.getElementById('quiz-search-input').addEventListener('input',handleQuizSearch);
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import {
+  initializeFirestore, persistentLocalCache, persistentSingleTabManager,
+  doc, setDoc, deleteDoc, getDoc, onSnapshot, collection, getDocs, writeBatch
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCU1XcGwH_I4fggtCeI-vya54R48WIzxAA",
+  authDomain: "pomocnik-strazaka.firebaseapp.com",
+  projectId: "pomocnik-strazaka",
+  storageBucket: "pomocnik-strazaka.firebasestorage.app",
+  messagingSenderId: "889920213921",
+  appId: "1:889920213921:web:349737df0a3a1599c3b1e0"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() })
+});
+const auth = getAuth(app);
+const DATA_COLLECTIONS = ['vehicles','compartments','items','groups'];
+
+function subscribeAll(){
+  DATA_COLLECTIONS.forEach(function(colName){
+    onSnapshot(collection(db, colName), function(snapshot){
+      snapshot.docChanges().forEach(function(change){
+        if(change.type === 'removed'){
+          window.applyRemoteChange(colName, change.doc.id, null, true);
+        } else {
+          window.applyRemoteChange(colName, change.doc.id, change.doc.data(), false);
+        }
+      });
+      window.onRemoteDataChanged();
+    }, function(err){ console.error('Blad nasluchu '+colName, err); });
+  });
+}
+
+onAuthStateChanged(auth, function(user){
+  window.IS_AUTHED = !!user;
+});
+
+window.FB = {
+  setDoc: function(colName, id, payload){
+    return setDoc(doc(db, colName, id), payload, { merge: true });
+  },
+  deleteDocRecord: function(colName, id){
+    return deleteDoc(doc(db, colName, id));
+  },
+  getDocData: function(colName, id){
+    return getDoc(doc(db, colName, id)).then(function(snap){
+      return snap.exists() ? snap.data() : null;
+    });
+  },
+  signIn: function(email, password){
+    return signInWithEmailAndPassword(auth, email, password);
+  },
+  signOutUser: function(){
+    return signOut(auth);
+  },
+  resetAllData: function(){
+    var allCols = DATA_COLLECTIONS.concat(['photos']);
+    return Promise.all(allCols.map(function(colName){
+      return getDocs(collection(db, colName)).then(function(snap){
+        var batch = writeBatch(db);
+        snap.forEach(function(d){ batch.delete(d.ref); });
+        return batch.commit();
+      });
+    }));
+  }
+};
+
+subscribeAll();
+</script>
+
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
