@@ -742,6 +742,8 @@ select.edit-input{-webkit-appearance:none;appearance:none}
     </div>
   </div>
   <div class="scroll-content">
+    <div id="sensor-list-wrap" style="padding:8px 16px 0"></div>
+    <button type="button" class="edit-fab-add" onclick="openSensorSheet(null)">+ Dodaj czujnik</button>
     <div id="sensor-cards-wrap" style="padding:8px 16px"></div>
     <div style="height:16px"></div>
   </div>
@@ -858,6 +860,7 @@ function isBaseRecord(colName,docId){
   if(colName==='vehicles') return !!BASE_D.vehicles[docId];
   if(colName==='items') return BASE_D.items.some(function(it){return it.id===docId;});
   if(colName==='groups') return (BASE_D.groups||[]).some(function(g){return g.id===docId;});
+  if(colName==='sensors') return SENSORS_BASE.some(function(s){return s.id===docId;});
   if(colName==='compartments'){
     var vid=docId.split(':')[0], cid=docId.slice(vid.length+1);
     return !!(BASE_D.vehicles[vid] && BASE_D.vehicles[vid].compartments.some(function(c){return c.id===cid;}));
@@ -951,9 +954,11 @@ function rerenderCurrentView(){
   renderHome();
   if(document.getElementById('view-vehicle').classList.contains('active') && curV) showVehicle(curV);
   else if(document.getElementById('view-comp').classList.contains('active') && curV && curC) showCompartment(curV,curC);
+  else if(document.getElementById('view-sensors').classList.contains('active')) showSensors();
 }
 function onRemoteDataChanged(){
   rebuildD();
+  rebuildSensors();
   rerenderCurrentView();
 }
 function fbShowError(e){
@@ -1467,11 +1472,12 @@ function renderHome(){
   var srow=document.createElement('div');
   srow.className='vehicle-row';
   srow.onclick=function(){showSensors();};
+  var sensorNames=SENSORS.map(function(s){return s.name;}).join(' · ')||'Brak czujników';
   srow.innerHTML=
     '<div class="vehicle-badge" style="background:#1a5276">CZU</div>'+
     '<div class="vehicle-info">'+
       '<div class="vehicle-name">Czujniki gazów</div>'+
-      '<div class="vehicle-meta">Dräger 2500 · Dräger 5000 · Palutector</div>'+
+      '<div class="vehicle-meta">'+sensorNames+'</div>'+
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
   sl.appendChild(srow);
@@ -2006,9 +2012,9 @@ function clearSearch(){
 }
 
 
-var SENSORS=[
+var SENSORS_BASE=[
   {
-    id:'drager2500', badge:'XAM\n2500', name:'Dräger XAM 2500', sub:'Detektor wielogazowy',
+    id:'drager2500', badge:'XAM\n2500', name:'Dräger XAM 2500', sub:'Detektor wielogazowy', vehicle:'GCBA',
     gases:[
       { name:'Tlen',        formula:'O₂',   a1:'19% ↓', a2:'23% ↑', unit:'%'   },
       { name:'Tlenek węgla',formula:'CO',   a1:'20',    a2:'100',   unit:'PPM' },
@@ -2017,7 +2023,7 @@ var SENSORS=[
     ]
   },
   {
-    id:'drager5000', badge:'XAM\n5000', name:'Dräger XAM 5000', sub:'Detektor wielogazowy',
+    id:'drager5000', badge:'XAM\n5000', name:'Dräger XAM 5000', sub:'Detektor wielogazowy', vehicle:'GBA',
     gases:[
       { name:'Tlen',        formula:'O₂',   a1:'19% ↓', a2:'23% ↑', unit:'%'   },
       { name:'Tlenek węgla',formula:'CO',   a1:'20',    a2:'100',   unit:'PPM' },
@@ -2026,7 +2032,7 @@ var SENSORS=[
     ]
   },
   {
-    id:'palutector', badge:'PALU\nTECTOR', name:'Palutector', sub:'Detektor wielogazowy',
+    id:'palutector', badge:'PALU\nTECTOR', name:'Palutector', sub:'Detektor wielogazowy', vehicle:'GBA',
     gases:[
       { name:'Tlen',            formula:'O₂',  a1:'19% ↓', a2:'23% ↑', unit:'%'   },
       { name:'Tlenek węgla',    formula:'CO',  a1:'20',    a2:'60',    unit:'PPM' },
@@ -2037,14 +2043,27 @@ var SENSORS=[
     ]
   }
 ];
+var SENSORS=SENSORS_BASE.slice();
 
-function renderSensors(){
-  var wrap=document.getElementById('sensors-list');
-  if(!wrap||wrap.children.length) return;
+function rebuildSensors(){
+  var list=SENSORS_BASE.filter(function(s){return EDITS.deletions.sensors.indexOf(s.id)<0;})
+    .map(function(s){return EDITS.overrides.sensors[s.id]?Object.assign({},s,EDITS.overrides.sensors[s.id]):s;});
+  Object.keys(EDITS.additions.sensors).forEach(function(id){
+    if(EDITS.deletions.sensors.indexOf(id)<0){
+      var s=EDITS.additions.sensors[id];
+      list.push(EDITS.overrides.sensors[id]?Object.assign({},s,EDITS.overrides.sensors[id]):s);
+    }
+  });
+  SENSORS=list;
+}
+
+function renderSensorEditList(){
+  var wrap=document.getElementById('sensor-list-wrap');
+  wrap.innerHTML='';
   SENSORS.forEach(function(s){
     var card=document.createElement('div');
     card.className='sensor-card';
-    var rows=s.gases.map(function(g){
+    var rows=(s.gases||[]).map(function(g){
       return '<tr>'+
         '<td><div class="sensor-gas">'+g.name+'</div><div class="sensor-formula">'+g.formula+'</div></td>'+
         '<td class="sensor-alarm1">'+g.a1+' <span style="font-size:10px;font-weight:400">'+g.unit+'</span></td>'+
@@ -2053,18 +2072,16 @@ function renderSensors(){
     }).join('');
     card.innerHTML=
       '<div class="sensor-card-head" onclick="this.parentElement.classList.toggle(\'open\')">'+
-        '<div class="sensor-badge">'+s.badge.replace('\n','<br>')+'</div>'+
+        '<div class="sensor-badge">'+(s.badge||'').replace('\n','<br>')+'</div>'+
         '<div class="sensor-info">'+
           '<div class="sensor-name">'+s.name+'</div>'+
-          '<div class="sensor-sub">'+s.sub+' · '+s.gases.length+' gazów</div>'+
+          '<div class="sensor-sub">'+s.sub+' · '+(s.gases||[]).length+' gazów</div>'+
         '</div>'+
+        '<div class="edit-row-actions"><button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openSensorSheet(\''+s.id+'\')">✎</button></div>'+
         '<div class="sensor-chev">›</div>'+
       '</div>'+
       '<div class="sensor-body">'+
-        '<table class="sensor-table">'+
-          '<thead><tr><th>Gaz</th><th>Alarm 1</th><th>Alarm 2</th></tr></thead>'+
-          '<tbody>'+rows+'</tbody>'+
-        '</table>'+
+        (rows?'<table class="sensor-table"><thead><tr><th>Gaz</th><th>Alarm 1</th><th>Alarm 2</th></tr></thead><tbody>'+rows+'</tbody></table>':'<div class="empty" style="padding:20px">Brak gazów - dodaj przez edycję</div>')+
       '</div>';
     wrap.appendChild(card);
   });
@@ -2072,29 +2089,33 @@ function renderSensors(){
 
 function showSensors(){
   switchView('view-sensors');
+  renderSensorEditList();
   var wrap=document.getElementById('sensor-cards-wrap');
-  if(wrap.children.length) return;
+  wrap.innerHTML='';
+  if(!SENSORS.length){ wrap.innerHTML='<div class="empty">Brak czujników</div>'; return; }
 
-  // Wszystkie gazy unikalne
-  var allGases=['O₂','CO','CH₄','H₂S','NH₃','NO₂','SO₂'];
-  var gasNames={'O₂':'Tlen','CO':'Tlenek węgla','CH₄':'Metan','H₂S':'Siarkowodór','NH₃':'Amoniak','NO₂':'Dwutlenek azotu','SO₂':'Dwutlenek siarki'};
+  // Wszystkie gazy - wyprowadzone dynamicznie z aktualnych czujników, w kolejności pierwszego wystąpienia
+  var allGases=[]; var gasNames={};
+  SENSORS.forEach(function(s){
+    (s.gases||[]).forEach(function(g){
+      if(allGases.indexOf(g.formula)<0){ allGases.push(g.formula); gasNames[g.formula]=g.name; }
+    });
+  });
+  if(!allGases.length){ return; }
 
   // Mapa: formula -> detektor -> {a1,a2,unit}
   var map={};
   SENSORS.forEach(function(s){
-    s.gases.forEach(function(g){
+    (s.gases||[]).forEach(function(g){
       if(!map[g.formula]) map[g.formula]={};
       map[g.formula][s.id]={a1:g.a1,a2:g.a2,unit:g.unit};
     });
   });
 
-  var detNames={drager2500:'Dräger 2500',drager5000:'Dräger 5000',palutector:'Polytector'};
-  var detVehicle={drager2500:'GCBA',drager5000:'GBA',palutector:'GBA'};
-  var detIds=['drager2500','drager5000','palutector'];
-
   var tA2=document.createElement('div');
+  var minWidth=100+allGases.length*70;
   tA2.style.cssText='background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;overflow-x:auto';
-  var headA2='<div style="display:grid;grid-template-columns:100px repeat(7,1fr);background:var(--accent);min-width:520px">'
+  var headA2='<div style="display:grid;grid-template-columns:100px repeat('+allGases.length+',1fr);background:var(--accent);min-width:'+minWidth+'px">'
     +'<div style="padding:9px 10px;font-size:11px;font-weight:700;color:#fff">Detektor</div>';
   allGases.forEach(function(f){
     headA2+='<div style="padding:9px 4px;font-size:11px;font-weight:700;color:#fff;text-align:center;border-left:1px solid rgba(255,255,255,.2)">'+f+'</div>';
@@ -2102,12 +2123,12 @@ function showSensors(){
   headA2+='</div>';
 
   var rowsA2='';
-  detIds.forEach(function(d,i){
+  SENSORS.forEach(function(s,i){
     var bg=i%2===0?'var(--surface)':'var(--surface-2)';
-    rowsA2+='<div style="display:grid;grid-template-columns:100px repeat(7,1fr);background:'+bg+';border-top:1px solid var(--border);min-width:520px">'
-      +'<div style="padding:9px 10px;font-size:12px;font-weight:700;color:var(--text)">'+detNames[d]+'<div style="font-size:10px;font-weight:600;color:var(--accent);margin-top:2px">'+detVehicle[d]+'</div></div>';
+    rowsA2+='<div style="display:grid;grid-template-columns:100px repeat('+allGases.length+',1fr);background:'+bg+';border-top:1px solid var(--border);min-width:'+minWidth+'px">'
+      +'<div style="padding:9px 10px;font-size:12px;font-weight:700;color:var(--text)">'+s.name+(s.vehicle?'<div style="font-size:10px;font-weight:600;color:var(--accent);margin-top:2px">'+s.vehicle+'</div>':'')+'</div>';
     allGases.forEach(function(f){
-      var v=map[f]&&map[f][d];
+      var v=map[f]&&map[f][s.id];
       if(v){
         rowsA2+='<div style="padding:9px 3px;text-align:center;border-left:1px solid var(--border)">'
           +'<div style="font-size:12px;font-weight:700;color:#e67e00">'+v.a1+'</div>'
@@ -2121,6 +2142,90 @@ function showSensors(){
   });
   tA2.innerHTML=headA2+rowsA2;
   wrap.appendChild(tA2);
+}
+
+/* ── EDYCJA: CZUJNIK ── */
+function gasRowHtml(g){
+  g=g||{};
+  return '<div class="gas-row" style="border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px">'+
+    '<div style="display:flex;gap:8px;margin-bottom:6px">'+
+      '<input class="edit-input gas-name" placeholder="Nazwa gazu" value="'+escAttr(g.name)+'" style="flex:1.5">'+
+      '<input class="edit-input gas-formula" placeholder="Wzór (np. O₂)" value="'+escAttr(g.formula)+'" style="flex:1">'+
+    '</div>'+
+    '<div style="display:flex;gap:8px">'+
+      '<input class="edit-input gas-a1" placeholder="Alarm 1" value="'+escAttr(g.a1)+'">'+
+      '<input class="edit-input gas-a2" placeholder="Alarm 2" value="'+escAttr(g.a2)+'">'+
+      '<input class="edit-input gas-unit" placeholder="Jednostka" value="'+escAttr(g.unit)+'" style="flex:.7">'+
+      '<button type="button" class="edit-kv-del" onclick="this.closest(\'.gas-row\').remove()">✕</button>'+
+    '</div>'+
+  '</div>';
+}
+function addGasRow(){
+  var wrap=document.getElementById('es-gases');
+  var tmp=document.createElement('div');
+  tmp.innerHTML=gasRowHtml({});
+  wrap.appendChild(tmp.firstChild);
+}
+function collectGases(wrapId){
+  var wrap=document.getElementById(wrapId);
+  var out=[];
+  wrap.querySelectorAll('.gas-row').forEach(function(row){
+    var name=row.querySelector('.gas-name').value.trim();
+    var formula=row.querySelector('.gas-formula').value.trim();
+    if(!name && !formula) return;
+    out.push({
+      name:name, formula:formula,
+      a1:row.querySelector('.gas-a1').value.trim(),
+      a2:row.querySelector('.gas-a2').value.trim(),
+      unit:row.querySelector('.gas-unit').value.trim()
+    });
+  });
+  return out;
+}
+function openSensorSheet(sensorId){
+  var s=sensorId?SENSORS.find(function(x){return x.id===sensorId;}):{name:'',sub:'Detektor wielogazowy',vehicle:'',gases:[]};
+  var gasRows=(s.gases||[]).map(gasRowHtml).join('');
+  var html=
+    '<div class="edit-field"><label class="edit-label">Nazwa czujnika</label><input class="edit-input" id="es-name" value="'+escAttr(s.name)+'" placeholder="np. Dräger XAM 8000"></div>'+
+    '<div class="edit-field"><label class="edit-label">Podtytuł</label><input class="edit-input" id="es-sub" value="'+escAttr(s.sub)+'" placeholder="np. Detektor wielogazowy"></div>'+
+    '<div class="edit-field"><label class="edit-label">Pojazd (opcjonalnie)</label><input class="edit-input" id="es-vehicle" value="'+escAttr(s.vehicle)+'" placeholder="np. GBA"></div>'+
+    '<div class="edit-field"><label class="edit-label">Gazy i progi alarmowe</label><div id="es-gases">'+gasRows+'</div>'+
+      '<button type="button" class="edit-kv-add" onclick="addGasRow()">+ Dodaj gaz</button></div>'+
+    '<div class="edit-actions">'+
+      '<button type="button" class="edit-btn edit-btn-save" onclick="saveSensorSheet('+(sensorId?"'"+sensorId+"'":'null')+')">Zapisz</button>'+
+      (sensorId?'<button type="button" class="edit-btn edit-btn-delete" onclick="deleteSensorConfirm(\''+sensorId+'\')">Usuń czujnik</button>':'')+
+      '<button type="button" class="edit-btn edit-btn-cancel" onclick="closeEditSheet()">Anuluj</button>'+
+    '</div>';
+  openSheet(sensorId?'Edytuj czujnik':'Nowy czujnik', html);
+}
+function saveSensorSheet(sensorId){
+  var name=document.getElementById('es-name').value.trim();
+  if(!name){ alert('Podaj nazwę czujnika.'); return; }
+  var sub=document.getElementById('es-sub').value.trim();
+  var vehicle=document.getElementById('es-vehicle').value.trim();
+  var gases=collectGases('es-gases');
+  var isNew=!sensorId;
+  var payload;
+  if(isNew){
+    sensorId=uid('sn');
+    var words=name.trim().split(/\s+/);
+    var badge=(words.length>1?words.slice(-2).join('\n'):words[0]).toUpperCase();
+    payload={name:name,sub:sub,vehicle:vehicle,badge:badge,gases:gases};
+  } else {
+    payload={name:name,sub:sub,vehicle:vehicle,gases:gases};
+  }
+  window.FB.setDoc('sensors',sensorId,payload).catch(fbShowError);
+  applyRemoteChange('sensors',sensorId,payload,false); rebuildSensors();
+  closeEditSheet();
+  showSensors();
+}
+function deleteSensorConfirm(sensorId){
+  var s=SENSORS.find(function(x){return x.id===sensorId;});
+  if(!confirm('Usunąć czujnik „'+s.name+'”?')) return;
+  fbDeleteOrTombstone('sensors',sensorId);
+  rebuildSensors();
+  closeEditSheet();
+  showSensors();
 }
 
 function showTaktyka(){
@@ -2378,7 +2483,7 @@ const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() })
 });
 const auth = getAuth(app);
-const DATA_COLLECTIONS = ['vehicles','compartments','items','groups'];
+const DATA_COLLECTIONS = ['vehicles','compartments','items','groups','sensors'];
 
 function subscribeAll(){
   DATA_COLLECTIONS.forEach(function(colName){
