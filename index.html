@@ -2492,13 +2492,20 @@ function showPrzeglad(){
     wrap.appendChild(row);
   });
 }
+function extractSurname(responsible){
+  if(!responsible) return '';
+  var first=responsible.split(',')[0].trim();
+  var words=first.split(/\s+/);
+  return words[words.length-1]||'';
+}
 function showPrzegladShift(sh){
   curShift=sh;
   switchView('view-przeglad-list');
   document.getElementById('przeglad-list-title').textContent='Zmiana '+sh;
   var wrap=document.getElementById('przeglad-entries-wrap');
   wrap.innerHTML='';
-  var entries=INSPECTIONS.filter(function(x){return x.shift===sh;});
+  var entries=INSPECTIONS.filter(function(x){return x.shift===sh;})
+    .sort(function(a,b){ return extractSurname(a.responsible).localeCompare(extractSurname(b.responsible),'pl'); });
   if(!entries.length){ wrap.innerHTML='<div class="empty">Brak pozycji</div>'; return; }
   entries.forEach(function(e){
     var card=document.createElement('div');
@@ -2506,14 +2513,13 @@ function showPrzegladShift(sh){
     card.innerHTML=
       '<div class="notice-head" onclick="this.parentElement.classList.toggle(\'open\')">'+
         '<div class="notice-info">'+
-          '<div class="notice-tags"><span class="notice-cat notice-cat-inne">Poz. '+e.order+'</span></div>'+
+          '<div class="notice-tags"><span class="notice-cat notice-cat-inne">Poz. '+e.order+'</span><span class="notice-date">'+escAttr(e.responsible)+'</span></div>'+
           '<div class="notice-title">'+escAttr(e.subject)+'</div>'+
         '</div>'+
         '<div class="edit-row-actions"><button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openInspectionSheet(\''+e.id+'\')">✎</button></div>'+
         '<div class="notice-chev">›</div>'+
       '</div>'+
       '<div class="notice-body-text">'+
-        (e.responsible?'<div style="font-weight:700;margin-bottom:6px">'+escAttr(e.responsible)+'</div>':'')+
         (e.duty?escAttr(e.duty):'<span style="color:var(--text-faint);font-style:italic">Brak opisu</span>')+
       '</div>';
     wrap.appendChild(card);
