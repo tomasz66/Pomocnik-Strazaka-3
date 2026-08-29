@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pomocnik-strazaka-v2';
+const CACHE_NAME = 'pomocnik-strazaka-v3';
 const SHELL_FILES = [
   './',
   './index.html',
@@ -56,21 +56,22 @@ function isFirebaseRequest(url) {
     || url.includes('firebaseapp.com');
 }
 
+/* Sieć zawsze na pierwszym miejscu — dzięki temu przy normalnym zasięgu zawsze widzisz
+   najnowszą wersję. Zapisana kopia (cache) używana jest TYLKO gdy sieć naprawdę zawiedzie
+   (brak zasięgu) — dokładnie po to zbudowany jest tryb offline, nie po to żeby pokazywać
+   starszą wersję kiedy internet działa. */
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const url = event.request.url;
   if (isFirebaseRequest(url)) return;
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const networkFetch = fetch(event.request).then((response) => {
-        if (response && response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
-      }).catch(() => cached);
-      return cached || networkFetch;
-    })
+    fetch(event.request).then((response) => {
+      if (response && response.status === 200) {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+      }
+      return response;
+    }).catch(() => caches.match(event.request))
   );
 });
