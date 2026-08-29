@@ -525,6 +525,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
         <div class="nav-title-text" style="font-size:28px;font-weight:800">Pomocnik Strażaka</div>
       </div>
       <div class="nav-right">
+        <button class="nav-btn" onclick="forceRefreshApp()" id="refresh-btn" style="font-size:18px" title="Wymuś odświeżenie">⟳</button>
         <button class="nav-btn edit-toggle-btn" onclick="toggleEditMode()" id="edit-toggle-btn" style="font-size:17px" title="Edytuj dane">✎</button>
         <button class="nav-btn" onclick="toggleTheme()" id="theme-btn" style="font-size:20px">☾</button>
       </div>
@@ -1401,6 +1402,21 @@ function applyTheme(t){
 function toggleTheme(){
   var cur=document.documentElement.getAttribute('data-theme');
   applyTheme(cur==='dark'?'light':'dark');
+}
+/* Awaryjny przycisk na wypadek utknięcia na starej, zapisanej lokalnie wersji aplikacji:
+   wyrejestrowuje worker odpowiedzialny za tryb offline i czyści jego zapisaną kopię,
+   po czym przeładowuje stronę - to wymusza pobranie najnowszej wersji z sieci. */
+function forceRefreshApp(){
+  if(!confirm('Wymusić pobranie najnowszej wersji aplikacji? Wyczyści to zapisaną lokalnie kopię danych startowych (nie dotyczy sprzętu w chmurze) i przeładuje stronę.')) return;
+  var unregisterSW=('serviceWorker' in navigator)
+    ? navigator.serviceWorker.getRegistrations().then(function(regs){ return Promise.all(regs.map(function(r){return r.unregister();})); })
+    : Promise.resolve();
+  var clearCaches=('caches' in window)
+    ? caches.keys().then(function(keys){ return Promise.all(keys.map(function(k){return caches.delete(k);})); })
+    : Promise.resolve();
+  Promise.all([unregisterSW,clearCaches]).catch(function(){}).then(function(){
+    location.reload();
+  });
 }
 
 /* ── VIEWS ── */
