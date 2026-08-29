@@ -960,6 +960,18 @@ function fbShowError(e){
   console.error(e);
   alert('Coś poszło nie tak z zapisem do chmury: '+(e&&e.message?e.message:e));
 }
+/* Usuwa rekord w chmurze (tombstone dla bazowego, prawdziwy delete dla dodanego) i od razu odzwierciedla to lokalnie */
+function fbDeleteOrTombstone(colName,docId){
+  var base=isBaseRecord(colName,docId);
+  if(base) window.FB.setDoc(colName,docId,{_deleted:true}).catch(fbShowError);
+  else window.FB.deleteDocRecord(colName,docId).catch(fbShowError);
+  applyRemoteChange(colName,docId,{_deleted:true},false);
+}
+/* Kasuje sprzęt wraz z jego zdjęciami - używane samodzielnie i przy kaskadowym usuwaniu skrytki/pojazdu/grupy */
+function cascadeDeleteItem(it){
+  (it.photoIds||[]).forEach(function(pid){deletePhotoBlob(pid);});
+  fbDeleteOrTombstone('items',it.id);
+}
 function toggleEditMode(){
   if(!EDIT_MODE && !IS_AUTHED){ openLoginSheet(); return; }
   EDIT_MODE=!EDIT_MODE;
@@ -1150,12 +1162,13 @@ function saveVehicleSheet(id){
 }
 function deleteVehicleConfirm(id){
   var v=D.vehicles[id];
-  var cnt=D.items.filter(function(it){return it.v===id;}).length;
-  if(!confirm('Usunąć pojazd „'+v.name+'” wraz z '+cnt+' pozycjami sprzętu?')) return;
-  var base=isBaseRecord('vehicles',id);
-  if(base) window.FB.setDoc('vehicles',id,{_deleted:true}).catch(fbShowError);
-  else window.FB.deleteDocRecord('vehicles',id).catch(fbShowError);
-  applyRemoteChange('vehicles',id,{_deleted:true},false); rebuildD();
+  var itemsHere=D.items.filter(function(it){return it.v===id;});
+  if(!confirm('Usunąć pojazd „'+v.name+'” wraz z '+itemsHere.length+' pozycjami sprzętu?')) return;
+  itemsHere.forEach(cascadeDeleteItem);
+  (D.groups||[]).filter(function(g){return g.v===id;}).forEach(function(g){ fbDeleteOrTombstone('groups',g.id); });
+  (v.compartments||[]).forEach(function(c){ fbDeleteOrTombstone('compartments',id+':'+c.id); });
+  fbDeleteOrTombstone('vehicles',id);
+  rebuildD();
   closeEditSheet();
   showHome();
 }
@@ -1195,13 +1208,12 @@ function saveCompartmentSheet(vid,cid){
   showVehicle(vid);
 }
 function deleteCompartmentConfirm(vid,cid){
-  var cnt=D.items.filter(function(it){return it.v===vid&&it.comp===cid;}).length;
-  if(!confirm('Usunąć tę skrytkę wraz z '+cnt+' pozycjami sprzętu?')) return;
-  var key=vid+':'+cid;
-  var base=isBaseRecord('compartments',key);
-  if(base) window.FB.setDoc('compartments',key,{_deleted:true}).catch(fbShowError);
-  else window.FB.deleteDocRecord('compartments',key).catch(fbShowError);
-  applyRemoteChange('compartments',key,{_deleted:true},false); rebuildD();
+  var itemsHere=D.items.filter(function(it){return it.v===vid&&it.comp===cid;});
+  if(!confirm('Usunąć tę skrytkę wraz z '+itemsHere.length+' pozycjami sprzętu?')) return;
+  itemsHere.forEach(cascadeDeleteItem);
+  (D.groups||[]).filter(function(g){return g.v===vid&&g.comp===cid;}).forEach(function(g){ fbDeleteOrTombstone('groups',g.id); });
+  fbDeleteOrTombstone('compartments',vid+':'+cid);
+  rebuildD();
   closeEditSheet();
   showVehicle(vid);
 }
@@ -1235,17 +1247,9 @@ function deleteGroupConfirm(groupId){
   var itemsInGroup=D.items.filter(function(it){return it.group===groupId;});
   var msg=itemsInGroup.length?('Usunąć grupę wraz z '+itemsInGroup.length+' pozycjami sprzętu w niej?'):'Usunąć tę pustą grupę?';
   if(!confirm(msg)) return;
-  itemsInGroup.forEach(function(it){
-    (it.photoIds||[]).forEach(function(pid){deletePhotoBlob(pid);});
-    var itBase=isBaseRecord('items',it.id);
-    if(itBase) window.FB.setDoc('items',it.id,{_deleted:true}).catch(fbShowError);
-    else window.FB.deleteDocRecord('items',it.id).catch(fbShowError);
-    applyRemoteChange('items',it.id,{_deleted:true},false);
-  });
-  var base=isBaseRecord('groups',groupId);
-  if(base) window.FB.setDoc('groups',groupId,{_deleted:true}).catch(fbShowError);
-  else window.FB.deleteDocRecord('groups',groupId).catch(fbShowError);
-  applyRemoteChange('groups',groupId,{_deleted:true},false); rebuildD();
+  itemsInGroup.forEach(cascadeDeleteItem);
+  fbDeleteOrTombstone('groups',groupId);
+  rebuildD();
   closeEditSheet();
   showCompartment(curV,curC);
 }
@@ -1333,11 +1337,8 @@ function saveItemSheet(itemId){
 function deleteItemConfirm(itemId){
   var it=D.items.find(function(x){return x.id===itemId;});
   if(!confirm('Usunąć „'+it.name+'”?')) return;
-  (it.photoIds||[]).forEach(function(pid){deletePhotoBlob(pid);});
-  var base=isBaseRecord('items',itemId);
-  if(base) window.FB.setDoc('items',itemId,{_deleted:true}).catch(fbShowError);
-  else window.FB.deleteDocRecord('items',itemId).catch(fbShowError);
-  applyRemoteChange('items',itemId,{_deleted:true},false); rebuildD();
+  cascadeDeleteItem(it);
+  rebuildD();
   closeEditSheet();
   showCompartment(curV,curC);
 }
