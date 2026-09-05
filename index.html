@@ -564,9 +564,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       <button type="button" class="edit-fab-add" onclick="openVehicleSheet(null)">+ Dodaj pojazd</button>
       <div class="list-group" id="sensors-list"></div>
       <div class="list-group" id="quiz-section-list"></div>
-      <div class="list-group" id="biuro-list"></div>
-      <div class="list-group" id="przeglad-list"></div>
-      <div class="list-group" id="other-list"></div>
+      <div class="list-group" id="jrg-list"></div>
       <div class="edit-tools-panel">
         <div class="edit-tools-panel-title">Dane zapisują się w chmurze na bieżąco</div>
         <button type="button" class="edit-btn edit-btn-cancel" style="background:var(--surface-2);color:var(--text)" onclick="exportBackup()">⬇ Eksportuj kopię zapasową (plik na telefon)</button>
@@ -588,7 +586,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
 <div class="view" id="view-vehicle">
   <div class="nav-header">
     <div class="nav-header-inner">
-      <button class="nav-btn" onclick="showHome()" id="back-v">
+      <button class="nav-btn" onclick="backFromVehicle()" id="back-v">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
         <span id="back-v-lbl">JRG</span>
       </button>
@@ -774,11 +772,32 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   </div>
 </div>
 
+<!-- ═══ JRG (HUB: GARAŻ · BIURO · PRZEGLĄD) ═══ -->
+<div class="view" id="view-jrg-hub">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Główna</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text">JRG</div>
+        <div class="nav-title-sub">Garaż, biuro, przegląd</div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="list-group" id="jrg-hub-list"></div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
 <!-- ═══ BIURO ═══ -->
 <div class="view" id="view-biuro">
   <div class="nav-header">
     <div class="nav-header-inner">
-      <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
+      <button class="nav-btn" onclick="showJrgHub()" style="color:var(--accent)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
         <span>JRG</span>
       </button>
@@ -800,7 +819,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
 <div class="view" id="view-przeglad-home">
   <div class="nav-header">
     <div class="nav-header-inner">
-      <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
+      <button class="nav-btn" onclick="showJrgHub()" style="color:var(--accent)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
         <span>JRG</span>
       </button>
@@ -1563,18 +1582,17 @@ function focusSearch(){
 /* ── HOME ── */
 function renderHome(){
   var vl=document.getElementById('vehicles-list');
-  var ol=document.getElementById('other-list');
-  vl.innerHTML=''; ol.innerHTML='';
+  vl.innerHTML='';
   Object.keys(D.vehicles).forEach(function(id){
+    if(id==='garaz') return; // Garaż JRG żyje teraz w hubie JRG, nie na głównej
     var v=D.vehicles[id];
     var cnt=D.items.filter(function(it){return it.v===id;}).length;
-    var isGar=(id==='garaz');
     var row=document.createElement('div');
     row.className='vehicle-row';
     row.onclick=function(){showVehicle(id);};
     var water=v.specs['Zbiornik wody']?' · '+v.specs['Zbiornik wody']:'';
     row.innerHTML=
-      '<div class="vehicle-badge'+(isGar?' garage':'')+'" >'+v.icon+'</div>'+
+      '<div class="vehicle-badge">'+v.icon+'</div>'+
       '<div class="vehicle-info">'+
         '<div class="vehicle-name">'+v.name+'</div>'+
         '<div class="vehicle-meta">'+v.sub+water+(cnt?' · '+cnt+' poz.':'')+'</div>'+
@@ -1584,7 +1602,7 @@ function renderHome(){
         '<button type="button" class="edit-icon-btn danger" onclick="event.stopPropagation();deleteVehicleConfirm(\''+id+'\')">🗑</button>'+
       '</div>'+
       '<div class="vehicle-arrow">›</div>';
-    (isGar?ol:vl).appendChild(row);
+    vl.appendChild(row);
   });
   // Czujniki — wiersz przed Garażem
   var sl=document.getElementById('sensors-list');
@@ -1618,35 +1636,77 @@ function renderHome(){
     '<div class="vehicle-arrow">›</div>';
   ql.appendChild(qrow);
 
-  // Biuro — komunikaty z sekretariatu/kadr/techniki
-  var bl=document.getElementById('biuro-list');
-  bl.innerHTML='';
-  var brow=document.createElement('div');
-  brow.className='vehicle-row';
-  brow.onclick=function(){showBiuro();};
-  brow.innerHTML=
+  // JRG — hub: Garaż, Biuro, Przegląd
+  var jl=document.getElementById('jrg-list');
+  jl.innerHTML='';
+  var jrow=document.createElement('div');
+  jrow.className='vehicle-row';
+  jrow.onclick=function(){showJrgHub();};
+  jrow.innerHTML=
+    '<div class="vehicle-badge" style="background:#5d6d7e">JRG</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">JRG</div>'+
+      '<div class="vehicle-meta">Garaż · Biuro · Przegląd</div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  jl.appendChild(jrow);
+}
+
+/* ── JRG HUB (Garaż / Biuro / Przegląd) ── */
+function showJrgHub(){
+  var wrap=document.getElementById('jrg-hub-list');
+  wrap.innerHTML='';
+
+  var vGar=D.vehicles.garaz;
+  if(vGar){
+    var cntGar=D.items.filter(function(it){return it.v==='garaz';}).length;
+    var rGar=document.createElement('div');
+    rGar.className='vehicle-row';
+    rGar.onclick=function(){showVehicle('garaz');};
+    rGar.innerHTML=
+      '<div class="vehicle-badge garage">'+vGar.icon+'</div>'+
+      '<div class="vehicle-info">'+
+        '<div class="vehicle-name">'+vGar.name+'</div>'+
+        '<div class="vehicle-meta">'+vGar.sub+(cntGar?' · '+cntGar+' poz.':'')+'</div>'+
+      '</div>'+
+      '<div class="edit-row-actions">'+
+        '<button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openVehicleSheet(\'garaz\')">✎</button>'+
+      '</div>'+
+      '<div class="vehicle-arrow">›</div>';
+    wrap.appendChild(rGar);
+  }
+
+  var rBiu=document.createElement('div');
+  rBiu.className='vehicle-row';
+  rBiu.onclick=function(){showBiuro();};
+  rBiu.innerHTML=
     '<div class="vehicle-badge" style="background:#148f77">BIU</div>'+
     '<div class="vehicle-info">'+
       '<div class="vehicle-name">Biuro</div>'+
       '<div class="vehicle-meta">'+(NOTICES.length?NOTICES.length+' komunikat'+(NOTICES.length===1?'':(NOTICES.length<5?'y':'ów')):'Brak komunikatów')+'</div>'+
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
-  bl.appendChild(brow);
+  wrap.appendChild(rBiu);
 
-  // Przegląd — sprzęt/pomieszczenia i odpowiedzialni wg zmiany
-  var przl=document.getElementById('przeglad-list');
-  przl.innerHTML='';
-  var przrow=document.createElement('div');
-  przrow.className='vehicle-row';
-  przrow.onclick=function(){showPrzeglad();};
-  przrow.innerHTML=
+  var rPrz=document.createElement('div');
+  rPrz.className='vehicle-row';
+  rPrz.onclick=function(){showPrzeglad();};
+  rPrz.innerHTML=
     '<div class="vehicle-badge" style="background:#ca6f1e">PRZ</div>'+
     '<div class="vehicle-info">'+
       '<div class="vehicle-name">Przegląd</div>'+
       '<div class="vehicle-meta">'+(INSPECTIONS.length?INSPECTIONS.length+' pozycji · 3 zmiany':'Brak danych')+'</div>'+
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
-  przl.appendChild(przrow);
+  wrap.appendChild(rPrz);
+
+  switchView('view-jrg-hub');
+}
+
+/* Powrót z widoku pojazdu: Garaż wraca do hubu JRG, reszta pojazdów wraca na główną */
+function backFromVehicle(){
+  if(curV==='garaz') showJrgHub();
+  else showHome();
 }
 
 /* ── SVG ── */
