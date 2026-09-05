@@ -1569,6 +1569,10 @@ function showHome(){
   document.getElementById('browse-content').classList.remove('hidden');
   document.getElementById('results-content').classList.add('hidden');
   document.getElementById('search-clear').classList.remove('visible');
+  // Przycisk "Główna" zawsze wraca na sam gore, niezaleznie od zapamietanego scrolla
+  scrollPos['view-home']=0;
+  var homeSc=document.querySelector('#view-home .scroll-content');
+  if(homeSc) homeSc.scrollTop=0;
 }
 
 function focusSearch(){
