@@ -598,16 +598,16 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   </div>
   <div class="scroll-content">
     <div class="equip-date-banner hidden" id="equip-date-banner">📅 Wyposażenie aktualne na: <strong id="equip-date-val"></strong></div>
-    <div class="schematic-wrap">
-      <svg viewBox="0 0 360 180" id="v-svg" style="width:100%;height:auto;display:block"></svg>
-      <div class="schematic-hint">Tap w skrytkę aby otworzyć</div>
-    </div>
     <div class="spec-panel" id="spec-panel">
       <div class="spec-toggle" onclick="this.parentElement.classList.toggle('open')">
         <span class="spec-toggle-title">Specyfikacja techniczna</span>
         <span class="spec-chevron">▼</span>
       </div>
       <div class="spec-body" id="spec-body"></div>
+    </div>
+    <div class="schematic-wrap">
+      <svg viewBox="0 0 360 180" id="v-svg" style="width:100%;height:auto;display:block"></svg>
+      <div class="schematic-hint">Tap w skrytkę aby otworzyć</div>
     </div>
     <div class="spec-panel hidden" id="service-panel">
       <div class="spec-toggle" onclick="this.parentElement.classList.toggle('open')">
