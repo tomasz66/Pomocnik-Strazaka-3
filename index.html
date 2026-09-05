@@ -2131,6 +2131,12 @@ function handleSearch(e){
     var c=v.compartments.find(function(x){return x.id===r.comp;});
     var card=document.createElement('div');
     card.className='result-card';card.id='res-'+r.id;
+    var rSpecsHtml='';
+    if(r.specs){
+      rSpecsHtml=Object.keys(r.specs).map(function(k){
+        return '<div class="spec-row"><span class="spec-k">'+k+'</span><span class="spec-v" style="font-size:12px">'+r.specs[k]+'</span></div>';
+      }).join('');
+    }
     card.innerHTML=
       '<div class="result-head" onclick="document.getElementById(\'res-'+r.id+'\').classList.toggle(\'open\')">' +
         '<div class="result-dot"></div>'+
@@ -2142,8 +2148,10 @@ function handleSearch(e){
         '<div class="result-chev">›</div>'+
       '</div>'+
       '<div class="result-body">'+
+        (r.notes?'<div class="item-note">'+escAttr(r.notes)+'</div>':'')+
         '<div class="spec-row"><span class="spec-k">Nr operacyjny</span><span class="spec-v">'+(r.nr||'—')+'</span></div>'+
         '<div class="spec-row"><span class="spec-k">Ilość</span><span class="spec-v">'+r.qty+'</span></div>'+
+        rSpecsHtml+
         '<button class="result-go-btn" onclick="showCompartment(\''+r.v+'\',\''+r.comp+'\')">Przejdź do skrytki</button>'+
       '</div>';
     list.appendChild(card);
