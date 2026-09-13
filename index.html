@@ -325,6 +325,19 @@ body { background: var(--bg); color: var(--text); }
 .sensor-table td { font-size: 14px; color: var(--text); padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 .sensor-table tr:last-child td { border-bottom: none; }
 .sensor-table td:not(:first-child) { text-align: center; font-weight: 700; font-family: "SF Mono","Fira Code",monospace; }
+.wiedza-entry-body{padding:4px 16px 28px}
+.wiedza-p{font-size:14px;color:var(--text-2);line-height:1.62;margin-bottom:14px}
+.wiedza-h{font-size:12px;font-weight:700;color:var(--accent);margin:20px 0 8px;text-transform:uppercase;letter-spacing:.4px}
+.wiedza-table-wrap{overflow-x:auto;margin:8px 0 18px;border:1px solid var(--border);border-radius:var(--radius)}
+.wiedza-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.wiedza-table th{background:var(--accent);color:#fff;padding:8px 9px;font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;text-align:center;white-space:nowrap}
+.wiedza-table th:first-child{text-align:left}
+.wiedza-table td{padding:8px 9px;border-bottom:1px solid var(--border);text-align:center;font-family:"SF Mono","Fira Code",monospace;font-weight:600}
+.wiedza-table tr:last-child td{border-bottom:none}
+.wiedza-table td:first-child{text-align:left;font-family:inherit;font-weight:600;color:var(--text)}
+.wiedza-img{width:100%;border-radius:var(--radius);border:1px solid var(--border);margin:6px 0 4px;display:block}
+.wiedza-img-cap{font-size:11.5px;color:var(--text-muted);margin:0 0 16px;line-height:1.4}
+.wiedza-entry-cat{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
 .sensor-alarm1 { color: #e67e00; }
 .sensor-alarm2 { color: var(--accent); }
 .sensor-gas { font-weight: 500; }
@@ -564,6 +577,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       <button type="button" class="edit-fab-add" onclick="openVehicleSheet(null)">+ Dodaj pojazd</button>
       <div class="list-group" id="sensors-list"></div>
       <div class="list-group" id="quiz-section-list"></div>
+      <div class="list-group" id="wiedza-section-list"></div>
       <div class="list-group" id="jrg-list"></div>
       <div class="edit-tools-panel">
         <div class="edit-tools-panel-title">Dane zapisują się w chmurze na bieżąco</div>
@@ -938,6 +952,66 @@ select.edit-input{-webkit-appearance:none;appearance:none}
     <div id="notice-list-wrap" style="padding:12px 16px 0"></div>
     <button type="button" class="edit-fab-add" onclick="openNoticeSheet(null)">+ Dodaj komunikat</button>
     <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══ WIEDZA — KATEGORIE ═══ -->
+<div class="view" id="view-wiedza-hub">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Główna</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text">Wiedza</div>
+        <div class="nav-title-sub">Teoria strażacka</div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="list-group" id="wiedza-cat-list"></div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══ WIEDZA — WPISY W KATEGORII ═══ -->
+<div class="view" id="view-wiedza-list">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showWiedzaHub()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Wiedza</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text" id="wiedza-list-title"></div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="list-group" id="wiedza-entry-list"></div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══ WIEDZA — WPIS ═══ -->
+<div class="view" id="view-wiedza-entry">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="backToWiedzaList()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span id="wiedza-entry-back-lbl">Wiedza</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text" id="wiedza-entry-title-top">Wpis</div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="wiedza-entry-body" id="wiedza-entry-body"></div>
   </div>
 </div>
 
@@ -1766,6 +1840,21 @@ function renderHome(){
     '<div class="vehicle-arrow">›</div>';
   ql.appendChild(qrow);
 
+  // Wiedza — wiersz po Bazie pytań
+  var wl=document.getElementById('wiedza-section-list');
+  wl.innerHTML='';
+  var wrow=document.createElement('div');
+  wrow.className='vehicle-row';
+  wrow.onclick=function(){showWiedzaHub();};
+  wrow.innerHTML=
+    '<div class="vehicle-badge" style="background:#b9770e">TEORIA</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">Wiedza</div>'+
+      '<div class="vehicle-meta">'+WIEDZA_CATEGORIES.length+' kategorii · '+WIEDZA.length+' wpisów</div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  wl.appendChild(wrow);
+
   // JRG — hub: Garaż, Biuro, Przegląd
   var jl=document.getElementById('jrg-list');
   jl.innerHTML='';
@@ -2310,10 +2399,11 @@ function handleSearch(e){
   var qres=(D.quiz||[]).filter(function(it){
     return norm(it.q).indexOf(nq)>=0 || String(it.num).indexOf(nq)>=0;
   }).slice(0,30);
+  var wres=wiedzaSearch(nq).slice(0,20);
   var cnt=document.getElementById('results-count');
   var list=document.getElementById('results-list');
-  if(!res.length && !qres.length){cnt.textContent='';list.innerHTML='<div class="empty">Brak wyników dla „'+q+'"</div>';return;}
-  var totalCnt=res.length+qres.length;
+  if(!res.length && !qres.length && !wres.length){cnt.textContent='';list.innerHTML='<div class="empty">Brak wyników dla „'+q+'"</div>';return;}
+  var totalCnt=res.length+qres.length+wres.length;
   cnt.textContent=totalCnt+' '+(totalCnt===1?'wynik':'wyników');
   list.innerHTML='';
   res.forEach(function(r){
@@ -2355,6 +2445,29 @@ function handleSearch(e){
     qres.forEach(function(qq){
       var card=buildQuizCard(qq, false);
       card.style.marginBottom='10px';
+      list.appendChild(card);
+    });
+  }
+  if(wres.length){
+    var wlabel=document.createElement('div');
+    wlabel.className='list-label';
+    wlabel.style.margin='12px 0 6px';
+    wlabel.textContent='Wiedza';
+    list.appendChild(wlabel);
+    wres.forEach(function(w){
+      var cat=WIEDZA_CATEGORIES.find(function(c){return c.id===w.cat;});
+      var card=document.createElement('div');
+      card.className='result-card';
+      card.style.marginBottom='10px';
+      card.innerHTML=
+        '<div class="result-head" onclick="showWiedzaEntry(\''+w.id+'\')">'+
+          '<div class="result-dot" style="background:#b9770e"></div>'+
+          '<div class="result-info">'+
+            '<div class="result-name">'+w.title+'</div>'+
+            '<div class="result-path"><span style="background:#b9770e;color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">WIEDZA</span>'+(cat?cat.name:'')+'</div>'+
+          '</div>'+
+          '<div class="result-chev">›</div>'+
+        '</div>';
       list.appendChild(card);
     });
   }
@@ -2662,6 +2775,168 @@ function deleteNoticeConfirm(id){
   applyNoticeChange(id,null,true); rebuildNotices();
   closeEditSheet();
   showBiuro();
+}
+
+/* ── WIEDZA — teoria strażacka, treść bazowa (statyczna, jak SENSORS_BASE) ── */
+var WIEDZA_CATEGORIES=[
+  {id:'wodno-pianowy', name:'Sprzęt wodno-pianowy'}
+];
+var WIEDZA_BASE=[
+  {
+    id:'w-weze-tloczne', cat:'wodno-pianowy', title:'Węże tłoczne',
+    blocks:[
+      {t:'table', cols:['Oznaczenie węży','W25','W52','W75','W110'], rows:[
+        ['Masa (kg)','1,7','5,4','9,6','16,9'],
+        ['Długość odcinka (m)','15','20','20','20'],
+        ['Ciśnienie robocze (MPa)','1,21','1,21','1,21','1,21'],
+        ['Ciśnienie próbne (MPa)','1,82','1,82','1,82','1,82'],
+        ['Ciśnienie rozrywające (MPa)','3,65','4,05','4,05','4,05'],
+        ['Nominalne natężenie przepływu (l/min)','50','200','800','1600']
+      ]}
+    ]
+  },
+  {
+    id:'w-pradownice-pianowe', cat:'wodno-pianowy', title:'Prądownice pianowe',
+    blocks:[
+      {t:'table', cols:['Rodzaje prądownic','PP-2','PP-4','PP-8'], rows:[
+        ['Masa (kg)','3,5','3,7','10,5'],
+        ['Ciśnienie robocze (MPa)','0,55','0,55','0,55'],
+        ['Nominalna wydajność wodna (l)','200','400','800'],
+        ['Nominalna wydajność piany (m³/min)','2,7','6','12'],
+        ['Liczba spienienia','13,5','15','15'],
+        ['Zasięg rzutu piany (m)','21','24','26'],
+        ['Nasada (mm)','52','52','75']
+      ]}
+    ]
+  },
+  {
+    id:'w-wytwornice-pianowe', cat:'wodno-pianowy', title:'Wytwornice pianowe',
+    blocks:[
+      {t:'table', cols:['Rodzaj wytwornicy','WP-2-75','WP-4-75','WP-2-150'], rows:[
+        ['Masa (kg)','5,5','5,8','10,5'],
+        ['Ciśnienie nominalne (MPa)','0,55','0,58','0,55'],
+        ['Nominalna wydajność wodna (l/min)','200','400','200'],
+        ['Nominalna wydajność piany (m³/min)','15','30','30'],
+        ['Liczba spienienia','75','75','150'],
+        ['Nasada (mm)','52','52','52']
+      ]}
+    ]
+  },
+  {
+    id:'w-zasysacze-liniowe', cat:'wodno-pianowy', title:'Zasysacze liniowe',
+    blocks:[
+      {t:'table', cols:['Rodzaj zasysacza','Z2','Z4','Z8'], rows:[
+        ['Masa (kg)','3,3','3,7','3,6'],
+        ['Nominalna wydajność (l/min)','200','400','800'],
+        ['Ciśnienie robocze (MPa)','0,55','0,55','0,55'],
+        ['Straty ciśnienia (%)','30','30','30'],
+        ['Zużycie środka pianotwórczego (%)','1-5','1-5','1-5'],
+        ['Nasada ssawna / tłoczna (mm)','25/52','25/52','25/75']
+      ]}
+    ]
+  },
+  {
+    id:'w-pompy-strumienicowe', cat:'wodno-pianowy', title:'Zasada działania pomp strumienicowych',
+    blocks:[
+      {t:'p', text:'W sprzęcie do wytwarzania piany gaśniczej stosowane są pompy zwane strumienicami — mają one zastosowanie w zasysaczach liniowych do zasysania środka pianotwórczego, a w prądownicach, działkach i wytwornicach do mieszania roztworu środka pianotwórczego z powietrzem, aby powstała piana gaśnicza.'},
+      {t:'p', text:'Zasysacze liniowe służą do zasysania określonej ilości środka pianotwórczego i wytwarzania wodnego roztworu środka pianotwórczego, który jest wykorzystywany do wytwarzania piany gaśniczej. Oprócz zasysaczy liniowych do tworzenia roztworu środka pianotwórczego stosuje się dozowniki, które mają budowę identyczną jak zasysacz, z tym że jest on na stałe zblokowany z autopompą lub motopompą.'},
+      {t:'p', text:'Zasysacze są urządzeniami, które wykorzystują energię kinetyczną doprowadzanej cieczy roboczej (wody), zasysają na określoną wysokość środek pianotwórczy, tworząc wodny roztwór środka pianotwórczego.'}
+    ]
+  },
+  {
+    id:'w-wysysacz-glebinowy', cat:'wodno-pianowy', title:'Wysysacz głębinowy (inżektor)',
+    blocks:[
+      {t:'p', text:'Działa na zasadzie pompy strumieniowej. Stosowany do pobierania wody z głębokości nawet do 25 m. Często stosuje się je do wypompowywania wody z zalanych studzienek, kanałów, piwnic.'},
+      {t:'p', text:'Początek pompy stanowi nasada zasilająca 52, a jej wylot 75. Budowa: nasady, dysza (konfuzor), komora podciśnienia, zawór zwrotny, sito zabezpieczające, dyfuzor.'}
+    ]
+  }
+];
+var WIEDZA=WIEDZA_BASE.slice();
+var curWiedzaCat=null;
+
+function norm2(s){ return norm(String(s||'')); }
+function wiedzaSearch(nq){
+  return WIEDZA.filter(function(w){
+    if(norm2(w.title).indexOf(nq)>=0) return true;
+    return (w.blocks||[]).some(function(b){
+      if(b.t==='p') return norm2(b.text).indexOf(nq)>=0;
+      if(b.t==='table') return (b.rows||[]).some(function(r){return r.some(function(c){return norm2(c).indexOf(nq)>=0;});}) || norm2((b.cols||[]).join(' ')).indexOf(nq)>=0;
+      if(b.t==='img') return norm2(b.cap).indexOf(nq)>=0;
+      return false;
+    });
+  });
+}
+
+function showWiedzaHub(){
+  switchView('view-wiedza-hub');
+  var wrap=document.getElementById('wiedza-cat-list');
+  wrap.innerHTML='';
+  WIEDZA_CATEGORIES.forEach(function(c){
+    var cnt=WIEDZA.filter(function(w){return w.cat===c.id;}).length;
+    var row=document.createElement('div');
+    row.className='vehicle-row';
+    row.onclick=function(){showWiedzaList(c.id);};
+    row.innerHTML=
+      '<div class="vehicle-info">'+
+        '<div class="vehicle-name">'+c.name+'</div>'+
+        '<div class="vehicle-meta">'+cnt+' '+(cnt===1?'wpis':'wpisów')+'</div>'+
+      '</div>'+
+      '<div class="vehicle-arrow">›</div>';
+    wrap.appendChild(row);
+  });
+}
+
+function showWiedzaList(catId){
+  curWiedzaCat=catId;
+  switchView('view-wiedza-list');
+  var cat=WIEDZA_CATEGORIES.find(function(c){return c.id===catId;});
+  document.getElementById('wiedza-list-title').textContent=cat?cat.name:'';
+  var wrap=document.getElementById('wiedza-entry-list');
+  wrap.innerHTML='';
+  var entries=WIEDZA.filter(function(w){return w.cat===catId;});
+  if(!entries.length){ wrap.innerHTML='<div class="empty" style="padding:20px">Brak wpisów</div>'; return; }
+  entries.forEach(function(w){
+    var row=document.createElement('div');
+    row.className='vehicle-row';
+    row.onclick=function(){showWiedzaEntry(w.id);};
+    row.innerHTML=
+      '<div class="vehicle-info"><div class="vehicle-name">'+w.title+'</div></div>'+
+      '<div class="vehicle-arrow">›</div>';
+    wrap.appendChild(row);
+  });
+}
+
+function backToWiedzaList(){
+  if(curWiedzaCat) showWiedzaList(curWiedzaCat);
+  else showWiedzaHub();
+}
+
+function renderWiedzaBlocks(blocks){
+  return (blocks||[]).map(function(b){
+    if(b.t==='p') return '<p class="wiedza-p">'+escAttr(b.text)+'</p>';
+    if(b.t==='h') return '<div class="wiedza-h">'+escAttr(b.text)+'</div>';
+    if(b.t==='img') return '<img class="wiedza-img" src="'+b.src+'" alt="'+escAttr(b.cap||'')+'">'+(b.cap?'<div class="wiedza-img-cap">'+escAttr(b.cap)+'</div>':'');
+    if(b.t==='table'){
+      var thead='<tr>'+b.cols.map(function(c){return '<th>'+escAttr(c)+'</th>';}).join('')+'</tr>';
+      var tbody=b.rows.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+escAttr(c)+'</td>';}).join('')+'</tr>';}).join('');
+      return '<div class="wiedza-table-wrap"><table class="wiedza-table"><thead>'+thead+'</thead><tbody>'+tbody+'</tbody></table></div>';
+    }
+    return '';
+  }).join('');
+}
+
+function showWiedzaEntry(id){
+  var w=WIEDZA.find(function(x){return x.id===id;});
+  if(!w) return;
+  switchView('view-wiedza-entry');
+  var cat=WIEDZA_CATEGORIES.find(function(c){return c.id===w.cat;});
+  curWiedzaCat=w.cat;
+  document.getElementById('wiedza-entry-back-lbl').textContent=cat?cat.name:'Wiedza';
+  document.getElementById('wiedza-entry-title-top').textContent=w.title;
+  document.getElementById('wiedza-entry-body').innerHTML=
+    '<div class="wiedza-entry-cat">'+(cat?cat.name:'')+'</div>'+
+    '<div class="notice-title" style="font-size:19px;margin-bottom:12px">'+w.title+'</div>'+
+    renderWiedzaBlocks(w.blocks);
 }
 
 /* ── PRZEGLĄD — sprzęt/pomieszczenia i odpowiedzialni, wg zmiany ── */
