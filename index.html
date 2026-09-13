@@ -2871,7 +2871,8 @@ function deleteNoticeConfirm(id){
 
 /* ── WIEDZA — teoria strażacka, treść bazowa (statyczna, jak SENSORS_BASE) ── */
 var WIEDZA_CATEGORIES=[
-  {id:'wodno-pianowy', name:'Sprzęt wodno-pianowy'}
+  {id:'wodno-pianowy', name:'Sprzęt wodno-pianowy'},
+  {id:'hydraulika', name:'Hydraulika pożarnicza'}
 ];
 var WIEDZA_BASE=[
   {
@@ -2940,6 +2941,56 @@ var WIEDZA_BASE=[
     blocks:[
       {t:'p', text:'Działa na zasadzie pompy strumieniowej. Stosowany do pobierania wody z głębokości nawet do 25 m. Często stosuje się je do wypompowywania wody z zalanych studzienek, kanałów, piwnic.'},
       {t:'p', text:'Początek pompy stanowi nasada zasilająca 52, a jej wylot 75. Budowa: nasady, dysza (konfuzor), komora podciśnienia, zawór zwrotny, sito zabezpieczające, dyfuzor.'}
+    ]
+  },
+  {
+    id:'w-przeliczanie-cisnienia', cat:'hydraulika', title:'Przeliczanie jednostek ciśnienia',
+    blocks:[
+      {t:'p', text:'1 atm = 1 bar = 0,1 MPa = 1000 hPa = 100 kPa = 14 psi = 10 m H₂O = 736 Tr = 750 mm Hg.'},
+      {t:'p', text:'H₂O – słup wody, Hg – słup rtęci.'}
+    ]
+  },
+  {
+    id:'w-wysokosci-podnoszenia', cat:'hydraulika', title:'Wysokości podnoszenia pompy',
+    blocks:[
+      {t:'p', text:'Wysokość podnoszenia to różnica pomiędzy ciśnieniem na wlocie i na wylocie pompy, wyrażona w metrach słupa pompowanej cieczy, oznaczona literą H.'},
+      {t:'h', text:'Manometryczna wysokość podnoszenia'},
+      {t:'p', text:'Suma manometrycznej wysokości ssania i tłoczenia (suma wskazań przyrządów pomiarowych), wyrażona w metrach słupa wody.'},
+      {t:'h', text:'Geometryczna wysokość podnoszenia'},
+      {t:'p', text:'Suma geometrycznej wysokości ssania i tłoczenia, wyrażona w metrach.'},
+      {t:'h', text:'Manometryczna wysokość tłoczenia'},
+      {t:'p', text:'Wysokość ciśnienia odczytana na manometrze podczas pracy motopompy, wyrażona w metrach słupa wody (m H₂O). Po zatrzymaniu motopompy manometr i manowakuometr wskazywałyby rzeczywiste odległości do lustra wody oraz rzeczywistą wysokość, na jaką pompa wtłoczyła wodę — bo całkowicie ustaje przepływ wody w liniach tłocznych i ssawnych, więc znikają opory tarcia.'},
+      {t:'h', text:'Geometryczna wysokość tłoczenia'},
+      {t:'p', text:'Rzeczywista pionowa odległość między osią nasady ssawnej pompy a punktem najwyższego rzutu wody, mierzona w metrach.'},
+      {t:'h', text:'Manometryczna wysokość ssania'},
+      {t:'p', text:'Wysokość ssania odczytana na wakuometrze podczas pracy pompy, wyrażona w m H₂O. Po zatrzymaniu pompy manometryczna wysokość ssania jest równa geometrycznej — brak oporów przepływu.'},
+      {t:'h', text:'Geometryczna wysokość ssania'},
+      {t:'p', text:'Rzeczywista odległość pionowa między lustrem wody a osią nasady ssawnej pompy, mierzona w metrach.'},
+      {t:'h', text:'Teoretyczna wysokość podnoszenia pompy'},
+      {t:'p', text:'Suma użytecznej wysokości podnoszenia i oporów hydraulicznych w pompie spowodowanych tarciem cieczy o ścianki kanałów przepływowych, zawirowaniami itp.'}
+    ]
+  },
+  {
+    id:'w-wydajnosci-pompy', cat:'hydraulika', title:'Wydajności pompy',
+    blocks:[
+      {t:'p', text:'Wydajność to ilość cieczy, jaką może dostarczyć pompa w jednostce czasu, mierzona w dm³/min lub m³/h — oznaczana literą Q.'},
+      {t:'h', text:'Rzeczywista wydajność pompy (Qr, Q)'},
+      {t:'p', text:'Suma natężenia przepływu w przekroju króćca wylotowego i cieczy odprowadzanej (również przed króćcem tłocznym) na własne potrzeby pompy, np. chłodzenie łożysk, dławic itp.'},
+      {t:'h', text:'Wydajność nominalna pompy (Qn)'},
+      {t:'p', text:'Wydajność określona przez producenta i podana na tabliczce znamionowej. Występuje przy nominalnej wysokości podnoszenia i nominalnej prędkości obrotowej pompy. Przy poprawnej eksploatacji powinna zachodzić zależność Qr = Qn.'},
+      {t:'h', text:'Wydajność optymalna (Qopt)'},
+      {t:'p', text:'Wydajność występująca przy optymalnej sprawności pompy. W dobrze skonstruowanej pompie Qopt pokrywa się z Qn.'},
+      {t:'h', text:'Wydajność teoretyczna pompy (Qth)'},
+      {t:'p', text:'Natężenie przepływu w pompie idealnie szczelnej i przy teoretycznej wysokości podnoszenia: Qth = Q + Qstr, gdzie Qstr to łączne straty w pompie (przepływ powrotny do wirnika, przecieki przez dławice itp.).'}
+    ]
+  },
+  {
+    id:'w-kawitacja', cat:'hydraulika', title:'Zjawisko kawitacji',
+    blocks:[
+      {t:'p', text:'Kawitacja to proces tworzenia się pęcherzyków parowo-gazowych nasyconej cieczy wskutek miejscowego spadku ciśnienia poniżej wartości krytycznej, bliskiej ciśnieniu parowania tej cieczy przy danej temperaturze. Pęcherzyki porywane przez płynącą ciecz trafiają do obszaru wyższego ciśnienia, gdzie para się skrapla — znikają bardzo gwałtownie, w czasie krótszym niż 0,001 sekundy (implodują).'},
+      {t:'p', text:'Ciecz napływająca z dużą prędkością w miejsce pęcherzyków może osiągnąć ciśnienie rzędu 350 MPa. W miejscu znikania, przy ściance, następuje charakterystyczne niszczenie materiału konstrukcyjnego pompy — kawerny (wżery) i pory o głębokości dochodzącej nawet do kilkunastu milimetrów.'},
+      {t:'h', text:'Oznaki kawitacji'},
+      {t:'p', text:'Hałas (nieregularne trzaski i szumy), drgania kadłuba kanału przepływowego, wyraźne słyszalne odgłosy, jakby uderzenia.'}
     ]
   }
 ];
