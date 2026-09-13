@@ -2874,7 +2874,8 @@ var WIEDZA_CATEGORIES=[
   {id:'wodno-pianowy', name:'Sprzęt wodno-pianowy'},
   {id:'hydraulika', name:'Hydraulika pożarnicza'},
   {id:'drabiny', name:'Drabiny pożarnicze'},
-  {id:'taktyka', name:'Taktyka działań'}
+  {id:'taktyka', name:'Taktyka działań'},
+  {id:'klasyfikacja', name:'Klasyfikacja pożarów i budynków'}
 ];
 var WIEDZA_BASE=[
   {
@@ -3107,6 +3108,103 @@ var WIEDZA_BASE=[
       {t:'p', text:'Rozpoznanie to zorganizowane działania prowadzące do uzyskania informacji o zdarzeniu.'},
       {t:'h', text:'Wyposażenie patrolu rozpoznania'},
       {t:'p', text:'Latarka, czujnik bezruchu, aparat powietrzny, podręczny sprzęt burzący, uzbrojenie osobiste, radiotelefon, linka ratownicza, nawodniona linia gaśnicza.'}
+    ]
+  },
+  {
+    id:'w-grupy-pozarow', cat:'klasyfikacja', title:'Grupy pożarów',
+    blocks:[
+      {t:'h', text:'Grupa A'},
+      {t:'p', text:'Pożary ciał pochodzenia organicznego, podczas spalania których występuje zjawisko żarzenia, np. siano, węgiel, papier, torf.'},
+      {t:'h', text:'Grupa B'},
+      {t:'p', text:'Pożary substancji stałych i ciekłych, topiących się ze wzrostem temperatury, np. benzyna, parafina, tłuszcz, olej.'},
+      {t:'h', text:'Grupa C'},
+      {t:'p', text:'Gaz palny, np. etan, wodór, gaz miejski, metan.'},
+      {t:'h', text:'Grupa D'},
+      {t:'p', text:'Metale, takie jak potas, sód, magnez.'},
+      {t:'h', text:'Grupa E'},
+      {t:'p', text:'Pożary urządzeń elektrycznych pod napięciem oraz pożary w pobliżu urządzeń pod napięciem.'},
+      {t:'h', text:'Grupa F'},
+      {t:'p', text:'Pożary olejów i tłuszczów używanych w gastronomii.'}
+    ]
+  },
+  {
+    id:'w-oznaczenia-gasnic', cat:'klasyfikacja', title:'Oznaczenia na gaśnicach',
+    blocks:[
+      {t:'h', text:'GP'},
+      {t:'p', text:'Gaśnica proszkowa.'},
+      {t:'h', text:'GS'},
+      {t:'p', text:'Gaśnica śniegowa.'},
+      {t:'h', text:'Cyfra, np. 4'},
+      {t:'p', text:'Oznacza ilość (kg lub dm³) środka gaśniczego.'},
+      {t:'h', text:'Znak „x"'},
+      {t:'p', text:'Oznacza, że zbiornik (gaśnica) jest pod stałym ciśnieniem — gaz zasilający znajduje się w tym samym zbiorniku co środek gaśniczy.'},
+      {t:'h', text:'Znak „z"'},
+      {t:'p', text:'Oznacza, że środek i czynnik zasilający umiejscowione są w osobnych zbiornikach.'},
+      {t:'h', text:'ABC/E'},
+      {t:'p', text:'Litera E oznacza, że gaśnica przystosowana jest do gaszenia urządzeń pod napięciem powyżej 1 kW, zazwyczaj jest to 123 lub 245 kW.'}
+    ]
+  },
+  {
+    id:'w-pozary-wg-wielkosci', cat:'klasyfikacja', title:'Pożary według wielkości',
+    blocks:[
+      {t:'table', cols:['Pożary','Pow. m²','Objętość m³','Pow. lasu ha','Ilość prądów'], rows:[
+        ['Małe','do 70','do 350','do 1 ha','do 4'],
+        ['Średnie','71–300','351–1 500','1–10 ha','5–12'],
+        ['Duże','301–1 000','1 501–5 000','10–100 ha','13–36'],
+        ['Bardzo duże','> 1 000','> 5 000','> 100 ha','> 36']
+      ]}
+    ]
+  },
+  {
+    id:'w-budynki-wysokosc', cat:'klasyfikacja', title:'Podział budynków wg wysokości',
+    blocks:[
+      {t:'h', text:'Niskie (N)'},
+      {t:'p', text:'Do 12 m włącznie nad poziomem terenu lub mieszkalne o wysokości do 4 kondygnacji nadziemnych włącznie.'},
+      {t:'h', text:'Średnio wysokie (SW)'},
+      {t:'p', text:'Od 12 m do 25 m włącznie nad poziomem terenu lub mieszkalne o wysokości ponad 4 do 9 kondygnacji nadziemnych włącznie.'},
+      {t:'h', text:'Wysokie (W)'},
+      {t:'p', text:'Od 25 m do 55 m włącznie nad poziomem terenu lub mieszkalne o wysokości ponad 9 do 18 kondygnacji nadziemnych włącznie.'},
+      {t:'h', text:'Wysokościowe (WW)'},
+      {t:'p', text:'Powyżej 55 m nad poziomem terenu.'}
+    ]
+  },
+  {
+    id:'w-budynki-przeznaczenie', cat:'klasyfikacja', title:'Podział budynków wg przeznaczenia (ZL)',
+    blocks:[
+      {t:'h', text:'Kategoria zagrożenia ludzi — ZL I'},
+      {t:'p', text:'Zawierające pomieszczenia przeznaczone do jednoczesnego przebywania ponad 50 osób nie będących ich stałymi użytkownikami, a nie przeznaczonych przede wszystkim do użytku ludzi o ograniczonej zdolności poruszania się.'},
+      {t:'h', text:'ZL II'},
+      {t:'p', text:'Przeznaczone przede wszystkim do użytku przez ludzi o ograniczonej zdolności poruszania się.'},
+      {t:'h', text:'ZL III'},
+      {t:'p', text:'Użyteczności publicznej, nie zakwalifikowane do ZL I i ZL II.'},
+      {t:'h', text:'ZL IV'},
+      {t:'p', text:'Mieszkalne.'},
+      {t:'h', text:'ZL V'},
+      {t:'p', text:'Zamieszkania zbiorowego, nie zakwalifikowane do ZL I i ZL II.'},
+      {t:'h', text:'PM'},
+      {t:'p', text:'Produkcyjno-magazynowe.'},
+      {t:'h', text:'IN'},
+      {t:'p', text:'Inwentarskie.'}
+    ]
+  },
+  {
+    id:'w-odpornosc-ogniowa', cat:'klasyfikacja', title:'Odporność ogniowa',
+    blocks:[
+      {t:'p', text:'Odporność ogniowa to zdolność do zachowywania określonych właściwości podczas pożaru przez odpowiedni czas. Inaczej mówiąc — czas do osiągnięcia przez dany element jednego z trzech podstawowych stanów granicznych.'},
+      {t:'h', text:'Nośności (R)'},
+      {t:'p', text:'Stan, w którym element próbny przestaje spełniać swoją funkcję nośną wskutek zniszczenia mechanicznego lub utraty stateczności, albo przekroczenia granicznych wartości przemieszczeń lub odkształceń.'},
+      {t:'h', text:'Szczelności (E)'},
+      {t:'p', text:'Stan, w którym element przestaje spełniać funkcję oddzielającą na skutek odpadnięcia od konstrukcji, albo powstania pęknięć lub szczelin, przez które przenikają płomienie lub gorące gazy.'},
+      {t:'h', text:'Izolacyjności (I)'},
+      {t:'p', text:'Stan, w którym element budynku przestaje spełniać funkcję oddzielającą na skutek przekroczenia temperatury granicznej powierzchni nienagrzewanej.'},
+      {t:'h', text:'Klasa odporności pożarowej budynku'},
+      {t:'table', cols:['Klasa','Konstrukcja nośna','Konstrukcja dachu','Strop','Ściana zewn.','Ściana wewn.','Przekrycie dachu'], rows:[
+        ['A','R 240','R 30','R E I 120','E I 120 (o↔i)','E I 60','R E 30'],
+        ['B','R 120','R 30','R E I 60','E I 60 (o↔i)','E I 30','R E 30'],
+        ['C','R 60','R 15','R E I 60','E I 30 (o↔i)','E I 15','R E 15'],
+        ['D','R 30','–','R E I 30','E I 30 (o↔i)','–','–'],
+        ['E','–','–','–','–','–','–']
+      ]}
     ]
   }
 ];
