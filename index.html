@@ -4355,7 +4355,16 @@ function fiszkiAnswerWhere(item, chosenComp, options, optsWrap, clickedBtn){
     s.total=s.queue.length;
   }
   s.doneCount++;
-  setTimeout(function(){ s.idx++; fiszkiRenderCard(); }, 650);
+  if(isCorrect){
+    setTimeout(function(){ s.idx++; fiszkiRenderCard(); }, 500);
+  } else {
+    var nextBtn=document.createElement('button');
+    nextBtn.type='button';
+    nextBtn.className='fiszki-check-btn';
+    nextBtn.textContent='Dalej';
+    nextBtn.onclick=function(){ s.idx++; fiszkiRenderCard(); };
+    optsWrap.parentElement.appendChild(nextBtn);
+  }
 }
 function fiszkiRenderWhatInCard(card, wrap){
   var s=fiszkiSession, v=s.v, comp=card.comp;
