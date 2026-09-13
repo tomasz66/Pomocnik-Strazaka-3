@@ -2872,7 +2872,9 @@ function deleteNoticeConfirm(id){
 /* ── WIEDZA — teoria strażacka, treść bazowa (statyczna, jak SENSORS_BASE) ── */
 var WIEDZA_CATEGORIES=[
   {id:'wodno-pianowy', name:'Sprzęt wodno-pianowy'},
-  {id:'hydraulika', name:'Hydraulika pożarnicza'}
+  {id:'hydraulika', name:'Hydraulika pożarnicza'},
+  {id:'drabiny', name:'Drabiny pożarnicze'},
+  {id:'taktyka', name:'Taktyka działań'}
 ];
 var WIEDZA_BASE=[
   {
@@ -2991,6 +2993,120 @@ var WIEDZA_BASE=[
       {t:'p', text:'Ciecz napływająca z dużą prędkością w miejsce pęcherzyków może osiągnąć ciśnienie rzędu 350 MPa. W miejscu znikania, przy ściance, następuje charakterystyczne niszczenie materiału konstrukcyjnego pompy — kawerny (wżery) i pory o głębokości dochodzącej nawet do kilkunastu milimetrów.'},
       {t:'h', text:'Oznaki kawitacji'},
       {t:'p', text:'Hałas (nieregularne trzaski i szumy), drgania kadłuba kanału przepływowego, wyraźne słyszalne odgłosy, jakby uderzenia.'}
+    ]
+  },
+  {
+    id:'w-drabina-d10w', cat:'drabiny', title:'Drabina D10W',
+    blocks:[
+      {t:'table', cols:['Parametr','Wartość'], rows:[
+        ['Długość','10 000 mm'],
+        ['Długość dolnego przęsła','5 670 mm'],
+        ['Długość górnego przęsła','5 800 mm'],
+        ['Długość drążków podporowych','5 650 mm'],
+        ['Rozstaw bocznic przęsła dolnego','360 mm'],
+        ['Rozstaw bocznic przęsła górnego','300 mm'],
+        ['Rozstaw szczebli','320 mm'],
+        ['Liczba szczebli','34'],
+        ['Ciężar drabiny','72 kg']
+      ]}
+    ]
+  },
+  {
+    id:'w-drabina-dn27', cat:'drabiny', title:'Drabina nasadkowa DN 2,7',
+    blocks:[
+      {t:'table', cols:['Parametr','Wartość'], rows:[
+        ['Długość przęsła','2 730 mm'],
+        ['Długość 2 przęseł','4 650 mm'],
+        ['Długość 3 przęseł','6 570 mm'],
+        ['Długość 4 przęseł','8 490 mm'],
+        ['Rozstaw bocznic u podstawy','480 mm'],
+        ['Rozstaw bocznic u wierzchołka','400 mm'],
+        ['Liczba szczebli drewnianych','6'],
+        ['Liczba szczebli metalowych','1'],
+        ['Ciężar przęsła','12 kg']
+      ]}
+    ]
+  },
+  {
+    id:'w-drabina-d31', cat:'drabiny', title:'Drabina słupkowa D3,1',
+    blocks:[
+      {t:'table', cols:['Parametr','Wartość'], rows:[
+        ['Długość drabiny złożonej','3 100 mm'],
+        ['Długość drabiny rozłożonej','2 840 mm'],
+        ['Rozstaw bocznic','318 mm'],
+        ['Rozstaw szczebli','320 mm'],
+        ['Ciężar','7 kg']
+      ]}
+    ]
+  },
+  {
+    id:'w-ustawianie-drabin', cat:'drabiny', title:'Ustawianie drabin',
+    blocks:[
+      {t:'p', text:'Drabinę ustawia się 1 m lub 3 szczeble ponad parapet.'},
+      {t:'p', text:'Kąt nachylenia drabiny: 65°–75°.'}
+    ]
+  },
+  {
+    id:'w-pozar-def', cat:'taktyka', title:'Pożar',
+    blocks:[
+      {t:'p', text:'Pożar to niekontrolowany w czasie i przestrzeni proces spalania w miejscu do tego nie przeznaczonym, powodujący zagrożenie dla zdrowia i życia ludzi i zwierząt oraz straty materialne.'}
+    ]
+  },
+  {
+    id:'w-fazy-pozaru', cat:'taktyka', title:'Fazy rozwoju pożaru wewnętrznego',
+    blocks:[
+      {t:'img', src:'images/wiedza/fazy-pozaru.png', cap:'Przykładowy przebieg pożaru w pomieszczeniu w różnych fazach rozwoju.'},
+      {t:'p', text:'Wykres pokazuje temperaturę w funkcji czasu trwania pożaru: I faza od początku pożaru, moment rozgorzenia, II faza (szczyt temperatury) i III faza.'}
+    ]
+  },
+  {
+    id:'w-natarcie', cat:'taktyka', title:'Natarcie',
+    blocks:[
+      {t:'p', text:'Natarcie to zasadnicza forma działania taktycznego polegająca na bezpośrednim działaniu środkami gaśniczymi na pożar w celu przerwania procesu palenia.'},
+      {t:'h', text:'Natarcie wewnętrzne'},
+      {t:'p', text:'Polega na prowadzeniu akcji gaśniczej wewnątrz budynku.'},
+      {t:'h', text:'Natarcie zewnętrzne'},
+      {t:'p', text:'Stosuje się przy pożarach zewnętrznych, silnie rozwiniętych, gdy dotarcie do wnętrza obiektu jest niemożliwe.'},
+      {t:'h', text:'Natarcie skoncentrowane'},
+      {t:'p', text:'Polega na prowadzeniu działań gaśniczych bezpośrednio na ognisko pożaru. Poprzedzone jest koncentracją sił i środków. Przeprowadza się je na: powierzchnię pożaru, objętość pomieszczenia, front pożaru, skrzydła pożaru, obwód pożaru.'},
+      {t:'p', text:'W zależności od rozmieszczenia stanowisk gaśniczych rozróżnia się natarcie:'},
+      {t:'h', text:'Natarcie frontalne (czołowe)'},
+      {t:'p', text:'Ma na celu ograniczenie rozprzestrzeniania się pożaru na jego froncie. Skierowane jest tylko w jedną stronę i musi trwać do skutku, po czym dopiero siły i środki mogą być wykorzystane w innym kierunku.'},
+      {t:'h', text:'Natarcie oskrzydlające (dwustronnie lub jednostronnie)'},
+      {t:'p', text:'Podejmowane, gdy istnieją trudności w zajęciu stanowisk na froncie pożaru, a mała ilość sił i środków nie pozwala na okrążenie pożaru. Zadaniem stanowisk gaśniczych jest zawężanie czoła pożaru.'},
+      {t:'h', text:'Natarcie okrążające'},
+      {t:'p', text:'Jedna z najbardziej skutecznych form działania taktycznego, polegająca na otoczeniu obwodu pożaru stanowiskami gaśniczymi — możliwa do zrealizowania, gdy dysponujemy odpowiednią ilością sił i środków.'},
+      {t:'h', text:'Lokalizacja pożaru'},
+      {t:'p', text:'Ograniczenie rozprzestrzeniania się pożaru i stworzenie warunków do jego likwidacji przy pomocy sił i środków.'},
+      {t:'h', text:'Likwidacja pożaru'},
+      {t:'p', text:'Końcowy etap natarcia, w którym działania zmierzają do ostatecznego przerwania procesu palenia oraz wykluczają możliwość ponownego powstania pożaru.'}
+    ]
+  },
+  {
+    id:'w-obrona', cat:'taktyka', title:'Obrona',
+    blocks:[
+      {t:'p', text:'Obrona to jedna z form działania taktycznego polegająca na oddziaływaniu określonymi środkami na zagrożone bezpośrednio i pośrednio obiekty i materiały w celu niedopuszczenia lub opóźnienia ich zapalenia się.'},
+      {t:'h', text:'Obrona bliższa'},
+      {t:'p', text:'Organizuje się ją w celu zabezpieczenia obiektów i materiałów przed działaniem promieniowania cieplnego.'},
+      {t:'h', text:'Obrona dalsza'},
+      {t:'p', text:'Organizuje się ją w celu zabezpieczenia obiektów i materiałów przed działaniem ogni lotnych.'},
+      {t:'h', text:'Kiedy podejmujemy obronę'},
+      {t:'p', text:'Na głównym kierunku rozszerzania się pożaru; gdy zagrożone są obiekty o znacznej wartości użytkowej, technologicznej, kulturowej i materiałowej.'},
+      {t:'p', text:'Obrona często wspiera natarcie, poprawiając warunki pracy innym stanowiskom bojowym, chroniąc konstrukcję obiektu przed nadmiernym nagrzaniem i utratą wytrzymałości, wypierając i osadzając dymy. Działaniom ratowniczym często towarzyszą działania obronne — ich zadaniem jest wtedy ochrona przejść ewakuacyjnych przed zadymieniem, nagrzewaniem czy pojawieniem się na nich płomieni.'}
+    ]
+  },
+  {
+    id:'w-dzialania-polaczone', cat:'taktyka', title:'Działania połączone',
+    blocks:[
+      {t:'p', text:'Forma działań łącząca natarcie z obroną, mająca na celu zwiększenie skuteczności działań gaśniczych.'}
+    ]
+  },
+  {
+    id:'w-rozpoznanie', cat:'taktyka', title:'Rozpoznanie',
+    blocks:[
+      {t:'p', text:'Rozpoznanie to zorganizowane działania prowadzące do uzyskania informacji o zdarzeniu.'},
+      {t:'h', text:'Wyposażenie patrolu rozpoznania'},
+      {t:'p', text:'Latarka, czujnik bezruchu, aparat powietrzny, podręczny sprzęt burzący, uzbrojenie osobiste, radiotelefon, linka ratownicza, nawodniona linia gaśnicza.'}
     ]
   }
 ];
