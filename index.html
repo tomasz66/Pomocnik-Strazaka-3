@@ -2878,7 +2878,8 @@ var WIEDZA_CATEGORIES=[
   {id:'klasyfikacja', name:'Klasyfikacja pożarów i budynków'},
   {id:'srodki-gasnicze', name:'Środki gaśnicze'},
   {id:'odziez-ochronna', name:'Odzież ochronna i ODO'},
-  {id:'materialy-niebezpieczne', name:'Materiały niebezpieczne (ADR)'}
+  {id:'materialy-niebezpieczne', name:'Materiały niebezpieczne (ADR)'},
+  {id:'ksrg', name:'Ratownictwo i KSRG'}
 ];
 var WIEDZA_BASE=[
   {
@@ -3394,6 +3395,131 @@ var WIEDZA_BASE=[
       {t:'p', text:'Najniższe stężenie substancji palnej (gazów, par, pyłów) w mieszaninie z powietrzem, przy którym może nastąpić zapalenie się tej substancji (wybuch) pod wpływem bodźca termicznego.'},
       {t:'h', text:'Górna granica wybuchowości (GGW)'},
       {t:'p', text:'Najwyższe stężenie substancji palnej w mieszaninie z powietrzem, przy którym jeszcze może nastąpić zapalenie się tej substancji i jej wybuch pod wpływem bodźca termicznego.'}
+    ]
+  },
+  {
+    id:'w-lpr', cat:'ksrg', title:'Współpraca LPR z PSP',
+    blocks:[
+      {t:'h', text:'Kanał podstawowy'},
+      {t:'p', text:'Do łączności z jednostkami PSP — KSWL U02 (149,90 MHz).'},
+      {t:'h', text:'Kanał rezerwowy'},
+      {t:'p', text:'Do łączności z jednostkami z KSRG — ogólnopolski kanał współdziałania wszystkich jednostek służb zdrowia (169,00 MHz).'},
+      {t:'h', text:'Kryptonimy wywoławcze śmigłowców z okolicy'},
+      {t:'p', text:'Baza Gliwice HEMS — Ratownik 4. Baza Kraków HEMS — Ratownik 6.'},
+      {t:'h', text:'Kierunek startu i lądowania'},
+      {t:'p', text:'Na każdy 1 m wysokości przeszkody miejsce lądowania powinno być oddalone o następne 6 m od tej przeszkody.'}
+    ]
+  },
+  {
+    id:'w-uprawnienia-kdr', cat:'ksrg', title:'Uprawnienia KDR podczas działań ratowniczo-gaśniczych',
+    blocks:[
+      {t:'p', text:'Kierujący działaniem ratowniczym (KDR) ma prawo do:'},
+      {t:'h', text:'1. Ewakuacji ludzi'},
+      {t:'p', text:'Z rejonu objętego działaniem ratowniczym, w przypadku zagrożenia życia i zdrowia — w szczególności gdy istnieje możliwość powstania paniki, albo przewidywany rozwój zdarzeń może spowodować odcięcie drogi ewakuacyjnej.'},
+      {t:'h', text:'2. Zakazu przebywania osób postronnych'},
+      {t:'p', text:'W rejonie objętym działaniem ratowniczym — dotyczy też osób utrudniających prowadzenie działania ratowniczego.'},
+      {t:'h', text:'3. Ewakuacji mienia'},
+      {t:'p', text:'W szczególności gdy istnieje możliwość rozprzestrzenienia się pożaru lub innego zagrożenia, albo usytuowanie mienia utrudnia prowadzenie działania ratowniczego.'},
+      {t:'h', text:'4. Prac wyburzeniowych oraz rozbiórkowych'},
+      {t:'p', text:'W szczególności: przy zagrożeniu ludzi, zwierząt lub mienia; przy potrzebie dotarcia do źródeł zagrożenia w celu jego rozpoznania i ograniczenia wzrostu; przy potrzebie użycia środków gaśniczych i neutralizatorów oraz odprowadzenia substancji toksycznych; przy potrzebie zapewnienia dróg dojścia i ewakuacji.'},
+      {t:'h', text:'5. Wstrzymania komunikacji w ruchu lądowym'},
+      {t:'p', text:'W szczególności w celu zapewnienia właściwego ustawienia i eksploatacji sprzętu ratowniczego, zapewnienia dróg komunikacyjnych na potrzeby działania, eliminacji zagrożeń powodowanych przez środki komunikacji oraz realizacji zadań określonych w pkt 1–4.'},
+      {t:'h', text:'6. Przyjęcia w użytkowanie'},
+      {t:'p', text:'Na czas niezbędny do działania ratowniczego — pojazdów, środków technicznych i innych przedmiotów, a także ujęć wody, środków gaśniczych oraz nieruchomości przydatnych w działaniu ratowniczym.'},
+      {t:'h', text:'7. Odstąpienia od zasad działania uznanych powszechnie za bezpieczne'},
+      {t:'p', text:'Z zachowaniem wszelkich dostępnych w danych warunkach zabezpieczeń, jeżeli w ocenie KDR, dokonanej w miejscu i czasie zdarzenia, istnieje prawdopodobieństwo uratowania życia ludzkiego — w szczególności gdy z powodu braku specjalistycznego sprzętu zachodzi konieczność zastosowania sprzętu zastępczego, gdy fizyczne możliwości ratownika mogą zastąpić brak możliwości użycia właściwego sprzętu, albo gdy możliwe jest wykonanie określonej czynności przez osobę zgłaszającą się dobrowolnie.'}
+    ]
+  },
+  {
+    id:'w-ksrg-dzialania', cat:'ksrg', title:'Definicje KSRG — działania ratownicze',
+    blocks:[
+      {t:'h', text:'Czas interwencji'},
+      {t:'p', text:'Łączny czas trwania działań od chwili przyjęcia informacji do czasu powrotu ostatnich sił i środków.'},
+      {t:'h', text:'Czynności ratownicze podstawowe'},
+      {t:'p', text:'Wykonywane w poszczególnych dziedzinach ratownictwa przez wszystkich ratowników.'},
+      {t:'h', text:'Czynności ratownicze specjalistyczne'},
+      {t:'p', text:'Wykonywane z użyciem sprzętu specjalistycznego przez odpowiednio przeszkolonych ratowników.'},
+      {t:'h', text:'Dekontaminacja wstępna'},
+      {t:'p', text:'Działania wobec osoby eksponowanej na skażenie: zmycie, usunięcie odzieży, ubiór zastępczy.'},
+      {t:'h', text:'Dziedziny ratownictwa'},
+      {t:'p', text:'Walka z pożarami, ratownictwo techniczne, chemiczne, ekologiczne i medyczne.'},
+      {t:'h', text:'Gotowość operacyjna'},
+      {t:'p', text:'Zdolność do realizowania czynności ratowniczych w poszczególnych dziedzinach ratownictwa.'},
+      {t:'h', text:'Podwyższona gotowość operacyjna'},
+      {t:'p', text:'Czasowe zwiększenie gotowości operacyjnej w sytuacji wystąpienia katastrofy naturalnej lub awarii technicznej, których skutki mogą zagrozić życiu lub zdrowiu dużej liczby osób, mieniu, środowisku.'},
+      {t:'h', text:'Kierowanie działaniem ratowniczym'},
+      {t:'p', text:'Planowanie, organizowanie, nadzorowanie i koordynowanie działań ratowniczych.'},
+      {t:'h', text:'Przejęcie kierowania działaniami ratowniczymi'},
+      {t:'p', text:'Wstąpienie w prawa i obowiązki kierującego działaniem ratowniczym.'},
+      {t:'h', text:'Medyczne działania ratownicze'},
+      {t:'p', text:'Działania z zakresu kwalifikowanej pierwszej pomocy i medycznych czynności ratunkowych.'},
+      {t:'h', text:'Plany ratownicze'},
+      {t:'p', text:'Wspomagają organizację działań ratowniczych.'}
+    ]
+  },
+  {
+    id:'w-ksrg-segregacja', cat:'ksrg', title:'Definicje KSRG — segregacja i rodzaje zdarzeń',
+    blocks:[
+      {t:'h', text:'Segregacja poszkodowanych'},
+      {t:'p', text:'Wyznaczanie priorytetów leczniczo-transportowych realizowanych w zdarzeniach mnogich i masowych.'},
+      {t:'h', text:'Segregacja pierwotna'},
+      {t:'p', text:'Segregacja poszkodowanych niezwłocznie po przybyciu na miejsce zdarzenia podmiotu ratowniczego.'},
+      {t:'h', text:'Segregacja wtórna'},
+      {t:'p', text:'Segregacja poszkodowanych po wdrożeniu medycznych czynności ratunkowych wobec osób poszkodowanych o najwyższym priorytecie.'},
+      {t:'h', text:'Wykonanie dostępu'},
+      {t:'p', text:'Stworzenie możliwości oceny stanu poszkodowanego i możliwość jego przemieszczenia.'},
+      {t:'h', text:'Zdarzenie pojedyncze'},
+      {t:'p', text:'Zagrożenie dotyczy jednej osoby poszkodowanej.'},
+      {t:'h', text:'Zdarzenie mnogie'},
+      {t:'p', text:'Zagrożenie dotyczy więcej niż jednej osoby poszkodowanej znajdującej się w stanie nagłego zagrożenia zdrowotnego, ale zapotrzebowanie na kwalifikowaną pierwszą pomoc i medyczne czynności ratunkowe realizowane w trybie natychmiastowym nie przekracza możliwości sił i środków obecnych na miejscu.'},
+      {t:'h', text:'Zdarzenie masowe'},
+      {t:'p', text:'Zapotrzebowanie na kwalifikowaną pierwszą pomoc i medyczne czynności ratunkowe realizowane w trybie natychmiastowym przekracza możliwości sił i środków obecnych na miejscu zdarzenia.'},
+      {t:'h', text:'Zdarzenie nadzwyczajne'},
+      {t:'p', text:'Liczba osób zagrożonych i poszkodowanych, rozmiar i stopień uszkodzenia środowiska i mienia oraz zniszczenia infrastruktury uniemożliwiają kontrolę przebiegu zdarzenia przez organy władzy publicznej.'}
+    ]
+  },
+  {
+    id:'w-ksrg-jednostki', cat:'ksrg', title:'Jednostki organizacyjne KSRG',
+    blocks:[
+      {t:'table', cols:['Jednostka','Skład'], rows:[
+        ['Rota','2-osobowy zespół ratowników w składzie zastępu'],
+        ['Zastęp','3–6 ratowników w tym dowódca, z pojazdem ratowniczym'],
+        ['Sekcja','2 zastępy w tym dowódca'],
+        ['Pluton','3–4 zastępy w tym dowódca'],
+        ['Kompania','8–16 zastępów oraz dowódca'],
+        ['Batalion','3–5 kompanii oraz dowódca i sztab'],
+        ['Brygada','związek pododdziałów i oddziałów oraz dowódca i sztab']
+      ]},
+      {t:'h', text:'Specjalistyczna grupa ratownicza'},
+      {t:'p', text:'Pododdział przeznaczony do realizacji specjalistycznych czynności ratowniczych.'},
+      {t:'h', text:'Podmioty KSRG'},
+      {t:'p', text:'Jednostki PSP, inne jednostki ochrony przeciwpożarowej włączone do KSRG, inne służby, inspekcje, straże, instytucje i podmioty, które zgodziły się współdziałać w akcjach ratowniczych.'}
+    ]
+  },
+  {
+    id:'w-klaski-zywiolowe', cat:'ksrg', title:'Klęska żywiołowa i inne zagrożenia',
+    blocks:[
+      {t:'h', text:'Klęska żywiołowa'},
+      {t:'p', text:'Katastrofa naturalna lub awaria techniczna, których skutki zagrażają życiu lub zdrowiu dużej liczby osób, mieniu w wielkich rozmiarach albo środowisku na znacznych obszarach, a pomoc i ochrona mogą być skutecznie podjęte tylko przy zastosowaniu nadzwyczajnych środków, we współdziałaniu różnych organów i instytucji oraz specjalistycznych służb i formacji działających pod jednolitym kierownictwem.'},
+      {t:'h', text:'Katastrofa naturalna'},
+      {t:'p', text:'Zdarzenie związane z działaniem sił natury — wyładowania atmosferyczne, wstrząsy sejsmiczne, silne wiatry, intensywne opady atmosferyczne, długotrwałe ekstremalne temperatury, osuwiska ziemi, pożary, susze, powodzie, zjawiska lodowe na wodach, masowe występowanie szkodników, chorób roślin lub zwierząt albo chorób zakaźnych ludzi, albo działanie innego żywiołu.'},
+      {t:'h', text:'Awaria techniczna'},
+      {t:'p', text:'Gwałtowne, nieprzewidziane uszkodzenie lub zniszczenie obiektu budowlanego, urządzenia technicznego lub systemu urządzeń technicznych, powodujące przerwę w ich używaniu lub utratę ich właściwości.'},
+      {t:'h', text:'Inne miejscowe zagrożenie'},
+      {t:'p', text:'Inne niż pożar i klęska żywiołowa zdarzenie wynikające z rozwoju cywilizacyjnego i naturalnych praw przyrody (katastrofy techniczne, chemiczne, ekologiczne), stanowiące zagrożenie dla życia, zdrowia, mienia lub środowiska.'},
+      {t:'h', text:'Podział wg rodzaju zagrożenia'},
+      {t:'p', text:'Budowlane; w komunikacji lotniczej, drogowej, kolejowej; chemiczne; ekologiczne; radiologiczne; infrastruktury komunalnej; silne wiatry; przybory wód; opady śniegu; opady deszczu; na obszarach wodnych; medyczne.'}
+    ]
+  },
+  {
+    id:'w-poziomy-kierowania', cat:'ksrg', title:'Poziomy kierowania działaniem ratowniczym',
+    blocks:[
+      {t:'h', text:'Interwencyjny'},
+      {t:'p', text:'Realizowany w strefie zagrożenia, w celu realizowania czynności ratowniczych oraz zapewnienia bezpieczeństwa ratownikom. Max jedna kompania.'},
+      {t:'h', text:'Taktyczny'},
+      {t:'p', text:'Realizowany na granicy strefy zagrożenia lub poza nią, w celu wykonania przyjętych taktyk lub strategii oraz nadzoru nad kierowaniem interwencyjnym. Max jeden batalion lub w składzie znajdują się specjalistyczne grupy ratownicze.'},
+      {t:'h', text:'Strategiczny'},
+      {t:'p', text:'Realizowany w celu określenia i przyjęcia niezbędnej strategii w likwidowaniu zagrożenia oraz nadzoru nad kierowaniem taktycznym. Powyżej jednego batalionu, WOO, COO.'}
     ]
   }
 ];
