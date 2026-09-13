@@ -2879,7 +2879,8 @@ var WIEDZA_CATEGORIES=[
   {id:'srodki-gasnicze', name:'Środki gaśnicze'},
   {id:'odziez-ochronna', name:'Odzież ochronna i ODO'},
   {id:'materialy-niebezpieczne', name:'Materiały niebezpieczne (ADR)'},
-  {id:'ksrg', name:'Ratownictwo i KSRG'}
+  {id:'ksrg', name:'Ratownictwo i KSRG'},
+  {id:'zdarzenia-specjalne', name:'Zdarzenia specjalne i wybuchy'}
 ];
 var WIEDZA_BASE=[
   {
@@ -3520,6 +3521,90 @@ var WIEDZA_BASE=[
       {t:'p', text:'Realizowany na granicy strefy zagrożenia lub poza nią, w celu wykonania przyjętych taktyk lub strategii oraz nadzoru nad kierowaniem interwencyjnym. Max jeden batalion lub w składzie znajdują się specjalistyczne grupy ratownicze.'},
       {t:'h', text:'Strategiczny'},
       {t:'p', text:'Realizowany w celu określenia i przyjęcia niezbędnej strategii w likwidowaniu zagrożenia oraz nadzoru nad kierowaniem taktycznym. Powyżej jednego batalionu, WOO, COO.'}
+    ]
+  },
+  {
+    id:'w-butle-acetylenowe', cat:'zdarzenia-specjalne', title:'Butle acetylenowe — zagrożenia i rozpoznanie',
+    blocks:[
+      {t:'p', text:'Zagrożenia podczas zdarzeń z udziałem butli acetylenowych: eksplozja i uduszenie.'},
+      {t:'p', text:'Do zagrożenia spowodowanego wybuchem może dojść w następujących sytuacjach: wyciek bez zapłonu, wyciek z zapłonem, cofnięcie płomienia, pożar zewnętrzny, uderzenie.'},
+      {t:'h', text:'Rozpoznanie wstępne'},
+      {t:'p', text:'Czy będzie potrzebne dodatkowe wsparcie; rodzaj, ilość butli i ich stan; czy butle znajdowały się w środowisku pożaru bądź były poddane oddziaływaniu promieniowania cieplnego i uderzeniom (test zwilżania); czy zawory upustowe ciśnienia zadziałały; jakie zasoby wody są dostępne i w jakiej odległości od miejsca zdarzenia.'},
+      {t:'h', text:'Test zwilżania'},
+      {t:'p', text:'Wybrać właściwe miejsce na prowadzenie obserwacji zapewniające bezpieczeństwo ratownikowi. Podać rozproszony prąd wodny na całą powierzchnię butli. Zatrzymać podawanie wody i sprawdzić, czy z butli unosi się para wodna. W przypadku parowania kontynuować proces chłodzenia. W przypadku braku parowania obserwować, czy powierzchnia butli szybko wysycha (ok. 10 min).'},
+      {t:'h', text:'Właściwości fizykochemiczne acetylenu'},
+      {t:'table', cols:['Parametr','Wartość'], rows:[
+        ['Wzór','C₂H₂'],
+        ['Numer ONZ','1001'],
+        ['Temperatura krytyczna','35,5°C'],
+        ['Granica wybuchowości','2,4–83%'],
+        ['Temperatura samozapłonu','305°C'],
+        ['Wygląd','Bezbarwny, lżejszy od powietrza']
+      ]}
+    ]
+  },
+  {
+    id:'w-procedura-acetylen', cat:'zdarzenia-specjalne', title:'Procedura przy zdarzeniu z butlami acetylenowymi',
+    blocks:[
+      {t:'h', text:'1.'},
+      {t:'p', text:'Jeżeli nie mamy pewności, jakie są butle — traktujemy je jak z acetylenem.'},
+      {t:'h', text:'2.'},
+      {t:'p', text:'Sprawdzamy, czy butle znajdowały się w środowisku pożaru, są przeciekające lub czy zachodzi podejrzenie, że były narażone na uderzenie lub doszło do zjawiska cofnięcia płomienia. W takim przypadku nie wolno się do nich zbliżać.'},
+      {t:'h', text:'3.'},
+      {t:'p', text:'Wyznaczyć wstępnie co najmniej 200-metrową strefę rażenia. Przy użyciu wszelkich możliwych środków ochrony przeprowadzić ocenę istniejącego bezpośredniego zagrożenia dla ratowników, osób postronnych i mienia.'},
+      {t:'h', text:'4.'},
+      {t:'p', text:'Jeżeli sytuacja wydaje się bezpieczna, przy użyciu maksymalnych środków ochrony ugasić płomień w pobliżu butli i chłodzić butlę przez 24 godziny.'},
+      {t:'h', text:'5.'},
+      {t:'p', text:'Jeżeli chłodzenie jest niebezpieczne — odgrodzić obszar i nie zbliżać się do butli przez 24h.'},
+      {t:'h', text:'6.'},
+      {t:'p', text:'Przeprowadzić okresowo test zwilżania.'},
+      {t:'h', text:'7.'},
+      {t:'p', text:'Po 24-godzinnym chłodzeniu sprawdzić, czy powierzchnia butli pozostaje chłodna — jeśli tak, przekazać butlę właścicielowi, jeśli nie, wrócić do chłodzenia butli.'}
+    ]
+  },
+  {
+    id:'w-czad', cat:'zdarzenia-specjalne', title:'Czad (tlenek węgla)',
+    blocks:[
+      {t:'p', text:'Tlenek węgla jest gazem silnie trującym, bezbarwnym i bezwonnym, nieco lżejszym od powietrza — co powoduje, że łatwo się z nim miesza i w nim rozprzestrzenia.'},
+      {t:'p', text:'Powstaje w wyniku niepełnego spalania wielu paliw (drewna, oleju, gazu, benzyny, nafty, propanu, węgla, ropy), spowodowanego brakiem odpowiedniej ilości tlenu niezbędnej do zupełnego spalania.'},
+      {t:'h', text:'Potencjalne źródła w pomieszczeniach mieszkalnych'},
+      {t:'p', text:'Kominki, gazowe podgrzewacze wody, piece węglowe, gazowe lub olejowe, kuchnie gazowe.'},
+      {t:'h', text:'Przyczyny powstawania czadu'},
+      {t:'p', text:'Brak dopływu świeżego (zewnętrznego) powietrza do urządzenia, w którym następuje spalanie (szczelnie pozamykane okna, czasem dodatkowo uszczelnione, pozaklejane kratki, brak otworów wentylacyjnych w drzwiach łazienkowych); zanieczyszczenie, zużycie lub zła regulacja palnika gazowego; przedwczesne zamknięcie paleniska pieca lub kuchni; zapchane i nieszczelne przewody kominowe; uszkodzone połączenia między kominami i piecami; brak regularnych kontroli drożności przewodów wentylacyjnych i kominowych.'},
+      {t:'h', text:'Jak pomóc przy zatruciu tlenkiem węgla'},
+      {t:'p', text:'Należy natychmiast zapewnić dopływ świeżego, czystego powietrza. Jak najszybciej wynieść osobę poszkodowaną w bezpieczne miejsce, na świeże powietrze. W przypadku zatrzymania krążenia RKO rozpoczyna się od 5 oddechów ratowniczych. Tlenoterapia, folia życia, wsparcie psychiczne.'}
+    ]
+  },
+  {
+    id:'w-rodzaje-wybuchow', cat:'zdarzenia-specjalne', title:'Rodzaje wybuchów',
+    blocks:[
+      {t:'p', text:'Wybuch chemiczny to gwałtowna reakcja chemiczna przebiegająca z wykonaniem pracy mechanicznej i efektem dźwiękowo-świetlnym, jako skutkami wydzielenia dużych ilości ciepła i przeważnie wytworzenia dużych ilości gazów lub par.'},
+      {t:'h', text:'Homogeniczny'},
+      {t:'p', text:'Zachodzi w całej objętości palnej mieszaniny, z gwałtownym wzrostem temperatury w tej objętości — możliwe są tu wybuchy cieplne/termiczne lub fotochemiczne. Chemiczny wybuch cieplny zachodzi, gdy ilość wydzielanego ciepła reakcji jest większa od ciepła oddawanego do otoczenia, a spowodowany tym wzrost temperatury układu zwiększa szybkość reakcji.'},
+      {t:'h', text:'Heterogeniczny'},
+      {t:'p', text:'Strefa reakcji (np. płomień) przemieszcza się przez mieszaninę palną z określoną prędkością: mniejszą niż prędkość dźwięku (340,3 m/s ≈ 1225 km/h) — deflagracja; większą od prędkości dźwięku — detonacja. „Wybuch detonacyjny" związany jest z burzliwym charakterem przepływu mieszaniny, który umożliwia autoprzyspieszenie frontu płomienia i fali ciśnienia, nazywanej w tym przypadku falą uderzeniową.'},
+      {t:'p', text:'Wybuch tej samej substancji chemicznej może mieć charakter deflagracji, detonacji lub eksplozji, ponieważ prędkość rozchodzenia się fali ciśnienia zależy od właściwości tej substancji (masy, stopnia sprasowania, wilgotności, zawartości domieszek) oraz od warunków zewnętrznych (przestrzeń otwarta lub zamknięta, laminarny lub burzliwy przepływ gazów, temperatura i wilgotność powietrza).'},
+      {t:'h', text:'Wybuch fizyczny'},
+      {t:'p', text:'Gwałtowne wyrównanie różnicy ciśnień pomiędzy wnętrzem zbiornika lub naczynia a jego otoczeniem, powodujące rozerwanie jego ścianek, nie spowodowane reakcją chemiczną. Wiele zagrożeń wiąże się np. ze stosowaniem technologii wysokociśnieniowych w przemyśle chemicznym (synteza amoniaku, produkcja polietylenu i polipropylenu), z transportem rurociągowym, drogowym lub kolejowym substancji łatwopalnych, takich jak ropa naftowa lub paliwa. Wybuchy są inicjowane np. wskutek rozerwania reaktorów, rurociągów lub cystern.'}
+    ]
+  },
+  {
+    id:'w-bleve', cat:'zdarzenia-specjalne', title:'Wybuch BLEVE',
+    blocks:[
+      {t:'p', text:'BLEVE (ang. Boiling Liquid Expanding Vapour Explosion) — „wybuch rozszerzających się par wrzącej cieczy".'},
+      {t:'p', text:'Wybuch spowodowany nagłym wyciekiem (często łatwopalnej) cieczy w temperaturze wyższej od jej temperatury wrzenia przy normalnym ciśnieniu atmosferycznym, powstały w wyniku dużego wielomiejscowego uszkodzenia zbiornika. Wybuch BLEVE często nie jest typowym wybuchem fizycznym, lecz kombinacją wybuchu fizycznego i chemicznego.'},
+      {t:'p', text:'Gdy powłoka zbiornika zostaje przerwana, faza gazowa rozpręża się, obniżając gwałtownie ciśnienie nad cieczą, w wyniku czego ta przechodzi w stan wrzenia. Jeśli dochodzi do zapłonu uwalniających się par, ciepło spalania dodatkowo ogrzewa zbiornik, doprowadzając do szybkiego wzrostu ciśnienia wewnątrz. W którymś momencie dochodzi do rozerwania powłoki. Uwolniona do ciśnienia atmosferycznego ciecz gwałtownie zamienia się w parę i rozszerza się kilkusetkrotnie, zwiększając swoją objętość. Powstała chmura mieszaniny gazu i powietrza zapala się, jeśli tylko jest to możliwe.'}
+    ]
+  },
+  {
+    id:'w-wykipienie-wyrzut', cat:'zdarzenia-specjalne', title:'Zjawisko wykipienia i wyrzutu',
+    blocks:[
+      {t:'h', text:'Wykipienie'},
+      {t:'img', src:'images/wiedza/wykipienie.png', cap:'Gorąca warstwa ropy wyrzuca ponad zbiornik płonące cząsteczki paliwa.'},
+      {t:'p', text:'Zjawisko wykipienia obserwuje się jedynie w przypadku spalania cieczy o dużej lepkości (np. mazut, surowa ropa naftowa) zawierającej nierozpuszczalne w niej substancje (najczęściej wodę). W czasie przechowywania i w początkowym okresie spalania ropy naftowej woda jest mniej lub bardziej równomiernie rozłożona w całej masie cieczy. Długo trwający pożar nagrzewa płonącą ciecz do temperatury, przy której wrze woda, wyrzucając ponad zbiornik płonące cząsteczki paliwa.'},
+      {t:'h', text:'Wyrzut'},
+      {t:'img', src:'images/wiedza/wyrzut.png', cap:'Nagłe odparowanie wody zalegającej na dnie zbiornika wyrzuca rozgrzane, płonące paliwo poza koronę zbiornika.'},
+      {t:'p', text:'Zjawisko wyrzutu następuje w wyniku nagłego odparowania wody zalegającej na dnie zbiornika z ropą naftową lub innym paliwem. Skutkiem jest wyrzucenie poza koronę zbiornika znacznych ilości rozgrzanego i płonącego paliwa.'}
     ]
   }
 ];
