@@ -2880,7 +2880,8 @@ var WIEDZA_CATEGORIES=[
   {id:'odziez-ochronna', name:'Odzież ochronna i ODO'},
   {id:'materialy-niebezpieczne', name:'Materiały niebezpieczne (ADR)'},
   {id:'ksrg', name:'Ratownictwo i KSRG'},
-  {id:'zdarzenia-specjalne', name:'Zdarzenia specjalne i wybuchy'}
+  {id:'zdarzenia-specjalne', name:'Zdarzenia specjalne i wybuchy'},
+  {id:'specyfikacje-wzorcowe', name:'Specyfikacje wzorcowe pojazdów'}
 ];
 var WIEDZA_BASE=[
   {
@@ -3605,6 +3606,111 @@ var WIEDZA_BASE=[
       {t:'h', text:'Wyrzut'},
       {t:'img', src:'images/wiedza/wyrzut.png', cap:'Nagłe odparowanie wody zalegającej na dnie zbiornika wyrzuca rozgrzane, płonące paliwo poza koronę zbiornika.'},
       {t:'p', text:'Zjawisko wyrzutu następuje w wyniku nagłego odparowania wody zalegającej na dnie zbiornika z ropą naftową lub innym paliwem. Skutkiem jest wyrzucenie poza koronę zbiornika znacznych ilości rozgrzanego i płonącego paliwa.'}
+    ]
+  },
+  {
+    id:'w-spec-gba2524', cat:'specyfikacje-wzorcowe', title:'GBA 2,5/24 — dane techniczne (wzorcowe)',
+    blocks:[
+      {t:'p', text:'Wzorcowa specyfikacja pojazdu typu GBA 2,5/24 z dokumentu źródłowego — dane referencyjne, nie dotyczą konkretnego pojazdu z floty (porównaj z realnym GBA 3/16 w sekcji Pojazdy).'},
+      {t:'table', cols:['Parametr','Wartość'], rows:[
+        ['Pojemność zbiornika wody','130 l'],
+        ['Wysokość','2,9 m'],
+        ['Szerokość','2,52 m'],
+        ['Dopuszczalna masa','15 T'],
+        ['Zasięg taktyczny','8×20 m + 10×20 m = 360 m'],
+        ['Długość szybkiego natarcia','60 m'],
+        ['Maszt oświetleniowy','2,2 m'],
+        ['Najaśnice','1000 W'],
+        ['Wentylator oddymiający WO-14','14 000 m³/h']
+      ]},
+      {t:'h', text:'Defibrylator AED Philips FRX'},
+      {t:'p', text:'Odporność IP55, obciążenie do 225 kg, żywotność 4 lata lub 200 wyładowań, moc wyładowania 150 J.'},
+      {t:'h', text:'Kamera termowizyjna ArgusMI-320'},
+      {t:'p', text:'Wymiary 200×88×85 mm. Praca ciągła w zakresie od -10°C do +80°C, przez 15 min w temp. 150°C, przez 5 min w temp. 260°C. Odporność IP67, wyświetlacz 69 mm. Pomiar temperatury 0°C do 1000°C, zakres dynamiczny -40°C do 1000°C.'},
+      {t:'h', text:'Aparaty powietrzne'},
+      {t:'p', text:'Butla 6 l, ciśnienie robocze 300 bar, waga 8,2 kg.'},
+      {t:'h', text:'Agregat prądotwórczy'},
+      {t:'p', text:'2 kW, max. obciążenie 80%.'},
+      {t:'h', text:'Motopompa pływająca Niagara'},
+      {t:'p', text:'1200 l/min, wysokość tłoczenia 30 m, ciśnienie 3 atm, minimalna głębokość ssania 30 mm, moc 4 kW / 5,5 KM, waga 28 kg, zanurzenie 7 cm, kąt pracy 20°.'},
+      {t:'h', text:'Trójnóg ratowniczy TM-9'},
+      {t:'p', text:'Wysokość robocza 2,29 m, dopuszczalne obciążenie 500 kg, kołowrót 140 kg, masa 17 kg, wymiary transportowe 1,7 / 0,23 / 0,23 m. Linkowy aparat ratowniczy: max. obciążenie 140 kg.'},
+      {t:'h', text:'Zestaw hydrauliczny LUKAS'},
+      {t:'table', cols:['Element','Parametry'], rows:[
+        ['Agregat hydrauliczny P650','Zasilanie MTO, moc 4,2 kW, ciśnienie robocze 700 bar, przewody 20 m'],
+        ['Rozpierak cylindryczny R420','Dł. złożony/rozłożony 478/1053 mm, skok I tłoka/siła 295 mm / 26,6 T, skok II tłoka/siła 280 mm / 13,3 T, ciśnienie 700 bar, masa 16,9 kg'],
+        ['Nożyce S510','Klasa cięcia H, rozwarcie 180 mm, siła cięcia 91,4 T, masa 18,8 kg, Ø 40 mm, ciśnienie 700 bar'],
+        ['Rozpieracz ramieniowy SP310','Rozwarcie ramion 720 mm, siła rozpierania 4,6 T, ciągnięcie 4 T, ściskanie 12 T, klasa AS, masa 19,6 kg, ciśnienie 700 bar'],
+        ['Otwieracz drzwi Lukas HTS','9 T, rozwarcie 100 mm, waga 5,7 kg']
+      ]},
+      {t:'h', text:'Poduszki pneumatyczne wysokiego ciśnienia SAVA'},
+      {t:'p', text:'SAVA 56×56×2,6: wysokość podnoszenia 27 cm, siła podnoszenia 18,9 T. SAVA 69×69×2,7: wysokość podnoszenia 36 cm, siła podnoszenia 30,9 T.'},
+      {t:'h', text:'Sprzęt tnący i inny'},
+      {t:'table', cols:['Sprzęt','Parametry'], rows:[
+        ['Pilarka tarczowa Stihl TS-400','Śr. tarczy 350 mm, gł. cięcia 100 mm, moc 4 kW'],
+        ['Piła łańcuchowa Stihl','Prowadnica 40 cm, poj. skokowa 70,7 cm³, moc 4 kW'],
+        ['Pompa do ropopochodnych','49 l/min, ciśnienie 6,9 bar'],
+        ['Skokochron','3,5×3,5×1,7 m, sprawianie 30 s, ewakuacja do 16 m'],
+        ['Mostek przejazdowy','52×75×52 cm, waga 12,5 kg'],
+        ['Stojak hydrantowy 80','Masa 7,5 kg'],
+        ['Sito kominowe','60×60 cm']
+      ]},
+      {t:'h', text:'Miernik Multipro — progi alarmowe'},
+      {t:'table', cols:['Gaz','Ostrzegawczy','Niebezpieczny'], rows:[
+        ['CO','35 ppm','100 ppm'],
+        ['H₂S','10 ppm','20 ppm'],
+        ['O₂','23,5%','19%'],
+        ['LEL','0–100%','—']
+      ]},
+      {t:'h', text:'Drabiny'},
+      {t:'p', text:'Drabina ZS 2099: wysokość 10 m, waga 49,8 kg, rozstaw szczebli 32 cm, rozstaw bocznic 30–36 cm, długość drążków 5,32 m, 20 szczebli w przęśle. Drabina słupkowa: złożona 3,10 m, rozłożona 2,84 m, waga 7 kg, rozstaw szczebli 32 cm, 9 szczebli.'},
+      {t:'h', text:'Węże'},
+      {t:'p', text:'Wąż ssawny 110: 2,4 m, przepływ 1600 l/min przy 4 bar. Wąż ssawny 75: 1,5 m, przepływ 800 l/min przy 4 bar. Węże tłoczne (dł. 20 m): W75 — 10 szt., przepływ 800 l/min, 88 l wody w wężu; W52 — 8 szt., przepływ 200 l/min, 42 l wody w wężu.'},
+      {t:'h', text:'Prądownice i wytwornice'},
+      {t:'p', text:'PP2: 200 l/min, Ls=12, rzut 20 m, ciśnienie 5 bar. PP4: 400 l/min, Ls=12, rzut 25 m, ciśnienie 5 bar. WP 2/75: masa 5,9 kg, przepływ 200 l/min, Ls=75.'},
+      {t:'h', text:'Rękawice elektroizolacyjne'},
+      {t:'p', text:'Do 1000 V.'}
+    ]
+  },
+  {
+    id:'w-spec-gcba', cat:'specyfikacje-wzorcowe', title:'GCBA — dane techniczne (wzorcowe)',
+    blocks:[
+      {t:'p', text:'Wzorcowa specyfikacja pojazdu typu GCBA z dokumentu źródłowego — dane referencyjne, nie dotyczą konkretnego pojazdu z floty (porównaj z realnym GCBA 5/32 w sekcji Pojazdy).'},
+      {t:'table', cols:['Parametr','Wartość'], rows:[
+        ['Wysokość','3,2 m'],
+        ['Zasięg taktyczny','8×20 m + 11×20 m = 380 m'],
+        ['Długość szybkiego natarcia','80 m'],
+        ['Maszt oświetleniowy','6 m'],
+        ['Najaśnica','4×500 W, max. wysokość statywu 3,30 m']
+      ]},
+      {t:'h', text:'Aparaty powietrzne'},
+      {t:'p', text:'Butla 6 l, ciśnienie robocze 300 bar, waga 8,2 kg.'},
+      {t:'h', text:'Agregat prądotwórczy'},
+      {t:'p', text:'2 kW, max. obciążenie 80%.'},
+      {t:'h', text:'Zestaw hydrauliczny Lukas'},
+      {t:'table', cols:['Element','Parametry'], rows:[
+        ['Agregat hydrauliczny','Przewody 20 m, ciśnienie robocze 630 bar'],
+        ['Rozpieracz ramieniowy LSP 40 EN','Siła rozpierania 230 kN, siła ściskania 34,1 kN, szerokość rozwarcia 720 mm, waga 19,8 kg'],
+        ['Rozpieracz cylindryczny LTR 12/575 EN','Dł. złożony/rozłożony 475/1050 mm, skok tłoka 575 mm, siła 121–240 kN, ciężar 16,9 kg']
+      ]},
+      {t:'h', text:'Drabina nasadkowa'},
+      {t:'p', text:'Waga 12 kg, rozstaw szczebli 28,4 cm, szerokość przęsła u podstawy/szczytu 470/400 mm, 8 szczebli w przęśle. Wysokość złożonej: 1 przęsło 2730 mm, 2 przęsła 4650 mm, 3 przęsła 6570 mm, 4 przęsła 8490 mm.'},
+      {t:'h', text:'Pompa szlamowa Subaru Robin'},
+      {t:'p', text:'1000 l/min, ciśnienie robocze 3 bary.'},
+      {t:'h', text:'Lampa Aldebaran 360'},
+      {t:'p', text:'Waga 10,5 kg, 8×80 W świetlówek, długość/średnica lampy 900/220 mm, optymalna wysokość 3300 mm, waga statywu 24,5 kg.'},
+      {t:'h', text:'Piły i pilarki'},
+      {t:'table', cols:['Sprzęt','Parametry'], rows:[
+        ['Piła łańcuchowa Stihl MS 440','Prowadnica 40 cm, poj. skokowa 70,7 cm³, moc 4 kW, waga 7 kg'],
+        ['Piła łańcuchowa Stihl 064','Prowadnica 65 cm, poj. skokowa 85 cm³, moc 6,4 kW, waga 7,3 kg'],
+        ['Pilarka tarczowa Stihl TS-400','Śr. tarczy 350 mm, gł. cięcia 100 mm, moc 4 kW']
+      ]},
+      {t:'h', text:'Pozostały sprzęt'},
+      {t:'p', text:'Mostek przejazdowy: 75×35×10 cm. Stojak hydrantowy 80: masa 7,5 kg. Sito kominowe: 60×60 cm.'},
+      {t:'h', text:'Węże'},
+      {t:'p', text:'Wąż ssawny 110: 4 szt., 2,4 m, przepływ 1600 l/min przy 4 bar. Wąż ssawny 75: 3 szt., 1,5 m, przepływ 800 l/min przy 4 bar. Węże tłoczne (dł. 20 m): W75 — 11 szt., przepływ 800 l/min, 88 l wody w wężu; W52 — 8 szt., przepływ 200 l/min, 42 l wody w wężu.'},
+      {t:'h', text:'Prądownice i wytwornice'},
+      {t:'p', text:'PP4: 400 l/min, Ls=12, rzut 25 m, ciśnienie 5 bar. PP8: 800 l/min, Ls=15, rzut 26 m, ciśnienie 5 bar. WP 2/150: masa 10,5 kg, przepływ 200 l/min, Ls=150.'}
     ]
   }
 ];
