@@ -338,6 +338,39 @@ body { background: var(--bg); color: var(--text); }
 .wiedza-img{width:100%;border-radius:var(--radius);border:1px solid var(--border);margin:6px 0 4px;display:block}
 .wiedza-img-cap{font-size:11.5px;color:var(--text-muted);margin:0 0 16px;line-height:1.4}
 .wiedza-entry-cat{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.fiszki-green{--f-green:#1e7a4c;--f-green-soft:rgba(30,122,76,.10);--f-green-ink:#1e7a4c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .fiszki-green{--f-green:#59c58b;--f-green-soft:rgba(89,197,139,.14);--f-green-ink:#59c58b}}
+:root[data-theme="dark"] .fiszki-green{--f-green:#59c58b;--f-green-soft:rgba(89,197,139,.14);--f-green-ink:#59c58b}
+.fiszki-bar-track{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:8px}
+.fiszki-bar-fill{height:100%;background:var(--f-green,#1e7a4c);border-radius:99px}
+.fiszki-progress-txt{font-size:11px;color:var(--text-muted);margin-top:5px;font-family:"SF Mono","Fira Code",monospace}
+.fiszki-session-wrap{padding:8px 16px 24px}
+.fiszki-progress-bar{height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:18px}
+.fiszki-progress-bar-fill{height:100%;background:var(--f-green,#1e7a4c);border-radius:99px;transition:width .25s ease}
+.fiszki-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 18px;text-align:center}
+.fiszki-kicker{font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;font-weight:600}
+.fiszki-name{font-size:18px;font-weight:700;color:var(--text);line-height:1.35}
+.fiszki-sub{font-size:12px;color:var(--text-muted);margin-top:6px;font-family:"SF Mono","Fira Code",monospace}
+.fiszki-prompt{margin-top:18px;font-size:12.5px;color:var(--text-faint);font-style:italic}
+.fiszki-opts{display:flex;flex-direction:column;gap:9px;margin-top:20px;text-align:left}
+.fiszki-opt{border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:600;color:var(--text);background:var(--surface);cursor:pointer}
+.fiszki-opt:active{background:var(--surface-2)}
+.fiszki-opt.correct{border-color:var(--f-green,#1e7a4c);background:var(--f-green-soft,rgba(30,122,76,.1));color:var(--f-green-ink,#1e7a4c)}
+.fiszki-opt.wrong{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.fiszki-reveal-list{text-align:left;margin-top:18px;border-top:1px solid var(--border);padding-top:14px;max-height:280px;overflow-y:auto}
+.fiszki-reveal-item{display:flex;justify-content:space-between;gap:10px;padding:8px 0;font-size:13px;border-bottom:1px solid var(--border)}
+.fiszki-reveal-item:last-child{border-bottom:none}
+.fiszki-reveal-item .n{font-weight:600;color:var(--text)}
+.fiszki-reveal-item .q{font-family:"SF Mono","Fira Code",monospace;color:var(--text-muted);flex-shrink:0;white-space:nowrap}
+.fiszki-assess-row{display:flex;gap:10px;margin-top:20px}
+.fiszki-assess-btn{flex:1;border-radius:12px;padding:12px 0;font-size:13px;font-weight:700;text-align:center;cursor:pointer;border:1px solid transparent}
+.fiszki-assess-no{background:var(--accent-bg);color:var(--accent);border-color:rgba(192,57,43,.25)}
+.fiszki-assess-yes{background:var(--f-green-soft,rgba(30,122,76,.1));color:var(--f-green-ink,#1e7a4c);border-color:var(--f-green,#1e7a4c)}
+.fiszki-summary{text-align:center;padding:40px 20px}
+.fiszki-summary .big{font-size:40px;margin-bottom:10px}
+.fiszki-summary .t{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px}
+.fiszki-summary .s{font-size:13px;color:var(--text-muted);margin-bottom:24px}
+.fiszki-streak{background:var(--f-green-soft,rgba(30,122,76,.1));border:1px solid var(--f-green,#1e7a4c);color:var(--f-green-ink,#1e7a4c);border-radius:12px;padding:11px 13px;font-size:12.5px;font-weight:600;text-align:center;margin:14px 16px 0}
 .sensor-alarm1 { color: #e67e00; }
 .sensor-alarm2 { color: var(--accent); }
 .sensor-gas { font-weight: 500; }
@@ -578,6 +611,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       <div class="list-group" id="sensors-list"></div>
       <div class="list-group" id="quiz-section-list"></div>
       <div class="list-group" id="wiedza-section-list"></div>
+      <div class="list-group fiszki-green" id="fiszki-section-list"></div>
       <div class="list-group" id="jrg-list"></div>
       <div class="edit-tools-panel">
         <div class="edit-tools-panel-title">Dane zapisują się w chmurze na bieżąco</div>
@@ -1012,6 +1046,49 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   </div>
   <div class="scroll-content">
     <div class="wiedza-entry-body" id="wiedza-entry-body"></div>
+  </div>
+</div>
+
+<!-- ═══ FISZKI — HUB (3 POJAZDY) ═══ -->
+<div class="view fiszki-green" id="view-fiszki-hub">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Główna</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text">Fiszki</div>
+        <div class="nav-title-sub">Nauka sprzętu</div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="list-group" id="fiszki-hub-list"></div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══ FISZKI — SESJA ═══ -->
+<div class="view fiszki-green" id="view-fiszki-session">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="exitFiszkiSession()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Fiszki</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text" id="fiszki-session-title"></div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="fiszki-session-wrap">
+      <div class="fiszki-progress-bar"><div class="fiszki-progress-bar-fill" id="fiszki-progress-fill" style="width:0%"></div></div>
+      <div id="fiszki-card-wrap"></div>
+    </div>
   </div>
 </div>
 
@@ -1854,6 +1931,22 @@ function renderHome(){
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
   wl.appendChild(wrow);
+
+  // Fiszki — wiersz po Wiedzy
+  var fl=document.getElementById('fiszki-section-list');
+  fl.innerHTML='';
+  var frow=document.createElement('div');
+  frow.className='vehicle-row';
+  frow.onclick=function(){showFiszkiHub();};
+  var totalKnown=fiszkiTotalKnown(), totalItems=fiszkiTotalItems();
+  frow.innerHTML=
+    '<div class="vehicle-badge" style="background:#1e7a4c">GRA</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">Fiszki</div>'+
+      '<div class="vehicle-meta">Nauka sprzętu · opanowane '+totalKnown+'/'+totalItems+'</div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  fl.appendChild(frow);
 
   // JRG — hub: Garaż, Biuro, Przegląd
   var jl=document.getElementById('jrg-list');
@@ -4075,6 +4168,208 @@ function showWiedzaEntry(id){
     '<div class="wiedza-entry-cat">'+(cat?cat.name:'')+'</div>'+
     '<div class="notice-title" style="font-size:19px;margin-bottom:12px">'+w.title+'</div>'+
     renderWiedzaBlocks(w.blocks);
+}
+
+/* ── FISZKI — nauka sprzętu: „Gdzie to jest?" i „Co jest w tej skrytce?" ── */
+var FISZKI_VEHICLES=['v1','v2','v3'];
+var FISZKI_PROGRESS=(function(){
+  try{ var raw=localStorage.getItem('fiszki_progress_v1'); return raw?JSON.parse(raw):{}; }
+  catch(e){ return {}; }
+})();
+function fiszkiSaveProgress(){
+  try{ localStorage.setItem('fiszki_progress_v1', JSON.stringify(FISZKI_PROGRESS)); }catch(e){}
+}
+function fiszkiVehicleProgress(vid){
+  if(!FISZKI_PROGRESS[vid]) FISZKI_PROGRESS[vid]={items:{}};
+  return FISZKI_PROGRESS[vid];
+}
+function fiszkiItemsFor(vid){
+  return D.items.filter(function(it){return it.v===vid;});
+}
+function fiszkiKnownCount(vid){
+  return Object.keys(fiszkiVehicleProgress(vid).items).length;
+}
+function fiszkiTotalItems(){
+  return FISZKI_VEHICLES.reduce(function(sum,vid){return sum+fiszkiItemsFor(vid).length;},0);
+}
+function fiszkiTotalKnown(){
+  return FISZKI_VEHICLES.reduce(function(sum,vid){return sum+fiszkiKnownCount(vid);},0);
+}
+function fiszkiShuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; }
+  return a;
+}
+
+function showFiszkiHub(){
+  switchView('view-fiszki-hub');
+  var wrap=document.getElementById('fiszki-hub-list');
+  wrap.innerHTML='';
+  FISZKI_VEHICLES.forEach(function(vid){
+    var v=D.vehicles[vid];
+    if(!v) return;
+    var total=fiszkiItemsFor(vid).length;
+    var known=fiszkiKnownCount(vid);
+    var pct=total?Math.round(known/total*100):0;
+    var row=document.createElement('div');
+    row.className='vehicle-row';
+    row.onclick=function(){startFiszkiSession(vid);};
+    row.innerHTML=
+      '<div class="vehicle-badge">'+v.icon+'</div>'+
+      '<div class="vehicle-info">'+
+        '<div class="vehicle-name">'+v.name+'</div>'+
+        '<div class="fiszki-progress-txt">Opanowane '+known+' / '+total+'</div>'+
+        '<div class="fiszki-bar-track"><div class="fiszki-bar-fill" style="width:'+pct+'%"></div></div>'+
+      '</div>'+
+      '<div class="vehicle-arrow">›</div>';
+    wrap.appendChild(row);
+  });
+}
+
+var fiszkiSession=null;
+function startFiszkiSession(vid){
+  var v=D.vehicles[vid];
+  if(!v) return;
+  var allItems=fiszkiItemsFor(vid);
+  var progress=fiszkiVehicleProgress(vid);
+  var unknownItems=allItems.filter(function(it){return !progress.items[it.id];});
+  var knownItems=allItems.filter(function(it){return progress.items[it.id];});
+  var pickItems=fiszkiShuffle(unknownItems).slice(0,14);
+  if(pickItems.length<14) pickItems=pickItems.concat(fiszkiShuffle(knownItems).slice(0,14-pickItems.length));
+  var comps=(v.compartments||[]).filter(function(c){ return allItems.some(function(it){return it.comp===c.id;}); });
+  var pickComps=fiszkiShuffle(comps).slice(0,6);
+
+  var queue=[];
+  pickItems.forEach(function(it){ queue.push({type:'where', item:it}); });
+  pickComps.forEach(function(c){ queue.push({type:'whatin', comp:c}); });
+  queue=fiszkiShuffle(queue);
+  if(!queue.length){ alert('Brak sprzętu do nauki w tym pojeździe.'); return; }
+
+  fiszkiSession={vid:vid, v:v, queue:queue, idx:0, total:queue.length, doneCount:0};
+  switchView('view-fiszki-session');
+  document.getElementById('fiszki-session-title').textContent=v.name;
+  document.getElementById('fiszki-progress-fill').style.width='0%';
+  fiszkiRenderCard();
+}
+function exitFiszkiSession(){
+  fiszkiSession=null;
+  renderHome();
+  showFiszkiHub();
+}
+function fiszkiUpdateProgressBar(){
+  var s=fiszkiSession;
+  var pct=s.total?Math.round((s.doneCount/s.total)*100):0;
+  document.getElementById('fiszki-progress-fill').style.width=pct+'%';
+}
+function fiszkiRenderCard(){
+  var s=fiszkiSession;
+  if(s.idx>=s.queue.length){ fiszkiRenderSummary(); return; }
+  fiszkiUpdateProgressBar();
+  var wrap=document.getElementById('fiszki-card-wrap');
+  var card=s.queue[s.idx];
+  if(card.type==='where') fiszkiRenderWhereCard(card, wrap);
+  else fiszkiRenderWhatInCard(card, wrap);
+}
+function fiszkiRenderWhereCard(card, wrap){
+  var s=fiszkiSession, v=s.v, it=card.item;
+  var correctComp=(v.compartments||[]).find(function(c){return c.id===it.comp;});
+  if(!correctComp){ s.idx++; fiszkiRenderCard(); return; }
+  var others=(v.compartments||[]).filter(function(c){return c.id!==it.comp;});
+  var options=fiszkiShuffle([correctComp].concat(fiszkiShuffle(others).slice(0,3)));
+  wrap.innerHTML=
+    '<div class="fiszki-card">'+
+      '<div class="fiszki-kicker">Gdzie znajdziesz ten sprzęt?</div>'+
+      '<div class="fiszki-name">'+escAttr(it.name)+'</div>'+
+      (it.nr?'<div class="fiszki-sub">'+escAttr(it.nr)+'</div>':'')+
+      '<div class="fiszki-opts" id="fiszki-opts"></div>'+
+    '</div>';
+  var optsWrap=document.getElementById('fiszki-opts');
+  options.forEach(function(c){
+    var btn=document.createElement('div');
+    btn.className='fiszki-opt';
+    btn.textContent=c.label+' ('+c.side+')';
+    btn.onclick=function(){ fiszkiAnswerWhere(it, c, options, optsWrap, btn); };
+    optsWrap.appendChild(btn);
+  });
+}
+function fiszkiAnswerWhere(item, chosenComp, options, optsWrap, clickedBtn){
+  var s=fiszkiSession;
+  var isCorrect=chosenComp.id===item.comp;
+  Array.prototype.forEach.call(optsWrap.children, function(el){ el.onclick=null; });
+  for(var i=0;i<options.length;i++){
+    if(options[i].id===item.comp) optsWrap.children[i].classList.add('correct');
+  }
+  if(!isCorrect) clickedBtn.classList.add('wrong');
+  if(isCorrect){
+    fiszkiVehicleProgress(s.vid).items[item.id]=true;
+    fiszkiSaveProgress();
+  } else {
+    var pos=Math.min(s.queue.length, s.idx+4);
+    s.queue.splice(pos, 0, {type:'where', item:item});
+    s.total=s.queue.length;
+  }
+  s.doneCount++;
+  setTimeout(function(){ s.idx++; fiszkiRenderCard(); }, 650);
+}
+function fiszkiRenderWhatInCard(card, wrap){
+  var s=fiszkiSession, v=s.v, comp=card.comp;
+  wrap.innerHTML=
+    '<div class="fiszki-card" id="fiszki-flip-card" style="cursor:pointer">'+
+      '<div class="fiszki-kicker">Wymień sprzęt z tej skrytki</div>'+
+      '<div class="fiszki-name">'+v.name+' → '+comp.label+'</div>'+
+      '<div class="fiszki-sub">'+comp.side+'</div>'+
+      '<div class="fiszki-prompt" id="fiszki-flip-prompt">dotknij, żeby odkryć zawartość</div>'+
+      '<div id="fiszki-reveal-area"></div>'+
+    '</div>';
+  var cardEl=document.getElementById('fiszki-flip-card');
+  cardEl.onclick=function(){ cardEl.onclick=null; cardEl.style.cursor='default'; fiszkiRevealWhatIn(comp); };
+}
+function fiszkiRevealWhatIn(comp){
+  var s=fiszkiSession;
+  var promptEl=document.getElementById('fiszki-flip-prompt');
+  if(promptEl) promptEl.remove();
+  var items=D.items.filter(function(it){return it.v===s.vid && it.comp===comp.id;});
+  var listHtml=items.map(function(it){
+    return '<div class="fiszki-reveal-item"><span class="n">'+escAttr(it.name)+'</span><span class="q">'+escAttr(it.qty||'')+'</span></div>';
+  }).join('') || '<div class="empty" style="padding:10px 0">Brak pozycji</div>';
+  document.getElementById('fiszki-reveal-area').innerHTML=
+    '<div class="fiszki-reveal-list">'+listHtml+'</div>'+
+    '<div class="fiszki-assess-row">'+
+      '<div class="fiszki-assess-btn fiszki-assess-no" id="fiszki-no">✕ Nie umiałem</div>'+
+      '<div class="fiszki-assess-btn fiszki-assess-yes" id="fiszki-yes">✓ Umiałem</div>'+
+    '</div>';
+  document.getElementById('fiszki-yes').onclick=function(){ fiszkiAnswerWhatIn(comp, true); };
+  document.getElementById('fiszki-no').onclick=function(){ fiszkiAnswerWhatIn(comp, false); };
+}
+function fiszkiAnswerWhatIn(comp, knew){
+  var s=fiszkiSession;
+  if(knew){
+    var items=D.items.filter(function(it){return it.v===s.vid && it.comp===comp.id;});
+    var prog=fiszkiVehicleProgress(s.vid);
+    items.forEach(function(it){ prog.items[it.id]=true; });
+    fiszkiSaveProgress();
+  } else {
+    var pos=Math.min(s.queue.length, s.idx+4);
+    s.queue.splice(pos, 0, {type:'whatin', comp:comp});
+    s.total=s.queue.length;
+  }
+  s.doneCount++;
+  s.idx++;
+  fiszkiRenderCard();
+}
+function fiszkiRenderSummary(){
+  var s=fiszkiSession;
+  var known=fiszkiKnownCount(s.vid);
+  var total=fiszkiItemsFor(s.vid).length;
+  document.getElementById('fiszki-card-wrap').innerHTML=
+    '<div class="fiszki-summary">'+
+      '<div class="big">🎉</div>'+
+      '<div class="t">Sesja ukończona!</div>'+
+      '<div class="s">Opanowane w '+s.v.name+': '+known+' / '+total+'</div>'+
+      '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--f-green,#1e7a4c);color:#fff;font-weight:700;font-size:13.5px;border:none" onclick="startFiszkiSession(\''+s.vid+'\')">Kolejna sesja</button>'+
+    '</div>';
+  document.getElementById('fiszki-progress-fill').style.width='100%';
+  renderHome();
 }
 
 /* ── PRZEGLĄD — sprzęt/pomieszczenia i odpowiedzialni, wg zmiany ── */
