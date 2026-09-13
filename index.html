@@ -2875,7 +2875,8 @@ var WIEDZA_CATEGORIES=[
   {id:'hydraulika', name:'Hydraulika pożarnicza'},
   {id:'drabiny', name:'Drabiny pożarnicze'},
   {id:'taktyka', name:'Taktyka działań'},
-  {id:'klasyfikacja', name:'Klasyfikacja pożarów i budynków'}
+  {id:'klasyfikacja', name:'Klasyfikacja pożarów i budynków'},
+  {id:'srodki-gasnicze', name:'Środki gaśnicze'}
 ];
 var WIEDZA_BASE=[
   {
@@ -3205,6 +3206,85 @@ var WIEDZA_BASE=[
         ['D','R 30','–','R E I 30','E I 30 (o↔i)','–','–'],
         ['E','–','–','–','–','–','–']
       ]}
+    ]
+  },
+  {
+    id:'w-piana-bialkowa', cat:'srodki-gasnicze', title:'Środki pianotwórcze — hydrolizatory białkowe',
+    blocks:[
+      {t:'h', text:'P — proteinowe'},
+      {t:'p', text:'Koncentraty oparte na poddanych hydrolizie surowcach białkowych, np. Regular 6%, Towalex P6%.'},
+      {t:'h', text:'FP — fluoroproteinowe'},
+      {t:'p', text:'Środki proteinowe, do których dodano fluorowane surfaktanty, np. Plus 6%, Towalex FP6%.'},
+      {t:'h', text:'FFFP — fluoroproteinowe tworzące film wodny'},
+      {t:'p', text:'Środki fluoroproteinowe mające zdolność tworzenia cienkiej warstewki roztworu na niektórych paliwach węglowodorowych, np. Aer-O-film 66 6%, Petroseal 3%.'}
+    ]
+  },
+  {
+    id:'w-piana-syntetyczna', cat:'srodki-gasnicze', title:'Środki pianotwórcze syntetyczne',
+    blocks:[
+      {t:'h', text:'S — syntetyczne'},
+      {t:'p', text:'Oparte na mieszaninach zwykłych surfaktantów, mogą też zawierać surfaktanty fluorowane i dodatkowe stabilizatory, np. Deteor 1000M 3%, Roteor M 3%, Protektol SAT-10 3%.'},
+      {t:'h', text:'A — środki klasy A'},
+      {t:'p', text:'Środki syntetyczne, których skład jest dostosowany specjalnie do wytwarzania pian przeznaczonych do gaszenia pożarów grupy A.'},
+      {t:'h', text:'AFFF — tworzące film wodny'},
+      {t:'p', text:'Oparte na mieszaninach zwykłych i fluorowanych surfaktantów, mające zdolność tworzenia cienkiej warstewki roztworu na powierzchniach niektórych paliw węglowodorowych, np. Filmfoam 216 6%, Light Water AFFF FC-203A (3%).'},
+      {t:'h', text:'AR — alkoholoodporne'},
+      {t:'p', text:'Bazują na wszystkich pozostałych grupach środków pianotwórczych (najczęściej AFFF). Mogą być stosowane nie tylko do gaszenia cieczy polarnych (alkohole, estry, etery — stosowane do produkcji farb, lakierów i rozpuszczalników), ale także typowych węglowodorowych. Działanie polega na wytwarzaniu na styku warstwy piany z powierzchnią polarnego paliwa warstewki zżelowanego polimeru, która oddziela pianę i paliwo, uniemożliwiając ciągłe niszczenie piany, np. Tutogen L, Komet Extrat.'}
+    ]
+  },
+  {
+    id:'w-rodzaje-piany', cat:'srodki-gasnicze', title:'Rodzaje piany wg liczby spienienia',
+    blocks:[
+      {t:'table', cols:['Rodzaj piany','Liczba spienienia (Ls)','Stężenie'], rows:[
+        ['Ciężka','0–20','3–6%'],
+        ['Średnia','20–200','3–6%'],
+        ['Lekka','powyżej 200','2–4%']
+      ]},
+      {t:'h', text:'Przykład obliczania wydajności'},
+      {t:'p', text:'Dla PP4 o Ls = 15 i stężeniu roztworu 3%: 0,4 m³ × 3% = 0,012 m³. 0,4 m³ + 0,012 m³ = 0,412 m³ roztworu. Ls = Vpiany / Vroztworu → 15 = Vpiany / 0,412 m³ → Vpiany = 0,412 m³ × 15 = 6,18 m³ piany w minutę.'}
+    ]
+  },
+  {
+    id:'w-wlasnosci-wody', cat:'srodki-gasnicze', title:'Właściwości wody przy gaszeniu pożarów',
+    blocks:[
+      {t:'h', text:'Korzystne przy gaszeniu'},
+      {t:'p', text:'Działanie chłodzące — odbiera ciepło w środowisku pożarowym (duże ciepło właściwe 4,18 kJ/(deg·kg) i parowania Hp = 2257 kJ/kg). Intensyfikuje szybkość odbierania ciepła. Chłodzenie powierzchniowe materiału zmniejsza szybkość pirolizy (mniej par produktów pirolizy trafia do strefy spalania). Wytworzenie dużej ilości pary wodnej zakłóca wymianę ciepła w strefie spalania oraz rozcieńcza środowisko.'},
+      {t:'h', text:'Zjawiska obniżające skuteczność gaszenia wodą'},
+      {t:'p', text:'Zbyt szybkie odparowanie, niezwilżanie przez wodę substancji hydrofobowych, niska temperatura krzepnięcia, opory przepływu (straty na wydajności i zasięgu), piroliza wody w wysokich temperaturach.'},
+      {t:'h', text:'Ograniczenia stosowania wody do celów gaśniczych'},
+      {t:'p', text:'Urządzenia pod napięciem; pożary metali (lub ich obecność) nagrzanych do wysokich temperatur; obecność substancji reagujących z wodą z wydzieleniem palnych gazów; obecność substancji reagujących z wodą egzotermicznie (wydzielają się duże ilości ciepła) lub z wydzieleniem gazów toksycznych; sytuacja, w której woda ściekająca po gaszeniu pożarów obejmujących substancje toksyczne może stwarzać zagrożenie dla środowiska.'}
+    ]
+  },
+  {
+    id:'w-dzialanie-pian', cat:'srodki-gasnicze', title:'Zastosowanie i działanie gaśnicze pian',
+    blocks:[
+      {t:'h', text:'Ogólny zakres zastosowania'},
+      {t:'p', text:'Pożary grupy B — odpowiednia piana jest podstawowym, niezbędnym środkiem gaśniczym, pozwalającym szybko zgasić pożar i zabezpieczyć przed nawrotem palenia. Pożary grupy A — podstawowym środkiem gaśniczym jest woda, ale zastosowanie odpowiedniej piany zwiększa szybkość gaszenia i zmniejsza zużycie wody.'},
+      {t:'h', text:'Działanie gaśnicze pian'},
+      {t:'p', text:'Oddzielanie powierzchni cieczy od płomienia (B). Chłodzenie strefy spalania i paliwa wyciekającym z piany roztworem (B, A). Oddzielanie strefy spalania od powietrza (A). Powstrzymywanie parowania cieczy lub wydzielania się gazów z materiału stałego (B, A). Izolowanie termiczne — ochrona materiałów przed nagrzewaniem (A). Wypieranie gazów pożarowych przy wypełnianiu lub zalewaniu pianą pomieszczeń.'}
+    ]
+  },
+  {
+    id:'w-proszki-gasnicze', cat:'srodki-gasnicze', title:'Proszki gaśnicze',
+    blocks:[
+      {t:'p', text:'Od składu chemicznego bazy proszku zależy jego skuteczność gaśnicza i zakres stosowania.'},
+      {t:'h', text:'Proszki BC'},
+      {t:'p', text:'Do gaszenia pożarów płomieniowych. Skład: węglany, wodorowęglany metali alkalicznych, siarczany.'},
+      {t:'h', text:'Proszki ABC(D)'},
+      {t:'p', text:'Do gaszenia pożarów płomieniowych, bezpłomieniowych oraz płonących metali. Skład: ortofosforany amonowe, siarczany i wodorosiarczany amonowe.'},
+      {t:'h', text:'Proszki specjalne D'},
+      {t:'p', text:'Do gaszenia pożarów metali. Skład: chlorki sodu lub potasu, czteroboran sodowy, grafit, mikrogranulki węglowe, wysokotopliwe żywice.'}
+    ]
+  },
+  {
+    id:'w-czynniki-gazowe', cat:'srodki-gasnicze', title:'Gaśnicze czynniki gazowe',
+    blocks:[
+      {t:'h', text:'Podział czynników gazowych'},
+      {t:'p', text:'Gazy obojętne (azot, dwutlenek węgla, para wodna, hel, argon). Mieszaniny gazów obojętnych (gazy spalinowe, inergen, argonite). Halony (1211 — bromochlorodifluorometan). Zamienniki halonów (Triodide, FM-200).'},
+      {t:'h', text:'Stężenie gaszące'},
+      {t:'p', text:'Minimalne stężenie gazu gaśniczego w powietrzu, zapewniające ugaszenie pożaru.'},
+      {t:'h', text:'Stężenie inwertujące'},
+      {t:'p', text:'Minimalne stężenie gazu gaśniczego w powietrzu, przy którym niemożliwe jest zapalenie substancji palnej przy użyciu typowych źródeł zapłonu.'}
     ]
   }
 ];
