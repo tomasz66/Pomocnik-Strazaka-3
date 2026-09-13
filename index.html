@@ -2876,7 +2876,9 @@ var WIEDZA_CATEGORIES=[
   {id:'drabiny', name:'Drabiny pożarnicze'},
   {id:'taktyka', name:'Taktyka działań'},
   {id:'klasyfikacja', name:'Klasyfikacja pożarów i budynków'},
-  {id:'srodki-gasnicze', name:'Środki gaśnicze'}
+  {id:'srodki-gasnicze', name:'Środki gaśnicze'},
+  {id:'odziez-ochronna', name:'Odzież ochronna i ODO'},
+  {id:'materialy-niebezpieczne', name:'Materiały niebezpieczne (ADR)'}
 ];
 var WIEDZA_BASE=[
   {
@@ -3285,6 +3287,113 @@ var WIEDZA_BASE=[
       {t:'p', text:'Minimalne stężenie gazu gaśniczego w powietrzu, zapewniające ugaszenie pożaru.'},
       {t:'h', text:'Stężenie inwertujące'},
       {t:'p', text:'Minimalne stężenie gazu gaśniczego w powietrzu, przy którym niemożliwe jest zapalenie substancji palnej przy użyciu typowych źródeł zapłonu.'}
+    ]
+  },
+  {
+    id:'w-ubranie-gazoszczelne', cat:'odziez-ochronna', title:'Chemoodporne ubranie gazoszczelne',
+    blocks:[
+      {t:'h', text:'Typ 1'},
+      {t:'p', text:'Odzież zabezpieczająca cały organizm, posiadająca cechy gazoszczelności, spełniająca wymagania testu szczelności.'},
+      {t:'h', text:'Typ 2'},
+      {t:'p', text:'Odzież zabezpieczająca cały organizm, nie spełniająca wymagań testu szczelności.'},
+      {t:'p', text:'W ramach Typu 1 wyróżniamy trzy rodzaje odzieży gazoszczelnej:'},
+      {t:'h', text:'Typ 1A'},
+      {t:'p', text:'Odzież z aparatem powietrznym noszonym wewnątrz kombinezonu — sprzęt ochrony układu oddechowego chroniony jest przed działaniem niebezpiecznych mediów przez kombinezon.'},
+      {t:'h', text:'Typ 1B'},
+      {t:'p', text:'Odzież z aparatem powietrznym noszonym na zewnątrz kombinezonu — sprzęt ochrony układu oddechowego nie jest chroniony przed działaniem niebezpiecznych mediów.'},
+      {t:'h', text:'Typ 1C'},
+      {t:'p', text:'Odzież z zasilaniem w powietrze do oddychania dostarczonym z zewnętrznej linii sprężonego powietrza.'}
+    ]
+  },
+  {
+    id:'w-ubrania-zaroochronne', cat:'odziez-ochronna', title:'Ubrania żaroochronne',
+    blocks:[
+      {t:'h', text:'Ubranie lekkie (zbliżeniowe)'},
+      {t:'p', text:'Odporność w granicach 200°C. Stosowane do wykonywania czynności ratowniczych w bliskim kontakcie z ogniem.'},
+      {t:'h', text:'Ubranie średnie'},
+      {t:'p', text:'Odporność w granicach 700°C. Chroni całą sylwetkę strażaka przed intensywnym promieniowaniem cieplnym poprzez krótkotrwałe wejście w strefę ognia. Noszone w komplecie ze sprzętem ODO.'},
+      {t:'h', text:'Ubranie ciężkie'},
+      {t:'p', text:'Chroni przed bardzo dużym promieniowaniem cieplnym oraz umożliwia przebywanie w pobliżu płomieni przez dłuższy czas, jak również wejście w strefę ognia. Jednoczęściowe. Noszone w komplecie ze sprzętem ODO.'}
+    ]
+  },
+  {
+    id:'w-odo', cat:'odziez-ochronna', title:'Zestaw Ochrony Dróg Oddechowych (ODO)',
+    blocks:[
+      {t:'p', text:'ODO to zestaw izolujący nadciśnieniowy. W skład zestawu wchodzi: maska twarzowa (Auer) i noszak posiadający dwa stopnie redukcji.'},
+      {t:'h', text:'I stopień — reduktor'},
+      {t:'p', text:'300 bar (butla) → 6 bar (przewody).'},
+      {t:'h', text:'II stopień — automat oddechowy'},
+      {t:'p', text:'Redukuje ciśnienie z 6 bar do niewiele ponad 1 atmosfery.'},
+      {t:'h', text:'Butla'},
+      {t:'p', text:'6 L, 300 atm.'},
+      {t:'h', text:'Przykład zużycia powietrza — praca ciężka (80 l/min)'},
+      {t:'p', text:'300 atm × 6 L = 1800 litrów powietrza. 1800 L : 80 l/min = 22,5 min.'},
+      {t:'h', text:'Próg alarmowy (gwizdek)'},
+      {t:'p', text:'Od 55 ± 5 atm.'}
+    ]
+  },
+  {
+    id:'w-tablica-adr', cat:'materialy-niebezpieczne', title:'Tablica ADR — numer rozpoznawczy i numer ONZ',
+    blocks:[
+      {t:'h', text:'Pierwsza cyfra — rodzaj niebezpieczeństwa materiału'},
+      {t:'table', cols:['Klasa','Rodzaj niebezpieczeństwa'], rows:[
+        ['1','Materiał wybuchowy'],
+        ['2','Gazy'],
+        ['3','Materiał ciekły zapalny'],
+        ['4.1','Materiał stały zapalny'],
+        ['4.2','Materiały samozapalne'],
+        ['4.3','Materiały wytwarzające z wodą gazy zapalne'],
+        ['5.1','Materiały utleniające'],
+        ['5.2','Nadtlenki organiczne'],
+        ['6.1','Materiały trujące'],
+        ['6.2','Materiały zakaźne'],
+        ['7','Materiały promieniotwórcze'],
+        ['8','Materiały żrące'],
+        ['9','Różne materiały i przedmioty niebezpieczne']
+      ]},
+      {t:'h', text:'Druga i trzecia cyfra — stopień zagrożenia'},
+      {t:'p', text:'Brak dodatkowego zagrożenia, wybuchowość, zdolność wytwarzania gazu, łatwopalność, właściwości utleniające, toksyczność, działanie radioaktywne, działanie żrące, niebezpieczeństwo samoczynnej i gwałtownej reakcji.'},
+      {t:'p', text:'Uwaga: podwójna cyfra oznacza intensywność głównego niebezpieczeństwa, np. 33.'}
+    ]
+  },
+  {
+    id:'w-parametry-toksyczne', cat:'materialy-niebezpieczne', title:'Parametry toksyczne materiałów niebezpiecznych',
+    blocks:[
+      {t:'h', text:'Dawka trująca (DT)'},
+      {t:'p', text:'Oznacza najmniejszą ilość substancji trującej wywołującą wyraźne objawy zatrucia.'},
+      {t:'h', text:'Dawka śmiertelna (DL)'},
+      {t:'p', text:'Oznacza najmniejszą ilość substancji trującej powodującą zejście śmiertelne.'},
+      {t:'h', text:'Średnia dawka śmiertelna (DL₅₀ lub LD₅₀)'},
+      {t:'p', text:'Ilość substancji, która po przyjęciu przez szczury o wadze 200–300 g żywej masy powoduje śmierć połowy grupy zwierząt doświadczalnych przed upływem 14 dni. Wynik podaje się po przeliczeniu w miligramach na kilogram wagi ciała.'},
+      {t:'h', text:'Najwyższe dopuszczalne stężenie (NDS)'},
+      {t:'p', text:'Takie stężenie substancji trującej, które przy stałym kontakcie z nią w ciągu 8-godzinnego dnia pracy przez wieloletni nawet okres nie wywołuje żadnych objawów zatrucia.'},
+      {t:'h', text:'Najwyższe dopuszczalne stężenie chwilowe (NDSch)'},
+      {t:'p', text:'Stężenie czynników szkodliwych dla zdrowia, ustalone jako wartości średnie, które nie powinno powodować ujemnych zmian w stanie zdrowia pracownika oraz jego przyszłych pokoleń, jeśli utrzymuje się w środowisku pracy nie dłużej niż 30 minut w czasie zmiany roboczej.'},
+      {t:'h', text:'Najwyższe dopuszczalne stężenie progowe (NDSP)'},
+      {t:'p', text:'Stężenie czynników szkodliwych dla zdrowia, które ze względu na zagrożenie zdrowia lub życia pracownika nie mogą być przekroczone w środowisku pracy.'},
+      {t:'h', text:'Próg wyczuwalności węchowej'},
+      {t:'p', text:'Dana liczbowa określająca minimalną ilość danej substancji w atmosferze, która może być już wyczuwalna przez zmysł powonienia człowieka.'}
+    ]
+  },
+  {
+    id:'w-strefy-wybuchowe', cat:'materialy-niebezpieczne', title:'Strefy zagrożenia wybuchem',
+    blocks:[
+      {t:'h', text:'Dla gazów — Z0'},
+      {t:'p', text:'Strefa, w której mieszanina wybuchowa gazów, par lub mgieł występuje stale lub długotrwale w normalnych warunkach pracy.'},
+      {t:'h', text:'Z1'},
+      {t:'p', text:'Strefa, w której mieszanina wybuchowa gazów, par lub mgieł może wystąpić w normalnych warunkach pracy.'},
+      {t:'h', text:'Z2'},
+      {t:'p', text:'Strefa, w której istnieje niewielkie prawdopodobieństwo wystąpienia mieszaniny wybuchowej gazów.'},
+      {t:'h', text:'Dla pyłów — Strefa 20'},
+      {t:'p', text:'Obszar, w którym atmosfera wybuchowa w postaci obłoku palnego pyłu w powietrzu występuje stale, w długim czasie lub często.'},
+      {t:'h', text:'Strefa 21'},
+      {t:'p', text:'Może czasami występować w trakcie normalnego działania.'},
+      {t:'h', text:'Strefa 22'},
+      {t:'p', text:'Nie występuje w trakcie normalnego działania, a w przypadku wystąpienia trwa tylko przez krótki czas.'},
+      {t:'h', text:'Dolna granica wybuchowości (DGW)'},
+      {t:'p', text:'Najniższe stężenie substancji palnej (gazów, par, pyłów) w mieszaninie z powietrzem, przy którym może nastąpić zapalenie się tej substancji (wybuch) pod wpływem bodźca termicznego.'},
+      {t:'h', text:'Górna granica wybuchowości (GGW)'},
+      {t:'p', text:'Najwyższe stężenie substancji palnej w mieszaninie z powietrzem, przy którym jeszcze może nastąpić zapalenie się tej substancji i jej wybuch pod wpływem bodźca termicznego.'}
     ]
   }
 ];
