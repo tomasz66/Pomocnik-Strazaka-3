@@ -371,6 +371,11 @@ body { background: var(--bg); color: var(--text); }
 .fiszki-summary .t{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px}
 .fiszki-summary .s{font-size:13px;color:var(--text-muted);margin-bottom:24px}
 .fiszki-streak{background:var(--f-green-soft,rgba(30,122,76,.1));border:1px solid var(--f-green,#1e7a4c);color:var(--f-green-ink,#1e7a4c);border-radius:12px;padding:11px 13px;font-size:12.5px;font-weight:600;text-align:center;margin:14px 16px 0}
+.fiszki-mode-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;cursor:pointer}
+.fiszki-mode-card:active{background:var(--surface-2)}
+.fiszki-mode-card .lab{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.fiszki-mode-card .desc{font-size:12.5px;color:var(--text-muted);line-height:1.5}
+.fiszki-check-btn{display:block;width:100%;margin-top:18px;padding:13px 0;border-radius:12px;background:var(--f-green,#1e7a4c);color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer}
 .sensor-alarm1 { color: #e67e00; }
 .sensor-alarm2 { color: var(--accent); }
 .sensor-gas { font-weight: 500; }
@@ -1067,6 +1072,25 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   <div class="scroll-content">
     <div class="list-group" id="fiszki-hub-list"></div>
     <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══ FISZKI — WYBÓR TRYBU ═══ -->
+<div class="view fiszki-green" id="view-fiszki-mode">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showFiszkiHub()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Fiszki</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text" id="fiszki-mode-title"></div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div style="padding:12px 16px 0" id="fiszki-mode-list"></div>
   </div>
 </div>
 
@@ -4213,7 +4237,7 @@ function showFiszkiHub(){
     var pct=total?Math.round(known/total*100):0;
     var row=document.createElement('div');
     row.className='vehicle-row';
-    row.onclick=function(){startFiszkiSession(vid);};
+    row.onclick=function(){showFiszkiModePicker(vid);};
     row.innerHTML=
       '<div class="vehicle-badge">'+v.icon+'</div>'+
       '<div class="vehicle-info">'+
@@ -4226,26 +4250,48 @@ function showFiszkiHub(){
   });
 }
 
-var fiszkiSession=null;
-function startFiszkiSession(vid){
+function showFiszkiModePicker(vid){
   var v=D.vehicles[vid];
   if(!v) return;
-  var allItems=fiszkiItemsFor(vid);
-  var progress=fiszkiVehicleProgress(vid);
-  var unknownItems=allItems.filter(function(it){return !progress.items[it.id];});
-  var knownItems=allItems.filter(function(it){return progress.items[it.id];});
-  var pickItems=fiszkiShuffle(unknownItems).slice(0,14);
-  if(pickItems.length<14) pickItems=pickItems.concat(fiszkiShuffle(knownItems).slice(0,14-pickItems.length));
-  var comps=(v.compartments||[]).filter(function(c){ return allItems.some(function(it){return it.comp===c.id;}); });
-  var pickComps=fiszkiShuffle(comps).slice(0,6);
+  switchView('view-fiszki-mode');
+  document.getElementById('fiszki-mode-title').textContent=v.name;
+  var wrap=document.getElementById('fiszki-mode-list');
+  wrap.innerHTML='';
+  var modes=[
+    {mode:'where', lab:'Zaznaczanie z wybranych', desc:'Widzisz nazwę sprzętu — wskazujesz właściwą skrytkę spośród kilku opcji.'},
+    {mode:'whatin', lab:'Mów na głos + Sprawdzam', desc:'Widzisz skrytkę — mówisz sobie na głos co w niej jest, potem dotykasz „Sprawdzam" i sam oceniasz.'}
+  ];
+  modes.forEach(function(m){
+    var card=document.createElement('div');
+    card.className='fiszki-mode-card';
+    card.onclick=function(){startFiszkiSession(vid, m.mode);};
+    card.innerHTML='<div class="lab">'+m.lab+'</div><div class="desc">'+m.desc+'</div>';
+    wrap.appendChild(card);
+  });
+}
 
+var fiszkiSession=null;
+function startFiszkiSession(vid, mode){
+  var v=D.vehicles[vid];
+  if(!v) return;
+  if(!mode) mode=(fiszkiSession&&fiszkiSession.mode)||'where';
+  var allItems=fiszkiItemsFor(vid);
   var queue=[];
-  pickItems.forEach(function(it){ queue.push({type:'where', item:it}); });
-  pickComps.forEach(function(c){ queue.push({type:'whatin', comp:c}); });
+  if(mode==='where'){
+    var progress=fiszkiVehicleProgress(vid);
+    var unknownItems=allItems.filter(function(it){return !progress.items[it.id];});
+    var knownItems=allItems.filter(function(it){return progress.items[it.id];});
+    var pickItems=fiszkiShuffle(unknownItems).slice(0,18);
+    if(pickItems.length<18) pickItems=pickItems.concat(fiszkiShuffle(knownItems).slice(0,18-pickItems.length));
+    pickItems.forEach(function(it){ queue.push({type:'where', item:it}); });
+  } else {
+    var comps=(v.compartments||[]).filter(function(c){ return allItems.some(function(it){return it.comp===c.id;}); });
+    fiszkiShuffle(comps).forEach(function(c){ queue.push({type:'whatin', comp:c}); });
+  }
   queue=fiszkiShuffle(queue);
   if(!queue.length){ alert('Brak sprzętu do nauki w tym pojeździe.'); return; }
 
-  fiszkiSession={vid:vid, v:v, queue:queue, idx:0, total:queue.length, doneCount:0};
+  fiszkiSession={vid:vid, v:v, mode:mode, queue:queue, idx:0, total:queue.length, doneCount:0};
   switchView('view-fiszki-session');
   document.getElementById('fiszki-session-title').textContent=v.name;
   document.getElementById('fiszki-progress-fill').style.width='0%';
@@ -4314,20 +4360,22 @@ function fiszkiAnswerWhere(item, chosenComp, options, optsWrap, clickedBtn){
 function fiszkiRenderWhatInCard(card, wrap){
   var s=fiszkiSession, v=s.v, comp=card.comp;
   wrap.innerHTML=
-    '<div class="fiszki-card" id="fiszki-flip-card" style="cursor:pointer">'+
-      '<div class="fiszki-kicker">Wymień sprzęt z tej skrytki</div>'+
+    '<div class="fiszki-card" id="fiszki-flip-card">'+
+      '<div class="fiszki-kicker">Powiedz na głos, co jest w tej skrytce</div>'+
       '<div class="fiszki-name">'+v.name+' → '+comp.label+'</div>'+
       '<div class="fiszki-sub">'+comp.side+'</div>'+
-      '<div class="fiszki-prompt" id="fiszki-flip-prompt">dotknij, żeby odkryć zawartość</div>'+
+      '<div class="fiszki-prompt" id="fiszki-flip-prompt">powiedz sobie na głos, a potem sprawdź</div>'+
+      '<button type="button" class="fiszki-check-btn" id="fiszki-check-btn">Sprawdzam</button>'+
       '<div id="fiszki-reveal-area"></div>'+
     '</div>';
-  var cardEl=document.getElementById('fiszki-flip-card');
-  cardEl.onclick=function(){ cardEl.onclick=null; cardEl.style.cursor='default'; fiszkiRevealWhatIn(comp); };
+  document.getElementById('fiszki-check-btn').onclick=function(){ fiszkiRevealWhatIn(comp); };
 }
 function fiszkiRevealWhatIn(comp){
   var s=fiszkiSession;
   var promptEl=document.getElementById('fiszki-flip-prompt');
   if(promptEl) promptEl.remove();
+  var btnEl=document.getElementById('fiszki-check-btn');
+  if(btnEl) btnEl.remove();
   var items=D.items.filter(function(it){return it.v===s.vid && it.comp===comp.id;});
   var listHtml=items.map(function(it){
     return '<div class="fiszki-reveal-item"><span class="n">'+escAttr(it.name)+'</span><span class="q">'+escAttr(it.qty||'')+'</span></div>';
@@ -4366,7 +4414,8 @@ function fiszkiRenderSummary(){
       '<div class="big">🎉</div>'+
       '<div class="t">Sesja ukończona!</div>'+
       '<div class="s">Opanowane w '+s.v.name+': '+known+' / '+total+'</div>'+
-      '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--f-green,#1e7a4c);color:#fff;font-weight:700;font-size:13.5px;border:none" onclick="startFiszkiSession(\''+s.vid+'\')">Kolejna sesja</button>'+
+      '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--f-green,#1e7a4c);color:#fff;font-weight:700;font-size:13.5px;border:none;margin-right:8px" onclick="startFiszkiSession(\''+s.vid+'\',\''+s.mode+'\')">Kolejna sesja</button>'+
+      '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--surface-2);color:var(--text);font-weight:700;font-size:13.5px;border:none" onclick="showFiszkiModePicker(\''+s.vid+'\')">Zmień tryb</button>'+
     '</div>';
   document.getElementById('fiszki-progress-fill').style.width='100%';
   renderHome();
