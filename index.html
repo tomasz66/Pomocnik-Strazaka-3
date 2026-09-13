@@ -2874,6 +2874,7 @@ var WIEDZA_CATEGORIES=[
   {id:'wodno-pianowy', name:'Sprzęt wodno-pianowy'},
   {id:'hydraulika', name:'Hydraulika pożarnicza'},
   {id:'drabiny', name:'Drabiny pożarnicze'},
+  {id:'spalanie', name:'Podstawy spalania i dynamika pożaru'},
   {id:'taktyka', name:'Taktyka działań'},
   {id:'klasyfikacja', name:'Klasyfikacja pożarów i budynków'},
   {id:'srodki-gasnicze', name:'Środki gaśnicze'},
@@ -2940,6 +2941,7 @@ var WIEDZA_BASE=[
   {
     id:'w-pompy-strumienicowe', cat:'wodno-pianowy', title:'Zasada działania pomp strumienicowych',
     blocks:[
+      {t:'img', src:'images/wiedza/pompa-przekroj.jpeg', cap:'Przekrój pompy strumienicowej z dokumentu źródłowego (niepodpisany na oryginale — dołączony poglądowo).'},
       {t:'p', text:'W sprzęcie do wytwarzania piany gaśniczej stosowane są pompy zwane strumienicami — mają one zastosowanie w zasysaczach liniowych do zasysania środka pianotwórczego, a w prądownicach, działkach i wytwornicach do mieszania roztworu środka pianotwórczego z powietrzem, aby powstała piana gaśnicza.'},
       {t:'p', text:'Zasysacze liniowe służą do zasysania określonej ilości środka pianotwórczego i wytwarzania wodnego roztworu środka pianotwórczego, który jest wykorzystywany do wytwarzania piany gaśniczej. Oprócz zasysaczy liniowych do tworzenia roztworu środka pianotwórczego stosuje się dozowniki, które mają budowę identyczną jak zasysacz, z tym że jest on na stałe zblokowany z autopompą lub motopompą.'},
       {t:'p', text:'Zasysacze są urządzeniami, które wykorzystują energię kinetyczną doprowadzanej cieczy roboczej (wody), zasysają na określoną wysokość środek pianotwórczy, tworząc wodny roztwór środka pianotwórczego.'}
@@ -3063,7 +3065,87 @@ var WIEDZA_BASE=[
     id:'w-fazy-pozaru', cat:'taktyka', title:'Fazy rozwoju pożaru wewnętrznego',
     blocks:[
       {t:'img', src:'images/wiedza/fazy-pozaru.png', cap:'Przykładowy przebieg pożaru w pomieszczeniu w różnych fazach rozwoju.'},
-      {t:'p', text:'Wykres pokazuje temperaturę w funkcji czasu trwania pożaru: I faza od początku pożaru, moment rozgorzenia, II faza (szczyt temperatury) i III faza.'}
+      {t:'table', cols:['Faza','Opis'], rows:[
+        ['I faza','Rozprzestrzenianie się płomienia, wydzielanie się ciepła. I faza kończy się rozgorzeniem.'],
+        ['II faza','Stabilizacja procesu spalania. Czas trwania pożaru w II fazie zależy od obciążenia ogniowego.'],
+        ['III faza','Wypalanie się materiału. Spadek temperatury.']
+      ]}
+    ]
+  },
+  {
+    id:'w-proces-spalania', cat:'spalanie', title:'Proces spalania — czynniki niezbędne',
+    blocks:[
+      {t:'img', src:'images/wiedza/trojkat-spalania.png', cap:'Trójkąt spalania: ciepło, paliwo, powietrze.'},
+      {t:'p', text:'Spalanie jest to egzotermiczna (z wydzielaniem ciepła) reakcja substancji palnej z utleniaczem, której towarzyszą płomienie, żarzenie i/lub wydzielanie dymu.'},
+      {t:'p', text:'Wyróżniamy następujące rodzaje spalania: spalanie płomieniowe, spalanie bezpłomieniowe.'}
+    ]
+  },
+  {
+    id:'w-plomien', cat:'spalanie', title:'Płomień',
+    blocks:[
+      {t:'p', text:'Płomień to gazowa strefa reakcji spalania zachodzącej w przestrzeni, która ma znacznie wyższą temperaturę niż otoczenie i z reguły emituje światło.'}
+    ]
+  },
+  {
+    id:'w-tlenie-zarzenie', cat:'spalanie', title:'Spalanie bezpłomieniowe — tlenie i żarzenie',
+    blocks:[
+      {t:'p', text:'Spalanie bezpłomieniowe dzieli się na: tlenie, żarzenie.'},
+      {t:'h', text:'Tlenie'},
+      {t:'p', text:'Powolne spalanie materiału bez emisji światła widzialnego, charakteryzujące się wydzielaniem dymu i wzrostem temperatury. Ten rodzaj spalania dotyczy głównie materiałów pochodzenia naturalnego, np. węgla drzewnego, skóry, filcu, torfu, suchych trocin.'},
+      {t:'h', text:'Żarzenie'},
+      {t:'p', text:'Jeśli podczas spalania bezpłomieniowego pojawi się żar (emisja światła ze strefy spalania), wówczas proces spalania nazywamy żarzeniem. Na powierzchni materiału oprócz zwęglania widać żar, ale brak jest płomienia.'}
+    ]
+  },
+  {
+    id:'w-przerywanie-spalania', cat:'spalanie', title:'Sposoby przerywania procesów spalania',
+    blocks:[
+      {t:'img', src:'images/wiedza/mechanizmy-gasnicze.png', cap:'Mechanizmy fizyczne (energetyczne, przestrzenne) i chemiczne przerywania spalania.'},
+      {t:'p', text:'Procesy spalania mogą być przerwane przez następujące mechanizmy gaśnicze:'},
+      {t:'h', text:'Mechanizmy fizyczne — energetyczne'},
+      {t:'p', text:'Chłodzenie strefy spalania, chłodzenie paliwa, pochłanianie i przewodzenie ciepła, dekompozycja środka gaśniczego.'},
+      {t:'h', text:'Mechanizmy fizyczne — przestrzenne'},
+      {t:'p', text:'Rozcieńczenie reagentów, izolacja paliwa i utleniacza, odłączenie strefy spalania.'},
+      {t:'h', text:'Mechanizmy chemiczne'},
+      {t:'p', text:'Wychwytywanie wolnych rodników, katalizowanie rekombinacji wolnych rodników, ułatwianie rekombinacji przez trzeci obiekt, oddziaływanie jonów chlorowców.'}
+    ]
+  },
+  {
+    id:'w-pozary-wewn-zewn', cat:'spalanie', title:'Pożary wewnętrzne i zewnętrzne',
+    blocks:[
+      {t:'h', text:'Pożary wewnętrzne'},
+      {t:'p', text:'Pożary, które przebiegają w wewnętrznych, zamkniętych przestrzeniach (w budynkach, urządzeniach itp.).'},
+      {t:'h', text:'Pożary zewnętrzne'},
+      {t:'p', text:'Pożary, które rozwijają się i rozprzestrzeniają na otwartej przestrzeni (na zewnątrz budynków, pożary lasów, upraw, torfowisk, otwarte składowiska materiałów organicznych itp.).'}
+    ]
+  },
+  {
+    id:'w-strefowy-model', cat:'spalanie', title:'Strefowy model pożaru',
+    blocks:[
+      {t:'img', src:'images/wiedza/strefowy-model-pozaru.png', cap:'Schemat strefowego modelu pożaru: strefa spalania, konwekcyjna, zadymienia, oddziaływania promieniowania cieplnego.'},
+      {t:'p', text:'W modelu strefowym całą przestrzeń płonącego obiektu podzielono na strefy: strefa I — strefa spalania, strefa II — strefa konwekcyjna, strefa III — strefa zadymienia, strefa IV — strefa oddziaływania promieniowania cieplnego.'},
+      {t:'h', text:'Strefa spalania'},
+      {t:'p', text:'Przestrzeń, w której przebiega proces spalania.'},
+      {t:'h', text:'Strefa konwekcyjna'},
+      {t:'p', text:'Przestrzeń, w której gazowe produkty spalania unoszone są ku górze, tworząc kolumnę konwekcyjną ognia.'},
+      {t:'h', text:'Strefa zadymienia'},
+      {t:'p', text:'Przestrzeń wypełniona dymem.'},
+      {t:'h', text:'Strefa oddziaływania promieniowania cieplnego'},
+      {t:'p', text:'Przestrzeń, w której na znajdujące się przedmioty i ludzi działa promieniowanie cieplne pochodzące bezpośrednio ze strefy spalania oraz ze strefy podsufitowej.'}
+    ]
+  },
+  {
+    id:'w-rozgorzenie', cat:'spalanie', title:'Zjawisko rozgorzenia',
+    blocks:[
+      {t:'p', text:'Rozgorzenie — wzrost temperatury powodujący zapalenie się lotnych produktów spalania w strefie podsufitowej i rozprzestrzenienie płomieni na całą objętość pomieszczenia.'},
+      {t:'img', src:'images/wiedza/rozgorzenie.png', cap:'Pierwsza faza rozwoju pożaru (początek i kontynuacja spalania) i moment gwałtownego rozgorzenia.'}
+    ]
+  },
+  {
+    id:'w-wsteczny-ciag', cat:'spalanie', title:'Wsteczny ciąg płomieni (backdraft)',
+    blocks:[
+      {t:'img', src:'images/wiedza/wsteczny-ciag-plomieni.png', cap:'Wsteczny ciąg płomieni: dopływ powietrza do zamkniętego, przegrzanego pomieszczenia wywołuje gwałtowny zapłon i wyrzut płomieni.'},
+      {t:'h', text:'Oznaki i symptomy ryzyka wystąpienia wstecznego ciągu płomieni w palącym się pomieszczeniu'},
+      {t:'p', text:'Zamknięte, niewentylowane pomieszczenie. Spod drzwi pomieszczenia okresowo wydobywają się duże ilości produktów spalania. Rozgrzane do wysokiej temperatury okna i drzwi. Gwałtowne ruchy powietrza występujące po otwarciu pomieszczenia. Brak widocznych w pomieszczeniu płomieni lub płomienie o odcieniu niebieskim.'}
     ]
   },
   {
@@ -3112,8 +3194,127 @@ var WIEDZA_BASE=[
     id:'w-rozpoznanie', cat:'taktyka', title:'Rozpoznanie',
     blocks:[
       {t:'p', text:'Rozpoznanie to zorganizowane działania prowadzące do uzyskania informacji o zdarzeniu.'},
+      {t:'h', text:'Patrol rozpoznania'},
+      {t:'p', text:'Zespół ratowników (np. dowódca i przodownik roty), którego zadaniem jest przeprowadzenie rozpoznania. Skład patrolu określa dowódca.'},
       {t:'h', text:'Wyposażenie patrolu rozpoznania'},
-      {t:'p', text:'Latarka, czujnik bezruchu, aparat powietrzny, podręczny sprzęt burzący, uzbrojenie osobiste, radiotelefon, linka ratownicza, nawodniona linia gaśnicza.'}
+      {t:'p', text:'Latarka, czujnik bezruchu, aparat powietrzny, podręczny sprzęt burzący, uzbrojenie osobiste, radiotelefon, linka ratownicza, nawodniona linia gaśnicza.'},
+      {t:'h', text:'Rozpoznanie wstępne'},
+      {t:'p', text:'Etap zbierania informacji dotyczących rozwoju i przebiegu zdarzenia, w stopniu umożliwiającym podjęcie decyzji dotyczących kierunku działań, rozmieszczenia sił i środków oraz zadysponowania dodatkowych jednostek.'},
+      {t:'h', text:'Rozpoznanie szczegółowe'},
+      {t:'p', text:'Rozpoznanie prowadzone przez wszystkich uczestników akcji podczas realizowanych czynności ratowniczo-gaśniczych. Jest kontynuacją rozpoznania wstępnego. Pozwala na ocenę skuteczności dotychczasowych działań i dokonanie korekty postępowania.'},
+      {t:'h', text:'Rozpoznanie bojem'},
+      {t:'p', text:'Zbieranie informacji o rozwoju i przebiegu zdarzenia przy równoczesnym prowadzeniu działań ratowniczo-gaśniczych.'},
+      {t:'h', text:'Rozpoznanie ogniowe'},
+      {t:'p', text:'Polega na zlokalizowaniu miejsca pożaru, określeniu jego rozmiaru i możliwości rozprzestrzenienia się oraz ocenie zagrożenia dla ludzi.'},
+      {t:'h', text:'Rozpoznanie wodne'},
+      {t:'p', text:'Polega na zlokalizowaniu i rozpoznaniu rodzaju punktu poboru wody oraz możliwości dostarczania wody na miejsce pożaru.'},
+      {t:'h', text:'Zasady prowadzenia rozpoznania'},
+      {t:'p', text:'1. Wykorzystać dostępne i bezpieczne drogi dojścia do miejsca pożaru. 2. Zabezpieczyć drogi odwrotu (klinowanie drzwi, usuwanie przeszkód). 3. Rozpoznać pomieszczenia palące się oraz bezpośrednio i pośrednio zagrożone. 4. Stosować wszelkie możliwe środki ostrożności, m.in.: poruszać się wzdłuż ścian, wzajemnie ubezpieczać się ratowników, utrzymywać stały kontakt z patrolem rozpoznania (radiowy, linką ratowniczą), stosować środki ochrony osobistej, przygotować patrol rezerwowy, wyłączyć dopływ prądu. 5. Zachować szczególną ostrożność przy otwieraniu drzwi. 6. Informacje z rozpoznania przekazać dowódcy.'}
+    ]
+  },
+  {
+    id:'w-teren-pozaru', cat:'taktyka', title:'Teren pożaru i jego elementy',
+    blocks:[
+      {t:'p', text:'Teren pożaru — obszar, na którym znajdują się obiekty objęte pożarem oraz zagrożone bezpośrednio i pośrednio przez pożar.'},
+      {t:'img', src:'images/wiedza/elementy-terenu-pozaru.png', cap:'Elementy terenu pożaru: front, tył, skrzydła i oś pożaru.'},
+      {t:'h', text:'Front pożaru'},
+      {t:'p', text:'Linia prostopadła do osi pożaru, znajdująca się na kierunku rozprzestrzeniania się pożaru. Oddziela obiekty palące się od niepalących.'},
+      {t:'h', text:'Tył pożaru'},
+      {t:'p', text:'Linia znajdująca się po przeciwległej stronie frontu pożaru. Oddziela obiekty palące się od niepalących.'},
+      {t:'h', text:'Skrzydła pożaru'},
+      {t:'p', text:'Linie boczne ograniczające teren pożaru. Określa się je, stając twarzą do frontu pożaru.'},
+      {t:'h', text:'Oś pożaru'},
+      {t:'p', text:'Linia przechodząca przez środek pożaru zgodnie z kierunkiem wiatru.'}
+    ]
+  },
+  {
+    id:'w-teren-akcji', cat:'taktyka', title:'Teren akcji gaśniczej i pozycje',
+    blocks:[
+      {t:'p', text:'Teren akcji — obszar obejmujący teren pożaru oraz pozostałe tereny, na których prowadzone są działania ratowniczo-gaśnicze.'},
+      {t:'img', src:'images/wiedza/teren-akcji.png', cap:'Teren akcji gaśniczej z oznaczeniami: hydrant, zbiornik wodny, punkt medyczny, sztab, policja.'},
+      {t:'img', src:'images/wiedza/teren-akcji-pozycje.png', cap:'Teren akcji z podziałem na pozycje: wodną, wężową i ogniową.'},
+      {t:'h', text:'Pozycja wodna'},
+      {t:'p', text:'Teren, na którym znajdują się punkty czerpania wody, pompy, linie ssawne lub zasilające.'},
+      {t:'h', text:'Pozycja wężowa'},
+      {t:'p', text:'Teren, na którym znajdują się główne linie wężowe, ułożone między stanowiskiem wodnym a rozdzielaczem.'},
+      {t:'h', text:'Pozycja ogniowa'},
+      {t:'p', text:'Teren pomiędzy rozdzielaczem a miejscem pożaru, na którym znajdują się linie i stanowiska gaśnicze.'}
+    ]
+  },
+  {
+    id:'w-stanowiska-bojowe', cat:'taktyka', title:'Stanowiska bojowe',
+    blocks:[
+      {t:'p', text:'Stanowiska bojowe — miejsca, w których strażak wykonuje określone zadania ratowniczo-gaśnicze.'},
+      {t:'img', src:'images/wiedza/stanowiska-bojowe.png', cap:'Stanowisko wodne, rozdzielacza, gaśnicze i dowodzenia.'},
+      {t:'h', text:'Stanowisko wodne'},
+      {t:'p', text:'Miejsce pracy strażaka obsługującego motopompę lub autopompę.'},
+      {t:'h', text:'Stanowisko rozdzielacza'},
+      {t:'p', text:'Miejsce, w którym ustawiono rozdzielacz.'},
+      {t:'h', text:'Stanowisko gaśnicze'},
+      {t:'p', text:'Miejsce pracy prądownika.'},
+      {t:'h', text:'Stanowisko dowodzenia'},
+      {t:'p', text:'Miejsce pracy dowódcy kierującego działaniami ratowniczo-gaśniczymi.'}
+    ]
+  },
+  {
+    id:'w-szyk-bojowy', cat:'taktyka', title:'Szyk bojowy',
+    blocks:[
+      {t:'p', text:'Szyk bojowy — rozmieszczenie stanowisk bojowych do wykonania zadania taktycznego.'},
+      {t:'img', src:'images/wiedza/szyk-bojowy.png', cap:'Szyk frontalny, okrążający, oskrzydlający jednostronnie i dwustronnie.'},
+      {t:'p', text:'Rodzaje szyku: frontalny, okrążający, oskrzydlający (jednostronnie lub dwustronnie) — odpowiadają rodzajom natarcia opisanym w osobnym wpisie.'}
+    ]
+  },
+  {
+    id:'w-stanowiska-gasnicze-rodzaje', cat:'taktyka', title:'Stanowiska gaśnicze — rodzaje i położenie',
+    blocks:[
+      {t:'h', text:'Zewnętrzne i wewnętrzne'},
+      {t:'img', src:'images/wiedza/stanowiska-zewn-wewn.png', cap:'Stanowisko zewnętrzne (poza obiektem zagrożonym) i wewnętrzne (wewnątrz zagrożonego obiektu).'},
+      {t:'p', text:'Zewnętrzne — usytuowane poza obiektem zagrożonym. Wewnętrzne — usytuowane wewnątrz zagrożonego obiektu.'},
+      {t:'h', text:'Ruchome i stałe'},
+      {t:'img', src:'images/wiedza/stanowiska-ruchome-stale.png', cap:'Stanowisko ruchome i stałe.'},
+      {t:'p', text:'Stanowisko ruchome — posiada zdolność manewrowania i przemieszczania się w przestrzeni objętej pożarem (np. gaszenie z działka samochodowego). Stanowisko stałe — nie posiada możliwości przemieszczania się (np. prądownik pracujący na drabinie wolnostojącej).'},
+      {t:'h', text:'Niższe, równe, wyższe'},
+      {t:'img', src:'images/wiedza/stanowiska-polozenie.png', cap:'Stanowiska gaśnicze wg położenia względem ogniska pożaru.'},
+      {t:'p', text:'W zależności od usytuowania prądownika w stosunku do ogniska pożaru wyróżniamy stanowiska: niższe — usytuowane poniżej ogniska pożaru; równe — usytuowane na poziomie ogniska pożaru; wyższe — prądownik znajduje się powyżej ogniska pożaru.'}
+    ]
+  },
+  {
+    id:'w-znaki-gestowe', cat:'taktyka', title:'Łączność znakami gestowymi, dźwiękowymi i świetlnymi',
+    blocks:[
+      {t:'img', src:'images/wiedza/znaki-gestowe.png', cap:'Znaki gestowe, ich znaczenie oraz odpowiadające znaki dźwiękowe i świetlne.'},
+      {t:'table', cols:['Znak gestowy','Znaczenie'], rows:[
+        ['Ręka uniesiona pionowo w górę','Uwaga! Zrozumiano!'],
+        ['Ręka wykonuje ruch pionowy w górę i w dół','Wykonać! Spraw! Odjazd!'],
+        ['Ręce wykonują ruch poziomy na boki','Woda stój! Stój!'],
+        ['Ręka nad głową wykonuje szybki ruch okrężny','Prędzej! Zwiększ obroty!'],
+        ['Ręka nad głową wykonuje wolny ruch okrężny','Wolniej! Zmniejsz obroty! Zmniejsz'],
+        ['Obie ręce nad głową, ruch poziomy naprzemienny','Niebezpieczeństwo! Roty wróć!']
+      ]}
+    ]
+  },
+  {
+    id:'w-linie-wezowe', cat:'taktyka', title:'Rodzaje linii wężowych',
+    blocks:[
+      {t:'img', src:'images/wiedza/linie-wezowe.png', cap:'Linia ssawna, zasilająca, główna i gaśnicza.'},
+      {t:'h', text:'Linia zasilająca'},
+      {t:'p', text:'Doprowadza wodę ze źródła do motopompy lub do samochodu pożarniczego.'},
+      {t:'h', text:'Linia główna'},
+      {t:'p', text:'Prowadzona jest od motopompy lub samochodu pożarniczego do rozdzielacza.'},
+      {t:'h', text:'Linia gaśnicza'},
+      {t:'p', text:'Prowadzona jest od rozdzielacza do stanowisk gaśniczych.'}
+    ]
+  },
+  {
+    id:'w-zasady-pradow', cat:'taktyka', title:'Zasady operowania prądami gaśniczymi',
+    blocks:[
+      {t:'h', text:'Zasady operowania prądami wody'},
+      {t:'img', src:'images/wiedza/prady-wody.png', cap:'Kierunki podawania prądów wody w zależności od sytuacji.'},
+      {t:'p', text:'Podejść jak najbliżej palącego się obiektu. Zająć stanowisko gaśnicze na tym samym poziomie lub wyżej od ogniska pożaru. Prądy wody podawać bezpośrednio na ognisko pożaru. Gasząc pożary na powierzchniach pionowych (ściany, przegrody, podpory), operować prądem wody z góry na dół. W pomieszczeniach silnie zadymionych podawać pulsacyjnie rozproszone prądy wody, skierowane w strefę podsufitową. Woda może być podawana lub zatrzymywana tylko na wyraźne polecenie prądownika. Organizować współdziałanie przy podawaniu kilku prądów gaśniczych.'},
+      {t:'h', text:'Zasady operowania prądami piany'},
+      {t:'img', src:'images/wiedza/prady-piany.png', cap:'Techniki podawania piany gaśniczej.'},
+      {t:'p', text:'Dobrać rodzaj piany do rodzaju zdarzenia. Podawać pianę po otrzymaniu właściwej liczby spienienia. Gasząc ciała stałe, należy pokryć pianą całą palącą się powierzchnię. Pianę lekką wykorzystać do wypełniania zamkniętych przestrzeni.'},
+      {t:'h', text:'Zasady operowania prądami proszku gaśniczego'},
+      {t:'p', text:'Dobrać rodzaj proszku do grupy pożaru. Gaszenie prowadzić zgodnie z kierunkiem wiatru. Proszek kierować na ognisko pożaru.'}
     ]
   },
   {
@@ -3338,6 +3539,7 @@ var WIEDZA_BASE=[
   {
     id:'w-tablica-adr', cat:'materialy-niebezpieczne', title:'Tablica ADR — numer rozpoznawczy i numer ONZ',
     blocks:[
+      {t:'img', src:'images/wiedza/tablica-adr-przyklad.png', cap:'Przykład: górny numer to numer rozpoznawczy niebezpieczeństwa (np. X423 — absolutny zakaz kontaktu z wodą), dolny to numer ONZ (np. 1428).'},
       {t:'h', text:'Pierwsza cyfra — rodzaj niebezpieczeństwa materiału'},
       {t:'table', cols:['Klasa','Rodzaj niebezpieczeństwa'], rows:[
         ['1','Materiał wybuchowy'],
@@ -3397,6 +3599,45 @@ var WIEDZA_BASE=[
       {t:'p', text:'Najniższe stężenie substancji palnej (gazów, par, pyłów) w mieszaninie z powietrzem, przy którym może nastąpić zapalenie się tej substancji (wybuch) pod wpływem bodźca termicznego.'},
       {t:'h', text:'Górna granica wybuchowości (GGW)'},
       {t:'p', text:'Najwyższe stężenie substancji palnej w mieszaninie z powietrzem, przy którym jeszcze może nastąpić zapalenie się tej substancji i jej wybuch pod wpływem bodźca termicznego.'}
+    ]
+  },
+  {
+    id:'w-nalepki-adr', cat:'materialy-niebezpieczne', title:'Wzory nalepek ADR (klasy 1–9)',
+    blocks:[
+      {t:'p', text:'Nalepki ostrzegawcze ADR umieszczane na opakowaniach i pojazdach przewożących materiały niebezpieczne — kolor tła, symbol i cyfra w dolnym narożu jednoznacznie identyfikują klasę zagrożenia.'},
+      {t:'img', src:'images/wiedza/nalepki-adr-1.png', cap:'Klasa 1 (materiały wybuchowe, podklasy 1.1–1.6) i klasa 2 (gazy palne, niepalne/nietrujące, trujące).'},
+      {t:'img', src:'images/wiedza/nalepki-adr-2.png', cap:'Klasa 3 (ciecze zapalne), 4.1–4.3 (materiały stałe zapalne, samozapalne, reagujące z wodą), 5.1–5.2 (utleniające, nadtlenki organiczne).'},
+      {t:'img', src:'images/wiedza/nalepki-adr-3.png', cap:'Klasa 6.1–6.2 (trujące, zakaźne), 7 (promieniotwórcze, kategorie I–III), 8 (żrące), 9 (różne materiały niebezpieczne).'}
+    ]
+  },
+  {
+    id:'w-diament-niebezpieczenstwa', cat:'materialy-niebezpieczne', title:'Diament niebezpieczeństwa (NFPA 704)',
+    blocks:[
+      {t:'p', text:'System natychmiastowej oceny niebezpieczeństwa w wypadkach z materiałami niebezpiecznymi.'},
+      {t:'img', src:'images/wiedza/diament-niebezpieczenstwa.png', cap:'Cztery sektory: biały (zagrożenia specjalne), żółty (eksplozja), czerwony (zapalność), niebieski (zdrowie) — każdy ze skalą 0–4.'},
+      {t:'h', text:'Sektor 1 — biały (zagrożenia specjalne)'},
+      {t:'p', text:'Puste pole w środku — woda dopuszczalna jako środek gaśniczy. Symbol „W" przekreślone — nie używać wody jako środka gaśniczego. Symbol promieniowania — przy uwolnieniu materiału niebezpieczeństwo promieniowania (materiał radioaktywny).'},
+      {t:'h', text:'Sektor 2 — żółty (niebezpieczeństwo eksplozji)'},
+      {t:'p', text:'4 — duże niebezpieczeństwo eksplozji. 3 — niebezpieczeństwo eksplozji pod wpływem działania ciepła lub silnego wstrząśnięcia (np. przy uderzeniach); wydzielić strefę zagrożenia, gasić tylko zza osłony. 2 — możliwe silne reakcje chemiczne, konieczne podjęcie wzmożonych środków ostrożności. Gaszenie z zachowaniem bezpiecznego dystansu. 1 — przy ogrzaniu materiał niestabilny, konieczne zachowanie środków ostrożności. 0 — brak niebezpieczeństwa w normalnych warunkach.'},
+      {t:'h', text:'Sektor 3 — czerwony (zapalność)'},
+      {t:'p', text:'4 — materiał ekstremalnie łatwopalny przy każdej temperaturze. 3 — niebezpieczeństwo zapalenia przy normalnej temperaturze. 2 — niebezpieczeństwo zapalenia przy ogrzaniu. 1 — niebezpieczeństwo zapalenia przy kontakcie z ogniem (płomieniem). 0 — nie występuje niebezpieczeństwo zapalenia w normalnych warunkach.'},
+      {t:'h', text:'Sektor 4 — niebieski (zagrożenie zdrowia)'},
+      {t:'p', text:'4 — bardzo niebezpieczny, unikać kontaktu z płynem lub parami bez pełnej ochrony, unikać obecności w strefie zagrożenia. 3 — bardzo niebezpieczny, obecność w strefie zagrożenia tylko w pełnym ubraniu ochronnym i aparacie izolującym. 2 — niebezpieczny, obecność w strefie zagrożenia tylko w aparacie ochrony dróg oddechowych. 1 — małe niebezpieczeństwo, zalecane maski z wkładami filtrującymi. 0 — brak zagrożenia.'}
+    ]
+  },
+  {
+    id:'w-barwy-rurociagow', cat:'materialy-niebezpieczne', title:'Barwy rozpoznawcze rurociągów',
+    blocks:[
+      {t:'p', text:'Barwy rozpoznawcze dla identyfikacji czynników przesyłanych rurociągami.'},
+      {t:'table', cols:['Rodzaj czynnika','Barwa rozpoznawcza'], rows:[
+        ['Woda (w stanie ciekłym)','Zielona'],
+        ['Para','Srebrnoszara'],
+        ['Oleje i ciecze palne','Brązowa'],
+        ['Gazy (także w stanie skroplonym)','Żółta'],
+        ['Kwasy i zasady','Fioletowa'],
+        ['Powietrze','Błękitna'],
+        ['Inne ciecze','Czarna']
+      ]}
     ]
   },
   {
@@ -3579,6 +3820,7 @@ var WIEDZA_BASE=[
   {
     id:'w-rodzaje-wybuchow', cat:'zdarzenia-specjalne', title:'Rodzaje wybuchów',
     blocks:[
+      {t:'img', src:'images/wiedza/wybuch-schemat.png', cap:'Podział wybuchów: chemiczny (homogeniczny — cieplny/fotochemiczny; heterogeniczny — deflagracja/detonacja) i fizyczny.'},
       {t:'p', text:'Wybuch chemiczny to gwałtowna reakcja chemiczna przebiegająca z wykonaniem pracy mechanicznej i efektem dźwiękowo-świetlnym, jako skutkami wydzielenia dużych ilości ciepła i przeważnie wytworzenia dużych ilości gazów lub par.'},
       {t:'h', text:'Homogeniczny'},
       {t:'p', text:'Zachodzi w całej objętości palnej mieszaniny, z gwałtownym wzrostem temperatury w tej objętości — możliwe są tu wybuchy cieplne/termiczne lub fotochemiczne. Chemiczny wybuch cieplny zachodzi, gdy ilość wydzielanego ciepła reakcji jest większa od ciepła oddawanego do otoczenia, a spowodowany tym wzrost temperatury układu zwiększa szybkość reakcji.'},
@@ -3592,6 +3834,7 @@ var WIEDZA_BASE=[
   {
     id:'w-bleve', cat:'zdarzenia-specjalne', title:'Wybuch BLEVE',
     blocks:[
+      {t:'img', src:'images/wiedza/bleve-sekwencja.png', cap:'Sekwencja BLEVE: rosnące ciśnienie w zbiorniku, rozerwanie powłoki, gwałtowna ekspansja pary.'},
       {t:'p', text:'BLEVE (ang. Boiling Liquid Expanding Vapour Explosion) — „wybuch rozszerzających się par wrzącej cieczy".'},
       {t:'p', text:'Wybuch spowodowany nagłym wyciekiem (często łatwopalnej) cieczy w temperaturze wyższej od jej temperatury wrzenia przy normalnym ciśnieniu atmosferycznym, powstały w wyniku dużego wielomiejscowego uszkodzenia zbiornika. Wybuch BLEVE często nie jest typowym wybuchem fizycznym, lecz kombinacją wybuchu fizycznego i chemicznego.'},
       {t:'p', text:'Gdy powłoka zbiornika zostaje przerwana, faza gazowa rozpręża się, obniżając gwałtownie ciśnienie nad cieczą, w wyniku czego ta przechodzi w stan wrzenia. Jeśli dochodzi do zapłonu uwalniających się par, ciepło spalania dodatkowo ogrzewa zbiornik, doprowadzając do szybkiego wzrostu ciśnienia wewnątrz. W którymś momencie dochodzi do rozerwania powłoki. Uwolniona do ciśnienia atmosferycznego ciecz gwałtownie zamienia się w parę i rozszerza się kilkusetkrotnie, zwiększając swoją objętość. Powstała chmura mieszaniny gazu i powietrza zapala się, jeśli tylko jest to możliwe.'}
