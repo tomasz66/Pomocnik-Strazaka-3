@@ -1116,7 +1116,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   </div>
 </div>
 
-<!-- ═══ PRZEGLĄD — LISTA ZMIAN ═══ -->
+<!-- ═══ PRZEGLĄD ═══ -->
 <div class="view" id="view-przeglad-home">
   <div class="nav-header">
     <div class="nav-header-inner">
@@ -1126,26 +1126,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </button>
       <div class="nav-title">
         <div class="nav-title-text">Przegląd</div>
-        <div class="nav-title-sub">Sprzęt, pomieszczenia, odpowiedzialni</div>
-      </div>
-      <div class="nav-right"></div>
-    </div>
-  </div>
-  <div class="scroll-content">
-    <div class="list-group" id="przeglad-shifts-wrap"></div>
-  </div>
-</div>
-
-<!-- ═══ PRZEGLĄD — LISTA POZYCJI W ZMIANIE ═══ -->
-<div class="view" id="view-przeglad-list">
-  <div class="nav-header">
-    <div class="nav-header-inner">
-      <button class="nav-btn" onclick="showPrzeglad()" style="color:var(--accent)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-        <span>Zmiany</span>
-      </button>
-      <div class="nav-title">
-        <div class="nav-title-text" id="przeglad-list-title"></div>
+        <div class="nav-title-sub">Sprzęt i odpowiedzialni</div>
       </div>
       <div class="nav-right"></div>
     </div>
@@ -2647,11 +2628,11 @@ function handleSearch(e){
       card.className='result-card';
       card.style.marginBottom='10px';
       card.innerHTML=
-        '<div class="result-head" onclick="showPrzegladShift(\''+x.shift+'\')">'+
+        '<div class="result-head" onclick="showPrzeglad()">'+
           '<div class="result-dot" style="background:#5d6d7e"></div>'+
           '<div class="result-info">'+
             '<div class="result-name">'+escAttr(x.subject||'')+'</div>'+
-            '<div class="result-path"><span style="background:#5d6d7e;color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">PRZEGLĄD</span>Zmiana '+x.shift+' · '+escAttr(x.responsible||'')+'</div>'+
+            '<div class="result-path"><span style="background:#5d6d7e;color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">PRZEGLĄD</span>'+escAttr(x.responsible||'')+'</div>'+
           '</div>'+
           '<div class="result-chev">›</div>'+
         '</div>';
@@ -4433,8 +4414,6 @@ function fiszkiRenderSummary(){
 /* ── PRZEGLĄD — sprzęt/pomieszczenia i odpowiedzialni, wg zmiany ── */
 var INSPECTIONS_MAP={};
 var INSPECTIONS=[];
-var INSP_SHIFTS=['I','II','III'];
-var curShift=null;
 function applyInspectionChange(id,data,removed){
   if(removed || (data && data._deleted)){ delete INSPECTIONS_MAP[id]; return; }
   INSPECTIONS_MAP[id]=Object.assign({},data,{id:id});
@@ -4447,41 +4426,12 @@ function onInspectionsChanged(){
   rebuildInspections();
   renderHome();
   if(document.getElementById('view-przeglad-home').classList.contains('active')) showPrzeglad();
-  else if(document.getElementById('view-przeglad-list').classList.contains('active') && curShift) showPrzegladShift(curShift);
 }
 function showPrzeglad(){
   switchView('view-przeglad-home');
-  var wrap=document.getElementById('przeglad-shifts-wrap');
-  wrap.innerHTML='';
-  INSP_SHIFTS.forEach(function(sh){
-    var cnt=INSPECTIONS.filter(function(x){return x.shift===sh;}).length;
-    var row=document.createElement('div');
-    row.className='vehicle-row';
-    row.onclick=function(){showPrzegladShift(sh);};
-    row.innerHTML=
-      '<div class="vehicle-badge" style="background:#ca6f1e">'+sh+'</div>'+
-      '<div class="vehicle-info">'+
-        '<div class="vehicle-name">Zmiana '+sh+'</div>'+
-        '<div class="vehicle-meta">'+(cnt?cnt+' pozycji':'brak danych')+'</div>'+
-      '</div>'+
-      '<div class="vehicle-arrow">›</div>';
-    wrap.appendChild(row);
-  });
-}
-function extractSurname(responsible){
-  if(!responsible) return '';
-  var first=responsible.split(',')[0].trim();
-  var words=first.split(/\s+/);
-  return words[words.length-1]||'';
-}
-function showPrzegladShift(sh){
-  curShift=sh;
-  switchView('view-przeglad-list');
-  document.getElementById('przeglad-list-title').textContent='Zmiana '+sh;
   var wrap=document.getElementById('przeglad-entries-wrap');
   wrap.innerHTML='';
-  var entries=INSPECTIONS.filter(function(x){return x.shift===sh;})
-    .sort(function(a,b){ return extractSurname(a.responsible).localeCompare(extractSurname(b.responsible),'pl'); });
+  var entries=INSPECTIONS.slice().sort(function(a,b){ return (a.order||0)-(b.order||0); });
   if(!entries.length){ wrap.innerHTML='<div class="empty">Brak pozycji</div>'; return; }
   entries.forEach(function(e){
     var card=document.createElement('div');
@@ -4502,14 +4452,11 @@ function showPrzegladShift(sh){
   });
 }
 function openInspectionSheet(id){
-  var defaultShift=curShift||'I';
-  var e=id?INSPECTIONS_MAP[id]:{shift:defaultShift,order:(INSPECTIONS.filter(function(x){return x.shift===defaultShift;}).length+1),subject:'',responsible:'',duty:''};
-  var shiftOptions=INSP_SHIFTS.map(function(s){return '<option value="'+s+'"'+(e.shift===s?' selected':'')+'>Zmiana '+s+'</option>';}).join('');
+  var e=id?INSPECTIONS_MAP[id]:{order:(INSPECTIONS.length+1),subject:'',responsible:'',duty:''};
   var html=
-    '<div class="edit-field"><label class="edit-label">Zmiana</label><select class="edit-input" id="ei2-shift">'+shiftOptions+'</select></div>'+
     '<div class="edit-field"><label class="edit-label">Numer pozycji</label><input class="edit-input" id="ei2-order" type="number" value="'+escAttr(e.order)+'"></div>'+
     '<div class="edit-field"><label class="edit-label">Sprzęt / pomieszczenie</label><input class="edit-input" id="ei2-subject" value="'+escAttr(e.subject)+'" placeholder="np. SCD-42"></div>'+
-    '<div class="edit-field"><label class="edit-label">Odpowiedzialny</label><input class="edit-input" id="ei2-responsible" value="'+escAttr(e.responsible)+'" placeholder="np. st. str. Jan Kowalski"></div>'+
+    '<div class="edit-field"><label class="edit-label">Odpowiedzialny</label><input class="edit-input" id="ei2-responsible" value="'+escAttr(e.responsible)+'" placeholder="np. st. ogn. Jan Kowalski"></div>'+
     '<div class="edit-field"><label class="edit-label">Zakres odpowiedzialności</label><textarea class="edit-textarea" id="ei2-duty" placeholder="np. odpowiedzialny za przygotowanie do przeglądu">'+escAttr(e.duty)+'</textarea></div>'+
     '<div class="edit-actions">'+
       '<button type="button" class="edit-btn edit-btn-save" onclick="saveInspectionSheet('+(id?"'"+id+"'":'null')+')">Zapisz</button>'+
@@ -4521,17 +4468,16 @@ function openInspectionSheet(id){
 function saveInspectionSheet(id){
   var subject=document.getElementById('ei2-subject').value.trim();
   if(!subject){ alert('Podaj nazwę sprzętu/pomieszczenia.'); return; }
-  var shift=document.getElementById('ei2-shift').value;
   var order=parseInt(document.getElementById('ei2-order').value,10)||0;
   var responsible=document.getElementById('ei2-responsible').value.trim();
   var duty=document.getElementById('ei2-duty').value.trim();
   var isNew=!id;
   if(isNew) id=uid('ins');
-  var payload={shift:shift,order:order,subject:subject,responsible:responsible,duty:duty};
+  var payload={order:order,subject:subject,responsible:responsible,duty:duty};
   window.FB.setDoc('inspections',id,payload).catch(fbShowError);
   applyInspectionChange(id,payload,false); rebuildInspections();
   closeEditSheet();
-  showPrzegladShift(shift);
+  showPrzeglad();
 }
 function deleteInspectionConfirm(id){
   var e=INSPECTIONS_MAP[id];
@@ -4539,7 +4485,7 @@ function deleteInspectionConfirm(id){
   window.FB.deleteDocRecord('inspections',id).catch(fbShowError);
   applyInspectionChange(id,null,true); rebuildInspections();
   closeEditSheet();
-  showPrzegladShift(curShift);
+  showPrzeglad();
 }
 
 function showTaktyka(){
