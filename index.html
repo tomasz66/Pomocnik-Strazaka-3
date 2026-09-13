@@ -2400,10 +2400,14 @@ function handleSearch(e){
     return norm(it.q).indexOf(nq)>=0 || String(it.num).indexOf(nq)>=0;
   }).slice(0,30);
   var wres=wiedzaSearch(nq).slice(0,20);
+  var sres=sensorsSearch(nq);
+  var nres=noticesSearch(nq);
+  var ires=inspectionsSearch(nq);
+  var vres=vehicleSpecsSearch(nq);
   var cnt=document.getElementById('results-count');
   var list=document.getElementById('results-list');
-  if(!res.length && !qres.length && !wres.length){cnt.textContent='';list.innerHTML='<div class="empty">Brak wyników dla „'+q+'"</div>';return;}
-  var totalCnt=res.length+qres.length+wres.length;
+  if(!res.length && !qres.length && !wres.length && !sres.length && !nres.length && !ires.length && !vres.length){cnt.textContent='';list.innerHTML='<div class="empty">Brak wyników dla „'+q+'"</div>';return;}
+  var totalCnt=res.length+qres.length+wres.length+sres.length+nres.length+ires.length+vres.length;
   cnt.textContent=totalCnt+' '+(totalCnt===1?'wynik':'wyników');
   list.innerHTML='';
   res.forEach(function(r){
@@ -2465,6 +2469,94 @@ function handleSearch(e){
           '<div class="result-info">'+
             '<div class="result-name">'+w.title+'</div>'+
             '<div class="result-path"><span style="background:#b9770e;color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">WIEDZA</span>'+(cat?cat.name:'')+'</div>'+
+          '</div>'+
+          '<div class="result-chev">›</div>'+
+        '</div>';
+      list.appendChild(card);
+    });
+  }
+  if(sres.length){
+    var slabel=document.createElement('div');
+    slabel.className='list-label';
+    slabel.style.margin='12px 0 6px';
+    slabel.textContent='Czujniki gazów';
+    list.appendChild(slabel);
+    sres.forEach(function(s){
+      var card=document.createElement('div');
+      card.className='result-card';
+      card.style.marginBottom='10px';
+      card.innerHTML=
+        '<div class="result-head" onclick="showSensors()">'+
+          '<div class="result-dot" style="background:#1a5276"></div>'+
+          '<div class="result-info">'+
+            '<div class="result-name">'+s.name+'</div>'+
+            '<div class="result-path"><span style="background:#1a5276;color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">CZUJNIK</span>'+(s.sub||'')+'</div>'+
+          '</div>'+
+          '<div class="result-chev">›</div>'+
+        '</div>';
+      list.appendChild(card);
+    });
+  }
+  if(nres.length){
+    var nlabel=document.createElement('div');
+    nlabel.className='list-label';
+    nlabel.style.margin='12px 0 6px';
+    nlabel.textContent='Biuro';
+    list.appendChild(nlabel);
+    nres.forEach(function(n){
+      var card=document.createElement('div');
+      card.className='result-card';
+      card.style.marginBottom='10px';
+      card.innerHTML=
+        '<div class="result-head" onclick="showBiuro()">'+
+          '<div class="result-dot" style="background:#5d6d7e"></div>'+
+          '<div class="result-info">'+
+            '<div class="result-name">'+escAttr(n.title)+'</div>'+
+            '<div class="result-path"><span style="background:#5d6d7e;color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">BIURO</span>'+escAttr(n.category||'')+' · '+escAttr(n.date||'')+'</div>'+
+          '</div>'+
+          '<div class="result-chev">›</div>'+
+        '</div>';
+      list.appendChild(card);
+    });
+  }
+  if(ires.length){
+    var ilabel=document.createElement('div');
+    ilabel.className='list-label';
+    ilabel.style.margin='12px 0 6px';
+    ilabel.textContent='Przegląd';
+    list.appendChild(ilabel);
+    ires.forEach(function(x){
+      var card=document.createElement('div');
+      card.className='result-card';
+      card.style.marginBottom='10px';
+      card.innerHTML=
+        '<div class="result-head" onclick="showPrzegladShift(\''+x.shift+'\')">'+
+          '<div class="result-dot" style="background:#5d6d7e"></div>'+
+          '<div class="result-info">'+
+            '<div class="result-name">'+escAttr(x.subject||'')+'</div>'+
+            '<div class="result-path"><span style="background:#5d6d7e;color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">PRZEGLĄD</span>Zmiana '+x.shift+' · '+escAttr(x.responsible||'')+'</div>'+
+          '</div>'+
+          '<div class="result-chev">›</div>'+
+        '</div>';
+      list.appendChild(card);
+    });
+  }
+  if(vres.length){
+    var vlabel=document.createElement('div');
+    vlabel.className='list-label';
+    vlabel.style.margin='12px 0 6px';
+    vlabel.textContent='Pojazdy — dane techniczne';
+    list.appendChild(vlabel);
+    vres.forEach(function(r){
+      var card=document.createElement('div');
+      card.className='result-card';
+      card.style.marginBottom='10px';
+      card.innerHTML=
+        '<div class="result-head" onclick="showVehicle(\''+r.id+'\')">'+
+          '<div class="result-dot" style="background:var(--accent)"></div>'+
+          '<div class="result-info">'+
+            '<div class="result-name">'+r.v.name+'</div>'+
+            '<div class="result-path"><span style="background:var(--accent);color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">'+r.v.icon+'</span>'+(r.matchedSpec?escAttr(r.matchedSpec):(r.v.sub||''))+'</div>'+
           '</div>'+
           '<div class="result-chev">›</div>'+
         '</div>';
@@ -2855,6 +2947,38 @@ var WIEDZA=WIEDZA_BASE.slice();
 var curWiedzaCat=null;
 
 function norm2(s){ return norm(String(s||'')); }
+/* ── wyszukiwarka „jak Finder" — przeszukuje też czujniki, biuro, przegląd i dane pojazdów ── */
+function sensorsSearch(nq){
+  return SENSORS.filter(function(s){
+    if(norm2(s.name).indexOf(nq)>=0 || norm2(s.sub||'').indexOf(nq)>=0) return true;
+    return (s.gases||[]).some(function(g){ return norm2(g.name).indexOf(nq)>=0 || norm2(g.formula).indexOf(nq)>=0; });
+  });
+}
+function noticesSearch(nq){
+  return (typeof NOTICES!=='undefined'?NOTICES:[]).filter(function(n){
+    return norm2(n.title).indexOf(nq)>=0 || norm2(n.body||'').indexOf(nq)>=0 || norm2(n.category||'').indexOf(nq)>=0;
+  });
+}
+function inspectionsSearch(nq){
+  return (typeof INSPECTIONS!=='undefined'?INSPECTIONS:[]).filter(function(x){
+    return norm2(x.subject||'').indexOf(nq)>=0 || norm2(x.responsible||'').indexOf(nq)>=0 || norm2(x.duty||'').indexOf(nq)>=0;
+  });
+}
+function vehicleSpecsSearch(nq){
+  var out=[];
+  Object.keys(D.vehicles).forEach(function(id){
+    var v=D.vehicles[id];
+    var matchedSpec=null;
+    var hit=norm2(v.name).indexOf(nq)>=0 || norm2(v.sub||'').indexOf(nq)>=0;
+    if(!hit && v.specs){
+      for(var k in v.specs){
+        if(norm2(k).indexOf(nq)>=0 || norm2(v.specs[k]).indexOf(nq)>=0){ hit=true; matchedSpec=k+': '+v.specs[k]; break; }
+      }
+    }
+    if(hit) out.push({id:id, v:v, matchedSpec:matchedSpec});
+  });
+  return out;
+}
 function wiedzaSearch(nq){
   return WIEDZA.filter(function(w){
     if(norm2(w.title).indexOf(nq)>=0) return true;
