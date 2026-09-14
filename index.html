@@ -2263,14 +2263,18 @@ var DRIVER_KIT={
   v3:['s3k401','s3n06','s3n07','s3kab03','s3kab05','s3kab12','s3kab13','s3d104:d1','s3d206']
 };
 var DRIVER_KIT_LAYOUT={
-  v1:[['kab'],['k1','d1'],['k2','d2'],['k3','d3'],['tyl'],['dach']],
+  v1:[['kab'],['k1','d1'],['k2','d2'],['k3','d3'],['tyl'],['vprzod'],['dach']],
   v2:[['kab'],['k1','d1'],['k2','d2'],['k3','d3'],['tyl'],['przod'],['dach']],
   v3:[['kab'],['k1','d1'],['k2','d2'],['k3','d3'],['k4','d4'],['nad']]
 };
+var DRIVER_KIT_VIRTUAL_GROUPS={
+  vprzod:{label:'PRZÓD',side:'przód',ids:['dach23','kab27']}
+};
 function dkBuildGroup(vid,v,compId,compItems){
   var c=v.compartments.find(function(x){return x.id===compId;});
+  var vg=DRIVER_KIT_VIRTUAL_GROUPS[compId];
   var rowsHtml=compItems.map(function(it){
-    return '<div class="dk-item-row" onclick="showCompartment(\''+vid+'\',\''+compId+'\')">'+
+    return '<div class="dk-item-row" onclick="showCompartment(\''+vid+'\',\''+it.comp+'\')">'+
       '<div class="dk-item-info"><div class="dk-item-name">'+escAttr(it.name)+'</div></div>'+
       '<div class="dk-item-qty">'+escAttr(it.qty||'')+'</div>'+
       '<div class="dk-item-chev">›</div>'+
@@ -2278,8 +2282,8 @@ function dkBuildGroup(vid,v,compId,compItems){
   }).join('');
   return '<div class="dk-group">'+
     '<div class="dk-group-head">'+
-      '<span class="dk-group-badge">'+(c?c.label:compId.toUpperCase())+'</span>'+
-      '<span class="dk-group-name">'+(c&&c.side?escAttr(c.side):'')+'</span>'+
+      '<span class="dk-group-badge">'+(vg?vg.label:(c?c.label:compId.toUpperCase()))+'</span>'+
+      '<span class="dk-group-name">'+(vg?vg.side:(c&&c.side?escAttr(c.side):''))+'</span>'+
     '</div>'+
     '<div class="dk-group-card">'+rowsHtml+'</div>'+
   '</div>';
@@ -2301,6 +2305,18 @@ function showDriverKit(vid){
   }
   var byComp={};
   items.forEach(function(it){ (byComp[it.comp]=byComp[it.comp]||[]).push(it); });
+  Object.keys(DRIVER_KIT_VIRTUAL_GROUPS).forEach(function(vgKey){
+    var vg=DRIVER_KIT_VIRTUAL_GROUPS[vgKey];
+    vg.ids.forEach(function(iid){
+      var realComp=Object.keys(byComp).find(function(k){return k!==vgKey && (byComp[k]||[]).some(function(it){return it.id===iid;});});
+      if(!realComp) return;
+      var idx=byComp[realComp].findIndex(function(it){return it.id===iid;});
+      if(idx<0) return;
+      var it=byComp[realComp].splice(idx,1)[0];
+      (byComp[vgKey]=byComp[vgKey]||[]).push(it);
+      if(!byComp[realComp].length) delete byComp[realComp];
+    });
+  });
   Object.keys(byComp).forEach(function(k){ byComp[k].sort(function(a,b){return a.name.localeCompare(b.name,'pl');}); });
 
   var layout=DRIVER_KIT_LAYOUT[vid]||v.compartments.map(function(c){return [c.id];});
