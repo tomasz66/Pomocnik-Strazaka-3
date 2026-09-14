@@ -4323,8 +4323,9 @@ function fiszkiAnswerWhere(item, chosenComp, options, optsWrap, clickedBtn){
   var s=fiszkiSession;
   var isCorrect=chosenComp.id===item.comp;
   Array.prototype.forEach.call(optsWrap.children, function(el){ el.onclick=null; });
+  var correctComp=null;
   for(var i=0;i<options.length;i++){
-    if(options[i].id===item.comp) optsWrap.children[i].classList.add('correct');
+    if(options[i].id===item.comp){ optsWrap.children[i].classList.add('correct'); correctComp=options[i]; }
   }
   if(!isCorrect) clickedBtn.classList.add('wrong');
   if(isCorrect){
@@ -4336,16 +4337,22 @@ function fiszkiAnswerWhere(item, chosenComp, options, optsWrap, clickedBtn){
     s.total=s.queue.length;
   }
   s.doneCount++;
-  if(isCorrect){
-    setTimeout(function(){ s.idx++; fiszkiRenderCard(); }, 500);
-  } else {
-    var nextBtn=document.createElement('button');
-    nextBtn.type='button';
-    nextBtn.className='fiszki-check-btn';
-    nextBtn.textContent='Dalej';
-    nextBtn.onclick=function(){ s.idx++; fiszkiRenderCard(); };
-    optsWrap.parentElement.appendChild(nextBtn);
+  var cardEl=optsWrap.parentElement;
+  var photo=s.v.zone_map && s.v.zone_map[item.comp] && s.v.zone_map[item.comp]._photo;
+  if(photo && correctComp){
+    var photoBlock=document.createElement('div');
+    photoBlock.style.marginTop='16px';
+    photoBlock.innerHTML=
+      '<div class="fiszki-kicker" style="margin-bottom:8px">'+escAttr(correctComp.label+' ('+correctComp.side+')')+'</div>'+
+      '<img src="'+photo+'" style="width:100%;display:block;border-radius:12px;cursor:zoom-in" onclick="openPhotoLightbox(this.src)">';
+    cardEl.appendChild(photoBlock);
   }
+  var nextBtn=document.createElement('button');
+  nextBtn.type='button';
+  nextBtn.className='fiszki-check-btn';
+  nextBtn.textContent='Dalej';
+  nextBtn.onclick=function(){ s.idx++; fiszkiRenderCard(); };
+  cardEl.appendChild(nextBtn);
 }
 function fiszkiRenderWhatInCard(card, wrap){
   var s=fiszkiSession, v=s.v, comp=card.comp;
