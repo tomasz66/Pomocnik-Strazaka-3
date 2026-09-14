@@ -3057,7 +3057,8 @@ var WIEDZA_CATEGORIES=[
   {id:'materialy-niebezpieczne', name:'Materiały niebezpieczne (ADR)'},
   {id:'ksrg', name:'Ratownictwo i KSRG'},
   {id:'zdarzenia-specjalne', name:'Zdarzenia specjalne i wybuchy'},
-  {id:'specyfikacje-wzorcowe', name:'Specyfikacje wzorcowe pojazdów'}
+  {id:'specyfikacje-wzorcowe', name:'Specyfikacje wzorcowe pojazdów'},
+  {id:'sprzet-reczny', name:'Sprzęt ręczny i narzędzia'}
 ];
 var WIEDZA_BASE=[
   {
@@ -3168,6 +3169,12 @@ var WIEDZA_BASE=[
       {t:'p', text:'Wydajność występująca przy optymalnej sprawności pompy. W dobrze skonstruowanej pompie Qopt pokrywa się z Qn.'},
       {t:'h', text:'Wydajność teoretyczna pompy (Qth)'},
       {t:'p', text:'Natężenie przepływu w pompie idealnie szczelnej i przy teoretycznej wysokości podnoszenia: Qth = Q + Qstr, gdzie Qstr to łączne straty w pompie (przepływ powrotny do wirnika, przecieki przez dławice itp.).'}
+    ]
+  },
+  {
+    id:'w-oznaczenie-motopomp', cat:'hydraulika', title:'Oznaczenie motopomp',
+    blocks:[
+      {t:'p', text:'Symbol motopompy, np. M8/8, opisuje jej dwa podstawowe parametry: pierwsza liczba — wydajność na minutę, druga liczba — ciśnienie tłoczenia.'}
     ]
   },
   {
@@ -3493,6 +3500,15 @@ var WIEDZA_BASE=[
     ]
   },
   {
+    id:'w-technika-ciecia-pilarka', cat:'taktyka', title:'Technika cięcia pilarką — podparcie',
+    blocks:[
+      {t:'h', text:'1. podparcie'},
+      {t:'p', text:'Cięcie z dołu, a potem z góry.'},
+      {t:'h', text:'2. podparcie'},
+      {t:'p', text:'Cięcie z góry, a potem z dołu.'}
+    ]
+  },
+  {
     id:'w-grupy-pozarow', cat:'klasyfikacja', title:'Grupy pożarów',
     blocks:[
       {t:'h', text:'Grupa A'},
@@ -3709,6 +3725,15 @@ var WIEDZA_BASE=[
       {t:'p', text:'300 atm × 6 L = 1800 litrów powietrza. 1800 L : 80 l/min = 22,5 min.'},
       {t:'h', text:'Próg alarmowy (gwizdek)'},
       {t:'p', text:'Od 55 ± 5 atm.'}
+    ]
+  },
+  {
+    id:'w-ubranie-specjalne', cat:'odziez-ochronna', title:'Ubranie specjalne i kominiarka — masa',
+    blocks:[
+      {t:'h', text:'Ubranie specjalne'},
+      {t:'p', text:'Max 3,8 kg (3 warstwy).'},
+      {t:'h', text:'Kominiarka'},
+      {t:'p', text:'Masa max 120 gram.'}
     ]
   },
   {
@@ -4129,6 +4154,31 @@ var WIEDZA_BASE=[
       {t:'p', text:'Wąż ssawny 110: 4 szt., 2,4 m, przepływ 1600 l/min przy 4 bar. Wąż ssawny 75: 3 szt., 1,5 m, przepływ 800 l/min przy 4 bar. Węże tłoczne (dł. 20 m): W75 — 11 szt., przepływ 800 l/min, 88 l wody w wężu; W52 — 8 szt., przepływ 200 l/min, 42 l wody w wężu.'},
       {t:'h', text:'Prądownice i wytwornice'},
       {t:'p', text:'PP4: 400 l/min, Ls=12, rzut 25 m, ciśnienie 5 bar. PP8: 800 l/min, Ls=15, rzut 26 m, ciśnienie 5 bar. WP 2/150: masa 10,5 kg, przepływ 200 l/min, Ls=150.'}
+    ]
+  },
+  {
+    id:'w-bosaki', cat:'sprzet-reczny', title:'Bosaki i tłumica',
+    blocks:[
+      {t:'table', cols:['Rodzaj','Masa','Długość'], rows:[
+        ['Podręczny','5 kg','1,27 m'],
+        ['Sufitowy','6 kg','2,6 m'],
+        ['Strzechowy','8 kg','5,1 m'],
+        ['Lekki','6 kg','4,3 m'],
+        ['Ciężki','12 kg','5,2 m']
+      ]},
+      {t:'h', text:'Tłumica'},
+      {t:'p', text:'Długość 2,5 m.'}
+    ]
+  },
+  {
+    id:'w-terminy-obslugi', cat:'sprzet-reczny', title:'Terminy obsługi sprzętu',
+    blocks:[
+      {t:'h', text:'Obsługa OT-1'},
+      {t:'p', text:'Co 2 miesiące — 2000 km.'},
+      {t:'h', text:'Obsługa OT-2'},
+      {t:'p', text:'Co 6 miesięcy — 4000–6000 km.'},
+      {t:'h', text:'Agregat hydrauliczny spalinowy — rozruch'},
+      {t:'p', text:'1 godzina na maksymalnych obrotach.'}
     ]
   }
 ];
