@@ -1019,7 +1019,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </button>
       <div class="nav-title">
         <div class="nav-title-text">JRG</div>
-        <div class="nav-title-sub">Garaż, biuro, przegląd</div>
+        <div class="nav-title-sub">Biuro, przegląd</div>
       </div>
       <div class="nav-right"></div>
     </div>
@@ -1965,7 +1965,26 @@ function renderHome(){
       '<div class="vehicle-arrow">›</div>';
     vl.appendChild(row);
   });
-  // Czujniki — wiersz przed Garażem
+  // Garaż JRG — wiersz zaraz po SCD-42
+  var vGar=D.vehicles.garaz;
+  if(vGar){
+    var cntGar=D.items.filter(function(it){return it.v==='garaz';}).length;
+    var rGar=document.createElement('div');
+    rGar.className='vehicle-row';
+    rGar.onclick=function(){showVehicle('garaz');};
+    rGar.innerHTML=
+      '<div class="vehicle-badge garage">'+vGar.icon+'</div>'+
+      '<div class="vehicle-info">'+
+        '<div class="vehicle-name">'+vGar.name+'</div>'+
+        '<div class="vehicle-meta">'+vGar.sub+(cntGar?' · '+cntGar+' poz.':'')+'</div>'+
+      '</div>'+
+      '<div class="edit-row-actions">'+
+        '<button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openVehicleSheet(\'garaz\')">✎</button>'+
+      '</div>'+
+      '<div class="vehicle-arrow">›</div>';
+    vl.appendChild(rGar);
+  }
+  // Czujniki — wiersz po Garażu
   var sl=document.getElementById('sensors-list');
   sl.innerHTML='';
   var srow=document.createElement('div');
@@ -2028,7 +2047,7 @@ function renderHome(){
     '<div class="vehicle-arrow">›</div>';
   fl.appendChild(frow);
 
-  // JRG — hub: Garaż, Biuro, Przegląd
+  // JRG — hub: Biuro, Przegląd (Garaż przeniesiony na główną, zaraz po SCD)
   var jl=document.getElementById('jrg-list');
   jl.innerHTML='';
   var jrow=document.createElement('div');
@@ -2038,7 +2057,7 @@ function renderHome(){
     '<div class="vehicle-badge" style="background:#5d6d7e">JRG</div>'+
     '<div class="vehicle-info">'+
       '<div class="vehicle-name">JRG</div>'+
-      '<div class="vehicle-meta">Garaż · Biuro · Przegląd</div>'+
+      '<div class="vehicle-meta">Biuro · Przegląd</div>'+
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
   jl.appendChild(jrow);
@@ -2048,25 +2067,6 @@ function renderHome(){
 function showJrgHub(){
   var wrap=document.getElementById('jrg-hub-list');
   wrap.innerHTML='';
-
-  var vGar=D.vehicles.garaz;
-  if(vGar){
-    var cntGar=D.items.filter(function(it){return it.v==='garaz';}).length;
-    var rGar=document.createElement('div');
-    rGar.className='vehicle-row';
-    rGar.onclick=function(){showVehicle('garaz');};
-    rGar.innerHTML=
-      '<div class="vehicle-badge garage">'+vGar.icon+'</div>'+
-      '<div class="vehicle-info">'+
-        '<div class="vehicle-name">'+vGar.name+'</div>'+
-        '<div class="vehicle-meta">'+vGar.sub+(cntGar?' · '+cntGar+' poz.':'')+'</div>'+
-      '</div>'+
-      '<div class="edit-row-actions">'+
-        '<button type="button" class="edit-icon-btn" onclick="event.stopPropagation();openVehicleSheet(\'garaz\')">✎</button>'+
-      '</div>'+
-      '<div class="vehicle-arrow">›</div>';
-    wrap.appendChild(rGar);
-  }
 
   var rBiu=document.createElement('div');
   rBiu.className='vehicle-row';
@@ -2087,7 +2087,7 @@ function showJrgHub(){
     '<div class="vehicle-badge" style="background:#ca6f1e">PRZ</div>'+
     '<div class="vehicle-info">'+
       '<div class="vehicle-name">Przegląd</div>'+
-      '<div class="vehicle-meta">'+(INSPECTIONS.length?INSPECTIONS.length+' pozycji · 3 zmiany':'Brak danych')+'</div>'+
+      '<div class="vehicle-meta">'+(INSPECTIONS.length?INSPECTIONS.length+' pozycji':'Brak danych')+'</div>'+
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
   wrap.appendChild(rPrz);
@@ -2095,10 +2095,9 @@ function showJrgHub(){
   switchView('view-jrg-hub');
 }
 
-/* Powrót z widoku pojazdu: Garaż wraca do hubu JRG, reszta pojazdów wraca na główną */
+/* Powrót z widoku pojazdu: wszystkie pojazdy (w tym Garaż) wracają na główną */
 function backFromVehicle(){
-  if(curV==='garaz') showJrgHub();
-  else showHome();
+  showHome();
 }
 
 /* ── SVG ── */
@@ -2202,7 +2201,7 @@ function showVehicle(id){
   curV=id; curC=null;
   var v=D.vehicles[id];
   document.getElementById('v-title').textContent=v.name;
-  document.getElementById('back-v-lbl').textContent='JRG';
+  document.getElementById('back-v-lbl').textContent='Główna';
   var equipBanner=document.getElementById('equip-date-banner');
   if(v.equipmentDate){
     document.getElementById('equip-date-val').textContent=v.equipmentDate;
