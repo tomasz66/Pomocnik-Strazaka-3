@@ -218,6 +218,21 @@ body { background: var(--bg); color: var(--text); }
 /* ── SPEC PANEL ── */
 .equip-date-banner { margin: 12px 16px 0; padding: 9px 14px; border-radius: var(--radius); background: var(--accent-bg); border: 1px solid var(--border); font-size: 12.5px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
 .equip-date-banner strong { color: var(--text); font-weight: 700; }
+.driver-kit-banner{margin:12px 16px 0;padding:13px 14px;border-radius:var(--radius);background:var(--accent);color:#fff;display:flex;align-items:center;gap:12px;cursor:pointer}
+.driver-kit-banner:active{opacity:.85}
+.driver-kit-icon{font-size:26px;flex-shrink:0}
+.driver-kit-info{flex:1;min-width:0}
+.driver-kit-title{font-size:14.5px;font-weight:700}
+.driver-kit-sub{font-size:11.5px;opacity:.85;margin-top:1px}
+.driver-kit-arrow{font-size:20px;opacity:.85}
+.dk-item-row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer}
+.dk-item-row:last-child{border-bottom:none}
+.dk-item-row:active{background:var(--surface-2)}
+.dk-item-info{flex:1;min-width:0}
+.dk-item-name{font-size:14.5px;font-weight:600;color:var(--text)}
+.dk-item-loc{font-size:12.5px;color:var(--accent);font-weight:600;margin-top:2px}
+.dk-item-qty{font-size:12px;color:#fff;background:var(--accent);border-radius:99px;padding:3px 10px;flex-shrink:0}
+.dk-item-chev{color:var(--text-faint);font-size:18px;flex-shrink:0}
 .spec-panel { margin: 0 16px 12px; border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; background: #f0f0f5; }
 .spec-toggle { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; min-height: 48px; }
 .spec-toggle:active { background: #e5e5ea; }
@@ -666,6 +681,14 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   </div>
   <div class="scroll-content">
     <div class="equip-date-banner hidden" id="equip-date-banner">📅 Wyposażenie aktualne na: <strong id="equip-date-val"></strong></div>
+    <div class="driver-kit-banner hidden" id="driver-kit-banner" onclick="showDriverKit(curV)">
+      <div class="driver-kit-icon">🚦</div>
+      <div class="driver-kit-info">
+        <div class="driver-kit-title">Kierowca — szybki dostęp</div>
+        <div class="driver-kit-sub">Gaśnice, pachołki, taśma, oświetlenie, wyciągarka i inne</div>
+      </div>
+      <div class="driver-kit-arrow">›</div>
+    </div>
     <div class="spec-panel" id="spec-panel">
       <div class="spec-toggle" onclick="this.parentElement.classList.toggle('open')">
         <span class="spec-toggle-title">Specyfikacja techniczna</span>
@@ -714,6 +737,27 @@ select.edit-input{-webkit-appearance:none;appearance:none}
     <div class="items-wrap" id="items-wrap"></div>
     <button type="button" class="edit-fab-add" onclick="openItemSheet(null)">+ Dodaj sprzęt</button>
     <button type="button" class="edit-fab-add" onclick="openGroupSheet(null)">+ Dodaj grupę (worek)</button>
+  </div>
+</div>
+
+<!-- ═══ KIEROWCA — szybki dostęp ═══ -->
+<div class="view" id="view-driver-kit">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showVehicle(curV)" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span id="dk-back-lbl"></span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text">Kierowca</div>
+        <div class="nav-title-sub">Zabezpieczenie terenu działania</div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="list-group" id="dk-list" style="margin-top:12px"></div>
+    <div style="height:16px"></div>
   </div>
 </div>
 
@@ -2209,6 +2253,44 @@ function buildGenericSvg(id){
 }
 
 /* ── VEHICLE ── */
+/* ── KIEROWCA — szybki dostęp do sprzętu zabezpieczenia terenu ── */
+var DRIVER_KIT={
+  v1:['kab18b','kab19','kab27','d103','d104','d106','d121','d202','d306','k113','k137','k143','k144','k305','k314','k317','tyl03','dach23'],
+  v2:['v2kab09','v2kab11','v2kab14','v2kab15','v2kab16','v2kab19','v2kab22','v2kab24','v2kab31','v2kab42','v2d107','v2d115','v2k218','v2k306','v2tyl4','v2prz1','v2k106','v2k121','v2dach13','v2dach26'],
+  v3:['s3k401','s3n06','s3n07','s3kab03','s3kab05','s3kab12','s3kab13','s3d104:d1','s3d206']
+};
+function showDriverKit(vid){
+  var v=D.vehicles[vid];
+  document.getElementById('dk-back-lbl').textContent=v.name;
+  var ids=DRIVER_KIT[vid]||[];
+  var items=D.items.filter(function(it){
+    if(it.v!==vid) return false;
+    return ids.indexOf(it.id)>=0 || ids.indexOf(it.id+':'+it.comp)>=0;
+  });
+  items.sort(function(a,b){return a.name.localeCompare(b.name,'pl');});
+  var wrap=document.getElementById('dk-list');
+  wrap.innerHTML='';
+  if(!items.length){
+    wrap.innerHTML='<div class="empty" style="padding:20px">Brak pozycji</div>';
+  } else {
+    items.forEach(function(it){
+      var c=v.compartments.find(function(x){return x.id===it.comp;});
+      var loc=c?(c.name+(c.side?' · '+c.side:'')):it.comp;
+      var row=document.createElement('div');
+      row.className='dk-item-row';
+      row.onclick=function(){showCompartment(vid,it.comp);};
+      row.innerHTML=
+        '<div class="dk-item-info">'+
+          '<div class="dk-item-name">'+escAttr(it.name)+'</div>'+
+          '<div class="dk-item-loc">'+escAttr(loc)+'</div>'+
+        '</div>'+
+        '<div class="dk-item-qty">'+escAttr(it.qty||'')+'</div>'+
+        '<div class="dk-item-chev">›</div>';
+      wrap.appendChild(row);
+    });
+  }
+  switchView('view-driver-kit');
+}
 function showVehicle(id){
   curV=id; curC=null;
   var v=D.vehicles[id];
@@ -2220,6 +2302,12 @@ function showVehicle(id){
     equipBanner.classList.remove('hidden');
   } else {
     equipBanner.classList.add('hidden');
+  }
+  var dkBanner=document.getElementById('driver-kit-banner');
+  if(DRIVER_KIT[id] && DRIVER_KIT[id].length){
+    dkBanner.classList.remove('hidden');
+  } else {
+    dkBanner.classList.add('hidden');
   }
   var svg=document.getElementById('v-svg');
   if(id==='v1'){svg.setAttribute('viewBox','0 0 322 540');svg.innerHTML=buildGBASvg();}
