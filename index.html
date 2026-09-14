@@ -923,6 +923,37 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
+    <div class="tak-section">
+      <div class="tak-section-title">Karta KPP</div>
+      <div class="tak-full-card">
+        <div class="tak-full-row">
+          <div class="tak-full-label" style="background:#16a085">WZÓR</div>
+          <div>
+            <div style="font-weight:700;margin-bottom:4px">Zużycie tlenu do wpisania w karcie</div>
+            <div>Czas podawania (min) × przepływ (l/min) = zużycie (l)</div>
+            <div style="margin-top:4px">Przykład: 2 min × 15 l/min = 30 l</div>
+          </div>
+        </div>
+        <div class="tak-full-row">
+          <div class="tak-full-label" style="background:#16a085">LICZ</div>
+          <div style="flex:1">
+            <div style="font-weight:700;margin-bottom:8px">Kalkulator</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <input type="number" id="kpp-czas" inputmode="decimal" placeholder="czas (min)" oninput="calcKppTlen()" style="width:100px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-size:14px">
+              <span>×</span>
+              <input type="number" id="kpp-przeplyw" inputmode="decimal" placeholder="przepływ (l/min)" oninput="calcKppTlen()" style="width:130px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-size:14px">
+              <span>=</span>
+              <span id="kpp-wynik" style="font-weight:700;font-size:16px;color:#16a085">— l</span>
+            </div>
+          </div>
+        </div>
+        <div class="tak-full-row" id="kpp-photo-row" style="display:none">
+          <div class="tak-full-label" style="background:#16a085">WZÓR KARTY</div>
+          <div style="flex:1" id="kpp-photo-wrap"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="tak-note">Powyższy schemat to propozycja mająca na celu ujednolicenie działań podczas pożarów wewnętrznych.</div>
     <div style="height:16px"></div>
   </div>
@@ -1417,6 +1448,17 @@ function closeEditSheet(){
   document.getElementById('edit-sheet-body').innerHTML='';
 }
 function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function calcKppTlen(){
+  var czas=parseFloat(document.getElementById('kpp-czas').value);
+  var przeplyw=parseFloat(document.getElementById('kpp-przeplyw').value);
+  var out=document.getElementById('kpp-wynik');
+  if(isFinite(czas) && isFinite(przeplyw) && czas>0 && przeplyw>0){
+    var wynik=czas*przeplyw;
+    out.textContent=(Math.round(wynik*100)/100)+' l';
+  } else {
+    out.textContent='— l';
+  }
+}
 function kvRowHtml(k,v){
   return '<div class="edit-kv-row"><input class="edit-input kv-key" placeholder="Nazwa pola" value="'+escAttr(k)+'"><input class="edit-input kv-val" placeholder="Wartość" value="'+escAttr(v)+'"><button type="button" class="edit-kv-del" onclick="this.parentElement.remove()">✕</button></div>';
 }
