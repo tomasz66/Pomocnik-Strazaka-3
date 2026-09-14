@@ -382,12 +382,10 @@ body { background: var(--bg); color: var(--text); }
 .sensor-formula { font-size: 11px; color: var(--text-muted); font-family: "SF Mono","Fira Code",monospace; }
 .tak-jump-bar {
   position: sticky; top: calc(56px + env(safe-area-inset-top)); z-index: 15;
-  display: flex; gap: 8px; overflow-x: auto;
+  display: flex; flex-wrap: wrap; gap: 8px;
   padding: 10px 16px; background: var(--bg);
   border-bottom: 1px solid var(--border);
-  -webkit-overflow-scrolling: touch;
 }
-.tak-jump-bar::-webkit-scrollbar { display: none; }
 .tak-jump-chip {
   flex: 0 0 auto; white-space: nowrap;
   font-size: 12.5px; font-weight: 700;
@@ -397,7 +395,7 @@ body { background: var(--bg); color: var(--text); }
 }
 .tak-jump-chip:active { background: var(--surface-2); }
 .tak-jump-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-.tak-section { margin: 12px 16px 0; scroll-margin-top: 112px; }
+.tak-section { margin: 12px 16px 0; scroll-margin-top: var(--tak-offset, 170px); }
 .tak-section-title {
   font-size: 12px; font-weight: 700; text-transform: uppercase;
   color: var(--text-faint); letter-spacing: .6px;
@@ -4625,7 +4623,19 @@ function deleteInspectionConfirm(id){
 function showTaktyka(){
   switchView('view-taktyka');
   document.getElementById('tab-taktyka').classList.add('active');
+  updateTakOffset();
 }
+function updateTakOffset(){
+  var bar=document.getElementById('tak-jump-bar');
+  if(!bar) return;
+  setTimeout(function(){
+    var h=bar.offsetHeight;
+    document.getElementById('view-taktyka').style.setProperty('--tak-offset',(h+56+10)+'px');
+  },30);
+}
+window.addEventListener('resize', function(){
+  if(document.getElementById('view-taktyka') && document.getElementById('view-taktyka').classList.contains('active')) updateTakOffset();
+});
 
 /* ── BAZA PYTAŃ (QUIZ) ── */
 var QUIZ_SECTION_ORDER=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI'];
