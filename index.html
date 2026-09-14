@@ -380,7 +380,24 @@ body { background: var(--bg); color: var(--text); }
 .sensor-alarm2 { color: var(--accent); }
 .sensor-gas { font-weight: 500; }
 .sensor-formula { font-size: 11px; color: var(--text-muted); font-family: "SF Mono","Fira Code",monospace; }
-.tak-section { margin: 12px 16px 0; }
+.tak-jump-bar {
+  position: sticky; top: calc(56px + env(safe-area-inset-top)); z-index: 15;
+  display: flex; gap: 8px; overflow-x: auto;
+  padding: 10px 16px; background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  -webkit-overflow-scrolling: touch;
+}
+.tak-jump-bar::-webkit-scrollbar { display: none; }
+.tak-jump-chip {
+  flex: 0 0 auto; white-space: nowrap;
+  font-size: 12.5px; font-weight: 700;
+  padding: 7px 13px; border-radius: 99px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); cursor: pointer;
+}
+.tak-jump-chip:active { background: var(--surface-2); }
+.tak-jump-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tak-section { margin: 12px 16px 0; scroll-margin-top: 112px; }
 .tak-section-title {
   font-size: 12px; font-weight: 700; text-transform: uppercase;
   color: var(--text-faint); letter-spacing: .6px;
@@ -713,9 +730,18 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
   </div>
-  <div class="scroll-content">
+  <div class="tak-jump-bar" id="tak-jump-bar">
+    <div class="tak-jump-chip" onclick="takJump('tak-rota1')">Rota I</div>
+    <div class="tak-jump-chip" onclick="takJump('tak-rota2')">Rota II</div>
+    <div class="tak-jump-chip" onclick="takJump('tak-dowodzenie')">Dowodzenie</div>
+    <div class="tak-jump-chip" onclick="takJump('tak-prady')">Prądy gaśnicze</div>
+    <div class="tak-jump-chip" onclick="takJump('tak-aparaty')">Aparaty powietrzne</div>
+    <div class="tak-jump-chip" onclick="takJump('tak-przeliczniki')">Przeliczniki</div>
+    <div class="tak-jump-chip" onclick="takJump('tak-kpp')">Karta KPP</div>
+  </div>
+  <div class="scroll-content" id="tak-scroll">
 
-    <div class="tak-section">
+    <div class="tak-section" id="tak-rota1">
       <div class="tak-section-title">Rota I</div>
       <div class="tak-table">
         <div class="tak-header">
@@ -741,7 +767,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
-    <div class="tak-section">
+    <div class="tak-section" id="tak-rota2">
       <div class="tak-section-title">Rota II</div>
       <div class="tak-table">
         <div class="tak-header">
@@ -775,7 +801,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
-    <div class="tak-section">
+    <div class="tak-section" id="tak-dowodzenie">
       <div class="tak-section-title">Dowodzenie i zabezpieczenie</div>
       <div class="tak-full-card">
         <div class="tak-full-row">
@@ -797,7 +823,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
-    <div class="tak-section">
+    <div class="tak-section" id="tak-prady">
       <div class="tak-section-title">Prądy gaśnicze</div>
       <div class="tak-full-card">
         <div class="tak-full-row">
@@ -838,7 +864,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
-    <div class="tak-section">
+    <div class="tak-section" id="tak-aparaty">
       <div class="tak-section-title">Aparaty powietrzne - zapas powietrza</div>
       <div class="tak-full-card">
         <div class="tak-full-row">
@@ -880,7 +906,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
-    <div class="tak-section">
+    <div class="tak-section" id="tak-przeliczniki">
       <div class="tak-section-title">Przeliczniki i klasyfikacje</div>
       <div class="tak-full-card">
         <div class="tak-full-row">
@@ -923,7 +949,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
-    <div class="tak-section">
+    <div class="tak-section" id="tak-kpp">
       <div class="tak-section-title">Karta KPP</div>
       <div class="tak-full-card">
         <div class="tak-full-row">
@@ -1451,6 +1477,12 @@ function closeEditSheet(){
   document.getElementById('edit-sheet-body').innerHTML='';
 }
 function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function takJump(id){
+  var el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll('.tak-jump-chip').forEach(function(c){c.classList.remove('active');});
+  if(event && event.target) event.target.classList.add('active');
+}
 function calcKppTlen(){
   var czas=parseFloat(document.getElementById('kpp-czas').value);
   var przeplyw=parseFloat(document.getElementById('kpp-przeplyw').value);
