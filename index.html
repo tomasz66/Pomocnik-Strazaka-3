@@ -1915,6 +1915,18 @@ function switchView(id){
   if(nextSc){
     nextSc.scrollTop=scrollPos[id]||0;
   }
+  // Zawsze zeruj scroll całej strony przy zmianie widoku — inaczej nowy ekran
+  // czasem otwiera się "w połowie", jeśli poprzedni był mocno przewinięty
+  // (a na dotyku potrafi jeszcze chwilę "dojeżdżać" bezwładnością, stąd drugi reset z opóźnieniem)
+  window.scrollTo(0,0);
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  setTimeout(function(){
+    window.scrollTo(0,0);
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
+    if(nextSc) nextSc.scrollTop=scrollPos[id]||0;
+  },150);
   // Tab bar
   document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active');});
   if(id==='view-home') document.getElementById('tab-home').classList.add('active');
