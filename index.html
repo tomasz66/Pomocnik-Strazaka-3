@@ -4472,6 +4472,158 @@ function showWiedzaEntry(id){
     renderWiedzaBlocks(w.blocks);
 }
 
+/* ── FISZKI — dojazdy do ulic Świętochłowic (dane statyczne, jak WIEDZA_BASE) ── */
+var STREETS_BASE=[
+  {id:"1-maja",ulica:"1 Maja",dzielnica:"Centrum",dojazd:"Sikorskiego"},
+  {id:"akacjowa",ulica:"Akacjowa",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, Woj. Pol., Wiśniowa, za jeziorem lewo w Topolową lub Brzozową"},
+  {id:"armii-krajowej",ulica:"Armii Krajowej",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w lewo Łagiewnicka, w prawo Kościelna, 2 w lewo za kościołem"},
+  {id:"astrow",ulica:"Astrów",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, Bieszczadzka, za Lidlem w lewo"},
+  {id:"bankowa",ulica:"Bankowa",dzielnica:"Centrum",dojazd:"Bytomska"},
+  {id:"barlickiego",ulica:"Barlickiego",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, za kościołem w prawo Bukowego i w lewo"},
+  {id:"beskidzka",ulica:"Beskidzka",dzielnica:"Chropaczów, os. Wzgórze",dojazd:"Bytomska, Stawowa, w lewo Łagiewnicka, w lewo Beskidzka"},
+  {id:"bieszczadzka",ulica:"Bieszczadzka",dzielnica:"Chropaczów, os. Wzgórze",dojazd:"Bytomska, Chorzowska, 3 światła w prawo"},
+  {id:"boczna",ulica:"Boczna",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, w prawo Bukowego, w prawo i w lewo"},
+  {id:"bohaterow-westerplatte",ulica:"Bohaterów Westerplatte",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicką pierwsza w lewo"},
+  {id:"bol-chrobrego",ulica:"Bol. Chrobrego",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, koniec koło pomnika w prawo w Żelazną i w prawo"},
+  {id:"brzozowa",ulica:"Brzozowa",dzielnica:"Os. Góra Hugona",dojazd:"Wojska Polskiego, Wiśniowa, za stawem 2 w lewo Brzozowa"},
+  {id:"wroclawska",ulica:"Wrocławska",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, koło placu na zakręcie"},
+  {id:"bukowa",ulica:"Bukowa",dzielnica:"Os. Góra Hugona",dojazd:"Wojska Polskiego, Wiśniowa, koło cmentarza w lewo w Bukową"},
+  {id:"bukowego-a",ulica:"Bukowego A.",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, za kościołem w prawo w ul. Bukowego"},
+  {id:"chopina",ulica:"Chopina",dzielnica:"Centrum, Ustronie",dojazd:"Sikorskiego, Górnicza"},
+  {id:"chropaczowska",ulica:"Chropaczowska",dzielnica:"Chropaczów",dojazd:"Prosto Bytomska, za kościołem 2 w prawo w Chropaczowską"},
+  {id:"cicha",ulica:"Cicha",dzielnica:"Centrum",dojazd:"Bytomska"},
+  {id:"cmentarna",ulica:"Cmentarna",dzielnica:"Centrum",dojazd:"Bytomska, Katowicka za drugi kościół i w lewo, za skrz z Wojska Polskiego"},
+  {id:"czajora",ulica:"Czajora",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, potem w prawo Węglowa"},
+  {id:"debowa",ulica:"Dębowa",dzielnica:"Zgoda, Os.Kalina",dojazd:"Wiśniowa, za jeziorem 1 w lewo i prawie do końca"},
+  {id:"dworcowa",ulica:"Dworcowa",dzielnica:"Centrum",dojazd:"Bytomska"},
+  {id:"sloneczna",ulica:"Słoneczna",dzielnica:"Piaśniki",dojazd:"Bytomska, w lewo Powst. Śl. do końca, Wiosenna"},
+  {id:"dzialkowcow",ulica:"Działkowców",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, Bieszczadzka, w lewo Łagiewnicka, za stadionem w prawo i do końca"},
+  {id:"engelsa",ulica:"Engelsa",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, na końcu w prawo, za pl Słowiańskim"},
+  {id:"pileckiego",ulica:"Pileckiego",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w lewo Łagiewnicka, w prawo Kościelna, do końca"},
+  {id:"hoffmann",ulica:"Hoffmann",dzielnica:"Centrum",dojazd:"Bytomska, Katowicka za dugim kościołem i w lewo"},
+  {id:"kochanowskiego",ulica:"Kochanowskiego",dzielnica:"Centrum",dojazd:"Sikorskiego"},
+  {id:"goleszycow",ulica:"Gołęszyców",dzielnica:"Chropaczów, os.Brzezina",dojazd:"Prosto Bytomską, prawie koniec w prawo"},
+  {id:"gora-hugona",ulica:"Góra Hugona",dzielnica:"Zgoda, Góra Hugona",dojazd:"Metalowców, prosto Śląska, odbić w lewo na łuku i w lewo Góra Hugona"},
+  {id:"gorna",ulica:"Górna",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa i zaczyna się Górna (na łuku w prawo)"},
+  {id:"gornicza",ulica:"Górnicza",dzielnica:"Centrum",dojazd:"Sikorskiego"},
+  {id:"graniczna",ulica:"Graniczna",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, Bieszczadzka, w lewo Łagiewnicka, za stadionem w prawo Graniczna"},
+  {id:"granitowa",ulica:"Granitowa",dzielnica:"Centrum",dojazd:"Bytomska, 1 zaraz przy DTŚ"},
+  {id:"grunwaldzka",ulica:"Grunwaldzka",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, w lewo Wojska Polskiego, za kościołem w prawo Wiśniowa, 1 lewo"},
+  {id:"hajduki",ulica:"Hajduki",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, w lewo Wojska Polskiego, za kościołem w prawo i prosto Hajduki"},
+  {id:"dmowskiego",ulica:"Dmowskiego",dzielnica:"Centrum, Ustronie",dojazd:"Sikorskiego"},
+  {id:"hutnicza",ulica:"Hutnicza",dzielnica:"Centrum",dojazd:"Bytomska, Metalowców, w lewo Hutnicza, równoległa do Metalowców"},
+  {id:"imieli",ulica:"Imieli",dzielnica:"Lipiny",dojazd:"Krasickiego, prosto Mickiewicza, w lewo w Moniuszki, Imieli"},
+  {id:"jasminowa",ulica:"Jaśminowa",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, Bieszczadzka, za Lidlem w lewo"},
+  {id:"jaworowa",ulica:"Jaworowa",dzielnica:"Zgoda, Kalina",dojazd:"Wojska Polskiego, Wiśniowa, w lewo Brzozowa, w lewo Jaworowa"},
+  {id:"jesionowa",ulica:"Jesionowa",dzielnica:"Zgoda, Kalina",dojazd:"Wojska Polskiego, Wiśniowa, w lewo Brzozowa, w lewo Jaworowa"},
+  {id:"jodlowa",ulica:"Jodłowa",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, 1 w prawo Jodłowa"},
+  {id:"jordanowska",ulica:"Jordanowska",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, za zakrętem którąś w prawo albo od Węglowej"},
+  {id:"kamionki",ulica:"Kamionki",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, za zakrętem 2 albo 3 w lewo"},
+  {id:"karpacka",ulica:"Karpacka",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, 1 w lewo i w prawo, równoległa do Stawowej"},
+  {id:"kasprzaka",ulica:"Kasprzaka",dzielnica:"Centrum",dojazd:"Sikorskiego, Górnicza"},
+  {id:"kasztanowa",ulica:"Kasztanowa",dzielnica:"Zgoda, Kalina",dojazd:"Wojska Polskiego, Wiśniowa, lewo Brzozowa, w lewo Akacjowa i w prawo"},
+  {id:"klonowa",ulica:"Klonowa",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, Woj. Pol., Wiśniowa, za jeziorem lewo w Topolową lub Brzozową"},
+  {id:"kolejowa",ulica:"Kolejowa",dzielnica:"Piaśniki",dojazd:"Prosto Krasickiego, prosto Mickiewicza, za CPN w lewo Przemysłowa, Kolejowa, koniec SW"},
+  {id:"wisniowa",ulica:"Wiśniowa",dzielnica:"",dojazd:"Metalowców, rondo w lewo Woj. Pol., za kościołem w prawo Wiśniowa"},
+  {id:"kopernika",ulica:"Kopernika",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, przed zakrętem w lewo"},
+  {id:"korfantego",ulica:"Korfantego",dzielnica:"Piaśniki",dojazd:"Bytomska, Krasickiego i 2 w prawo"},
+  {id:"koscielna",ulica:"Kościelna",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w lewo Łagiewnicka, 1 w prawo Kościelna"},
+  {id:"kosciuszki",ulica:"Kościuszki",dzielnica:"Centrum",dojazd:"Sikorskiego, Górnicza, równoległa do niej"},
+  {id:"krasickiego",ulica:"Krasickiego",dzielnica:"Piaśniki",dojazd:"Bytomska, 1 w lewo za DTŚ"},
+  {id:"krauzego",ulica:"Krauzego",dzielnica:"Zgoda",dojazd:"Metalowców, w prawo Wojska Polskiego, za parkiem w prawo"},
+  {id:"krzywa",ulica:"Krzywa",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, w lewo Wojska Polskiego, w prawo Nowa, prawie do końca i w lewo"},
+  {id:"krzyzynskich",ulica:"Krzyżyńskich",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, Wojska Polskiego, w prawo Nowa, przed Wiśniowa w prawo"},
+  {id:"kubiny",ulica:"Kubiny",dzielnica:"Centrum",dojazd:"Polna, w prawo Pocztowa albo dalej w prawo w Szkolną, w prawo Kubiny"},
+  {id:"konstantego-wielkiego",ulica:"Konstantego Wielkiego",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, za zakrętem odbić w lewo"},
+  {id:"lazara",ulica:"Lazara",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, 1 w prawo Węglowa, 2 lewo"},
+  {id:"licealna",ulica:"Licealna",dzielnica:"Centrum",dojazd:"Polna, do końca i w prawo Szpitalna, 1 w lewo Licealna"},
+  {id:"brzozowskiego",ulica:"Brzozowskiego",dzielnica:"Centrum",dojazd:"Sikorskiego"},
+  {id:"ligonia",ulica:"Ligonia",dzielnica:"Centrum, Ustronie",dojazd:"Sikorskiego"},
+  {id:"lipowa",ulica:"Lipowa",dzielnica:"Zgoda, Góra Hugona",dojazd:"Wojska Polskiego, Wiśniowa, za stawem 1 w lewo, do końca i w prawo"},
+  {id:"lotnicza",ulica:"Lotnicza",dzielnica:"Lipiny",dojazd:"Chorzowska, Bieszczadzka, w lewo Łagiewnicka, za stadion 2 w prawo Świerczyny, prosto"},
+  {id:"lagiewnicka",ulica:"Łagiewnicka",dzielnica:"Lipiny, Chropaczów",dojazd:"Bytomska, Stawowa"},
+  {id:"marczyka",ulica:"Marczyka",dzielnica:"Centrum",dojazd:"Sikorskiego"},
+  {id:"matejki",ulica:"Matejki",dzielnica:"Centrum",dojazd:"Polna, w prawo Pocztowa, w prawo Wyzwolenia, w prawo Matejki"},
+  {id:"matki-polki",ulica:"Matki Polki",dzielnica:"Centrum",dojazd:"Polna, w lewo Szkolna, i w prawo (szpital)"},
+  {id:"metalowcow",ulica:"Metalowców",dzielnica:"Centrum",dojazd:"Sikorskiego, 1 Maja, Metalowców"},
+  {id:"miarki",ulica:"Miarki",dzielnica:"Centrum",dojazd:"Sikorskiego, Górnicza, w prawo Miarki"},
+  {id:"mickiewicza",ulica:"Mickiewicza",dzielnica:"Piaśniki",dojazd:"Bytomska, prosto Krasickiego, prosto Mickiewicza"},
+  {id:"miczurina",ulica:"Miczurina",dzielnica:"Centrum",dojazd:"Sikorskiego, Górnicza, w lewo"},
+  {id:"mieleckiego",ulica:"Mielęckiego",dzielnica:"Zgoda",dojazd:"Metalowców, w prawo Wojska Polskiego i w lewo (okolice Lidla), równoległa do Wojska Polskiego"},
+  {id:"moniuszki",ulica:"Moniuszki",dzielnica:"Piaśniki",dojazd:"Bytomska, Krasickiego, prosto Mickiewicza, w lewo Moniuszki"},
+  {id:"morcinka",ulica:"Morcinka",dzielnica:"Centrum",dojazd:"Sikorskiego w prawo"},
+  {id:"nastolatkow",ulica:"Nastolatków",dzielnica:"Centrum",dojazd:"Polna, do końca i w prawo Szpitalna, 1 w lewo Licealna, 1 w prawo"},
+  {id:"niedurnego",ulica:"Niedurnego",dzielnica:"Centrum",dojazd:"Sikorskiego, Górnicza, w prawo Niedurnego"},
+  {id:"nowa",ulica:"Nowa",dzielnica:"Zgoda",dojazd:"Metalowców, w lewo Wojska Polskiego, odbicie w prawo"},
+  {id:"rudzka",ulica:"Rudzka",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, Bieszczadzka, w lewo Łagiewnicka, w prawo Rudzka"},
+  {id:"ogrodowa",ulica:"Ogrodowa",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, w lewo Wojska Polskiego, cały czas prosto do końca"},
+  {id:"okrzei",ulica:"Okrzei",dzielnica:"Lipiny",dojazd:"Chorzowska, Bukowego, w lewo Barlickiego, prawo Okrzei"},
+  {id:"oswiecimska",ulica:"Oświęcimska",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, przy pomniku w prawo do Barlickiego, lewo"},
+  {id:"parkowa",ulica:"Parkowa",dzielnica:"Piaśniki",dojazd:"Bytomska i w prawo, Skałka"},
+  {id:"pieczki",ulica:"Pieczki",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, za kościołem 1 w lewo - Pieczki"},
+  {id:"piastowska",ulica:"Piastowska",dzielnica:"Centrum",dojazd:"Sikorskiego, Górnicza, Dmowskiego"},
+  {id:"piekna",ulica:"Piękna",dzielnica:"Lipiny",dojazd:"Bytomska, Stawowa, w lewo Łagiewnicka, Kościelna i 1 w lewo"},
+  {id:"plebiscytowa",ulica:"Plebiscytowa",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, w lewo Wojska Pol, w prawo Nową do końca i w lewo"},
+  {id:"pocztowa",ulica:"Pocztowa",dzielnica:"Centrum",dojazd:"Bytomska, Granitowa, w prawo Pocztowa"},
+  {id:"podhalanska",ulica:"Podhalańska",dzielnica:"Piaśniki",dojazd:"Bytomska, Chorzowska, 3 światła w prawo w Bieszczadzką i w prawo"},
+  {id:"pokoju",ulica:"Pokoju",dzielnica:"Centrum",dojazd:"Sikorskiego, Górnicza, w prawo Pokoju"},
+  {id:"pola-wincentego",ulica:"Pola Wincentego",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, za kościołem w prawo Bukowego, prosto"},
+  {id:"polaka",ulica:"Polaka",dzielnica:"Centrum",dojazd:"Polna, w prawo Szpitalna, w lewo Polaka za Policją"},
+  {id:"polna",ulica:"Polna",dzielnica:"Centrum",dojazd:"Bytomska, 2 przed DTŚ"},
+  {id:"powstancow-slaskich",ulica:"Powstańców Śląskich",dzielnica:"Piaśniki",dojazd:"Bytomska, 2 w lewo za DTŚ, kolejna po Krasickiego, naprzeciw stadionu Skałka"},
+  {id:"powstancow-warszawy",ulica:"Powstańców Warszawy",dzielnica:"Centrum",dojazd:"Sikorskiego, w lewo Miczurina, i w lewo"},
+  {id:"przemyslowa",ulica:"Przemysłowa",dzielnica:"Piaśniki",dojazd:"Krasickiego, Mickiewicza, w lewo za CPN"},
+  {id:"przybyly",ulica:"Przybyły",dzielnica:"Chropaczów",dojazd:"Stawowa, w prawo Łagiewnicka, w połowie w prawo w Sportową, prawo"},
+  {id:"raabe-l",ulica:"Raabe L.",dzielnica:"Centrum",dojazd:"Katowicka, plac za drugim kościołem"},
+  {id:"reja",ulica:"Reja",dzielnica:"Centrum",dojazd:"Sikorskiego"},
+  {id:"rzeczna",ulica:"Rzeczna",dzielnica:"Centrum",dojazd:"Koło Bytomskiej w prawo, oraz Wyzwolenia, naprzeciw wyj z PSP"},
+  {id:"michalskiego",ulica:"Michalskiego",dzielnica:"Piaśniki",dojazd:"Bytomska, Chorzowska, za kościołem 1 w lewo i zaraz w prawo"},
+  {id:"sadowa",ulica:"Sądowa",dzielnica:"Piaśniki",dojazd:"Bytomska, Chorzowska, ostatnia ulica w lewo Sądowa (przy placu)"},
+  {id:"sienkiewicza",ulica:"Sienkiewicza",dzielnica:"Centrum",dojazd:"Sikorskiego, Bytomska, 1 Maja, Sienkiewicza"},
+  {id:"sikorskiego",ulica:"Sikorskiego",dzielnica:"",dojazd:"(główna ulica odniesienia)",quiz:false},
+  {id:"szkolna",ulica:"Szkolna",dzielnica:"Centrum",dojazd:"Bytomska, Dworcowa, w lewo Szkolna"},
+  {id:"pl-slowianski",ulica:"Pl. Słowiański",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, pod końcem"},
+  {id:"solidarnosci",ulica:"Solidarności",dzielnica:"Centrum",dojazd:"Polna, 2 w prawo Solidarności"},
+  {id:"sosnowa",ulica:"Sosnowa",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, 3 w prawo to Sosnowa"},
+  {id:"sportowa",ulica:"Sportowa",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, w prawo Węglowa, koniec"},
+  {id:"stawowa",ulica:"Stawowa",dzielnica:"Chropaczów",dojazd:"Bytomska, w lewo przy stawie"},
+  {id:"strzelcow-byt",ulica:"Strzelców Byt.",dzielnica:"Centrum",dojazd:"Polna, za szpitalem w prawo w Wodną, pod koniec w lewo Strzelców, albo od Katowickiej"},
+  {id:"sudecka",ulica:"Sudecka",dzielnica:"Chropaczów",dojazd:"Bytomska, Chorzowska, 3 światła w prawo Bieszczadzka, 2 w prawo"},
+  {id:"szczytowa",ulica:"Szczytowa",dzielnica:"Chropaczów",dojazd:"Chorzowska, Stawowa, w lewo Łagiewnicka, 1 w lewo"},
+  {id:"szpitalna",ulica:"Szpitalna",dzielnica:"Centrum",dojazd:"Polna, do końca i w prawo Szpitalna"},
+  {id:"sztygarska",ulica:"Sztygarska",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, za łukiem w lewo"},
+  {id:"szyb-marcina",ulica:"Szyb Marcina",dzielnica:"Lipiny",dojazd:"",quiz:false},
+  {id:"slaska",ulica:"Śląska",dzielnica:"Zgoda",dojazd:"Metalowców, na rondzie prosto"},
+  {id:"slezan",ulica:"Ślężan",dzielnica:"Chropaczów",dojazd:"Bytomska prosto, światła w prawo Ślężan, dalej prosto za Shell"},
+  {id:"srednia",ulica:"Średnia",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, w prawo Węglowa, 1 w lewo"},
+  {id:"swidra",ulica:"Świdra",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, za kościołem w prawo Bukowego, w lewo Barlickiego i w prawo Okrzei"},
+  {id:"swierczyny",ulica:"Świerczyny",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, za kościołem w prawo Bukowego, w prawo Świerczyny"},
+  {id:"konstytucji-1997-roku",ulica:"Konstytucji 1997 roku",dzielnica:"Kalina",dojazd:"Katowicka prosto, za skwerem w prawo Konstytucji 1997 roku, przed U.M."},
+  {id:"swietokrzyska",ulica:"Świętokrzyska",dzielnica:"Chropaczów",dojazd:"Bytomska, Chorzowska, Bieszczadzka (równoległa)"},
+  {id:"tatrzanska",ulica:"Tatrzańska",dzielnica:"Chropaczów",dojazd:"Bytomska, Chorzowska, 2 w prawo Tatrzańska"},
+  {id:"topolowa",ulica:"Topolowa",dzielnica:"Zgoda, Kalina",dojazd:"Wojska Polskiego, Wiśniowa, za jeziorem w lewo Topolowa"},
+  {id:"tunelowa",ulica:"Tunelowa",dzielnica:"Kalina",dojazd:"Katowicka, za skwerem w prawo Tunelowa, za Urzędem Miasta"},
+  {id:"uroczysko",ulica:"Uroczysko",dzielnica:"Piaśniki",dojazd:"Krasickiego i odbić w lewo"},
+  {id:"wallisa",ulica:"Wallisa",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, przy placu w lewo Sądowa i w lewo, koniec"},
+  {id:"weglowa",ulica:"Węglowa",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, 1 w prawo Węglowa"},
+  {id:"wiechaczka",ulica:"Wiechaczka",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka (za Biedronką), równoległa do Łagiewnickiej"},
+  {id:"wieczorka",ulica:"Wieczorka",dzielnica:"Lipiny",dojazd:"Chorzowska, Bukowego, Barlickiego, Wieczorka"},
+  {id:"wierzbowa",ulica:"Wierzbowa",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, w lewo Wojska Pol, w prawo Hajduki i 2 w prawo"},
+  {id:"wiosenna",ulica:"Wiosenna",dzielnica:"Piaśniki",dojazd:"Bytomska, w lewo Powst. Śl. i do końca prosto"},
+  {id:"wislan",ulica:"Wiślan",dzielnica:"Chropaczów, os. Brzezina",dojazd:"Prosto Bytomska, pod koniec w prawo Gołęszyców i w prawo Wiślan"},
+  {id:"wodna",ulica:"Wodna",dzielnica:"Centrum",dojazd:"Bytomska, Polna, za szpitalem w prawo Wodna"},
+  {id:"wojska-polskiego",ulica:"Wojska Polskiego",dzielnica:"Zgoda",dojazd:"Od Metalowców w prawo i w lewo"},
+  {id:"wolnosci",ulica:"Wolności",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w lewo Łagiewnicka, w prawo Kościelna, koniec"},
+  {id:"wroblewskiego",ulica:"Wróblewskiego",dzielnica:"Chropaczów",dojazd:"Bytomska, Stawowa, w lewo Łagiewnicka, w prawo Kościelna, lewo pod koniec"},
+  {id:"wyszynskiego",ulica:"Wyszyńskiego",dzielnica:"Zgoda, Kalina",dojazd:"Metalowców, w lewo Wojska Polskiego i przed kościołem w prawo"},
+  {id:"wyzwolenia",ulica:"Wyzwolenia",dzielnica:"Centrum",dojazd:"Do końca Polna, w prawo Szpitalna, w prawo Wyzwolenia"},
+  {id:"zawadzkiego",ulica:"Zawadzkiego",dzielnica:"",dojazd:"Bytomska, Stawowa, w prawo Łagiewnicka, plac na łuku"},
+  {id:"zielona",ulica:"Zielona",dzielnica:"Zgoda",dojazd:"Metalowców, prosto Śląska, pierwsza w prawo za Lidlem"},
+  {id:"zubrzyckiego",ulica:"Zubrzyckiego",dzielnica:"Piaśniki",dojazd:"Bytomska, Powstańców Śląskich, za parkiem w prawo Zubrzyckiego"},
+  {id:"zelazna",ulica:"Żelazna",dzielnica:"Lipiny",dojazd:"Bytomska, Chorzowska, pod koniec na placu Słow. w prawo Żelazna"},
+  {id:"zolnierska",ulica:"Żołnierska",dzielnica:"Centrum",dojazd:"Od DTŚ, lub Polna, Szpitalna"}
+];
+
 /* ── FISZKI — nauka sprzętu: „Gdzie to jest?" i „Co jest w tej skrytce?" ── */
 var FISZKI_VEHICLES=['v1','v2','v3'];
 var FISZKI_PROGRESS=(function(){
@@ -4526,6 +4678,89 @@ function showFiszkiHub(){
       '<div class="vehicle-arrow">›</div>';
     wrap.appendChild(row);
   });
+  var streetsTotal=fiszkiStreetsEligible().length;
+  var streetsKnown=fiszkiStreetsKnownCount();
+  var streetsPct=streetsTotal?Math.round(streetsKnown/streetsTotal*100):0;
+  var srow=document.createElement('div');
+  srow.className='vehicle-row';
+  srow.onclick=function(){startStreetsFiszkiSession();};
+  srow.innerHTML=
+    '<div class="vehicle-badge" style="background:#1e7a4c">UL</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">Ulice Świętochłowice</div>'+
+      '<div class="fiszki-progress-txt">Opanowane '+streetsKnown+' / '+streetsTotal+'</div>'+
+      '<div class="fiszki-bar-track"><div class="fiszki-bar-fill" style="width:'+streetsPct+'%"></div></div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  wrap.appendChild(srow);
+}
+
+/* ── FISZKI — ULICE ŚWIĘTOCHŁOWICE (dojazdy), jeden tryb: Mów na głos + Sprawdzam ── */
+function fiszkiStreetsEligible(){
+  return STREETS_BASE.filter(function(s){return s.quiz!==false;});
+}
+function fiszkiStreetsProgress(){
+  if(!FISZKI_PROGRESS.streets) FISZKI_PROGRESS.streets={items:{}};
+  return FISZKI_PROGRESS.streets;
+}
+function fiszkiStreetsKnownCount(){
+  return Object.keys(fiszkiStreetsProgress().items).length;
+}
+function startStreetsFiszkiSession(){
+  var eligible=fiszkiStreetsEligible();
+  var progress=fiszkiStreetsProgress();
+  var unknown=eligible.filter(function(s){return !progress.items[s.id];});
+  var known=eligible.filter(function(s){return progress.items[s.id];});
+  var pick=fiszkiShuffle(unknown).slice(0,20);
+  if(pick.length<20) pick=pick.concat(fiszkiShuffle(known).slice(0,20-pick.length));
+  var queue=fiszkiShuffle(pick).map(function(s){return {type:'street', street:s};});
+  if(!queue.length){ alert('Brak ulic do nauki.'); return; }
+  fiszkiSession={vid:'streets', v:null, mode:'streets', queue:queue, idx:0, total:queue.length, doneCount:0};
+  switchView('view-fiszki-session');
+  document.getElementById('fiszki-session-title').textContent='Ulice Świętochłowice';
+  document.getElementById('fiszki-progress-fill').style.width='0%';
+  fiszkiRenderCard();
+}
+function fiszkiRenderStreetCard(card, wrap){
+  var s=card.street;
+  wrap.innerHTML=
+    '<div class="fiszki-card" id="fiszki-flip-card">'+
+      '<div class="fiszki-kicker">Jak dojechać na miejsce zdarzenia?</div>'+
+      '<div class="fiszki-name">'+escAttr(s.ulica)+'</div>'+
+      (s.dzielnica?'<div class="fiszki-sub">'+escAttr(s.dzielnica)+'</div>':'')+
+      '<div class="fiszki-prompt" id="fiszki-flip-prompt">powiedz sobie na głos dojazd, a potem sprawdź</div>'+
+      '<button type="button" class="fiszki-check-btn" id="fiszki-check-btn">Sprawdzam</button>'+
+      '<div id="fiszki-reveal-area"></div>'+
+    '</div>';
+  document.getElementById('fiszki-check-btn').onclick=function(){ fiszkiRevealStreet(s); };
+}
+function fiszkiRevealStreet(s){
+  var promptEl=document.getElementById('fiszki-flip-prompt');
+  if(promptEl) promptEl.remove();
+  var btnEl=document.getElementById('fiszki-check-btn');
+  if(btnEl) btnEl.remove();
+  document.getElementById('fiszki-reveal-area').innerHTML=
+    '<div class="fiszki-reveal-list"><div class="fiszki-reveal-item"><span class="n">'+escAttr(s.dojazd)+'</span></div></div>'+
+    '<div class="fiszki-assess-row">'+
+      '<div class="fiszki-assess-btn fiszki-assess-no" id="fiszki-no">✕ Nie umiałem</div>'+
+      '<div class="fiszki-assess-btn fiszki-assess-yes" id="fiszki-yes">✓ Umiałem</div>'+
+    '</div>';
+  document.getElementById('fiszki-yes').onclick=function(){ fiszkiAnswerStreet(s, true); };
+  document.getElementById('fiszki-no').onclick=function(){ fiszkiAnswerStreet(s, false); };
+}
+function fiszkiAnswerStreet(s, knew){
+  var sess=fiszkiSession;
+  if(knew){
+    fiszkiStreetsProgress().items[s.id]=true;
+    fiszkiSaveProgress();
+  } else {
+    var pos=Math.min(sess.queue.length, sess.idx+4);
+    sess.queue.splice(pos, 0, {type:'street', street:s});
+    sess.total=sess.queue.length;
+  }
+  sess.doneCount++;
+  sess.idx++;
+  fiszkiRenderCard();
 }
 
 function showFiszkiModePicker(vid){
@@ -4592,6 +4827,7 @@ function fiszkiRenderCard(){
   var wrap=document.getElementById('fiszki-card-wrap');
   var card=s.queue[s.idx];
   if(card.type==='where') fiszkiRenderWhereCard(card, wrap);
+  else if(card.type==='street') fiszkiRenderStreetCard(card, wrap);
   else fiszkiRenderWhatInCard(card, wrap);
 }
 function fiszkiRenderWhereCard(card, wrap){
@@ -4701,6 +4937,21 @@ function fiszkiAnswerWhatIn(comp, knew){
 }
 function fiszkiRenderSummary(){
   var s=fiszkiSession;
+  if(s.vid==='streets'){
+    var sKnown=fiszkiStreetsKnownCount();
+    var sTotal=fiszkiStreetsEligible().length;
+    document.getElementById('fiszki-card-wrap').innerHTML=
+      '<div class="fiszki-summary">'+
+        '<div class="big">🎉</div>'+
+        '<div class="t">Sesja ukończona!</div>'+
+        '<div class="s">Opanowane ulice: '+sKnown+' / '+sTotal+'</div>'+
+        '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--f-green,#1e7a4c);color:#fff;font-weight:700;font-size:13.5px;border:none;margin-right:8px" onclick="startStreetsFiszkiSession()">Kolejna sesja</button>'+
+        '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--surface-2);color:var(--text);font-weight:700;font-size:13.5px;border:none" onclick="showFiszkiHub()">Powrót</button>'+
+      '</div>';
+    document.getElementById('fiszki-progress-fill').style.width='100%';
+    renderHome();
+    return;
+  }
   var known=fiszkiKnownCount(s.vid);
   var total=fiszkiItemsFor(s.vid).length;
   document.getElementById('fiszki-card-wrap').innerHTML=
