@@ -400,14 +400,18 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .wiedza-adr-name{font-size:16px;font-weight:800;color:var(--text);margin-top:12px}
 .wiedza-adr-klasa{font-size:11.5px;font-weight:700;color:var(--text-muted);background:var(--surface-2);padding:2px 8px;border-radius:99px;margin-left:4px}
 .wiedza-adr-why{font-size:13.5px;color:var(--text-2);line-height:1.55;margin-top:8px;text-align:left}
-.ghs-row{display:flex;align-items:center;gap:14px;padding:10px 4px;border-bottom:1px solid var(--border)}
+.ghs-row{display:flex;align-items:flex-start;gap:14px;padding:14px 4px;border-bottom:1px solid var(--border)}
 .ghs-row:last-of-type{border-bottom:none}
-.ghs-diamond{width:52px;height:52px;flex-shrink:0;background:#fff;border:3px solid #d0021b;transform:rotate(45deg);
-  display:flex;align-items:center;justify-content:center;border-radius:3px}
-.ghs-diamond-icon{transform:rotate(-45deg);font-size:20px;line-height:1}
-.ghs-info{flex:1;min-width:0}
-.ghs-name{font-size:14.5px;font-weight:700;color:var(--text)}
-.ghs-meaning{font-size:12.5px;color:var(--text-muted);margin-top:2px;line-height:1.4}
+.ghs-diamond{width:60px;height:60px;flex-shrink:0;background:#fff;border:3px solid #d0021b;transform:rotate(45deg);
+  display:flex;align-items:center;justify-content:center;border-radius:4px;margin-top:4px}
+.ghs-diamond-icon{transform:rotate(-45deg);width:34px;height:34px;fill:#000}
+.ghs-info{flex:1;min-width:0;padding-top:2px}
+.ghs-name{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:4px}
+.ghs-meaning-list{margin:0;padding-left:18px;list-style:disc}
+.ghs-meaning-list li{font-size:12.5px;color:var(--text-muted);line-height:1.5;margin-bottom:2px}
+.wiedza-bullets{margin:4px 0 0;padding-left:0;list-style:none}
+.wiedza-bullets li{position:relative;padding:6px 0 6px 18px;font-size:14px;color:var(--text-2);line-height:1.5}
+.wiedza-bullets li::before{content:"";position:absolute;left:0;top:14px;width:7px;height:7px;background:var(--accent);border-radius:2px}
 .legacy-row{display:flex;align-items:center;gap:14px;padding:9px 4px;border-bottom:1px solid var(--border)}
 .legacy-row:last-of-type{border-bottom:none}
 .legacy-square{width:44px;height:44px;flex-shrink:0;background:#f39c12;border:2px solid #1c1c1e;border-radius:4px;
@@ -3970,16 +3974,60 @@ var WIEDZA_BASE=[
         why:'Toksyczny i żrący gaz, bardzo powszechny w przemysłowym chłodnictwie (chłodnie, lodowiska, zakłady mięsne). Wycieki z instalacji chłodniczych to jedne z częstszych realnych zdarzeń HazMat w Polsce, nie tylko transportowych.'},
       {t:'adr-plate', kemler:'X423', un:'1428', name:'Sód (metal)', klasa:'4.3',
         why:'Reaguje gwałtownie z wodą, wydzielając ciepło i wodór (gaz palny) - polanie wodą pożaru metalu może pogorszyć sytuację lub spowodować wybuch. Pożary metali reaktywnych (klasa D) gasi się na sucho (piasek, proszek specjalny D), nigdy standardowo wodą czy pianą.'},
+      {t:'h', text:'Klasy ADR (numer + rodzaj materiału)'},
+      {t:'bullets', items:[
+        'klasa 1 - materiały i przedmioty wybuchowe',
+        'klasa 2 - gazy',
+        'klasa 3 - materiały ciekłe zapalne',
+        'klasa 4.1 - materiały stałe zapalne, materiały samoreaktywne oraz materiały wybuchowe stałe odczulone',
+        'klasa 4.2 - materiały samozapalne',
+        'klasa 4.3 - materiały wytwarzające w zetknięciu z wodą gazy zapalne',
+        'klasa 5.1 - materiały utleniające',
+        'klasa 5.2 - nadtlenki organiczne',
+        'klasa 6.1 - materiały trujące',
+        'klasa 6.2 - materiały zakaźne',
+        'klasa 7 - materiały promieniotwórcze',
+        'klasa 8 - materiały żrące',
+        'klasa 9 - różne materiały i przedmioty niebezpieczne'
+      ]},
       {t:'h', text:'Piktogramy GHS (na opakowaniach i pojemnikach)'},
-      {t:'ghs-symbol', icon:'💥', name:'Wybuchające', meaning:'Materiały wybuchowe, samoreaktywne'},
-      {t:'ghs-symbol', icon:'🔥', name:'Płomień', meaning:'Gazy, aerozole, ciecze i materiały stałe łatwopalne'},
-      {t:'ghs-symbol', icon:'🔥', name:'Płomień nad okręgiem', meaning:'Gazy i ciecze utleniające'},
-      {t:'ghs-symbol', icon:'🛢', name:'Butla gazowa', meaning:'Gazy pod ciśnieniem'},
-      {t:'ghs-symbol', icon:'⚗️', name:'Korozja', meaning:'Materiały żrące - niszczą metal i skórę'},
-      {t:'ghs-symbol', icon:'☠️', name:'Czaszka i piszczele', meaning:'Silnie trujące (ostra toksyczność)'},
-      {t:'ghs-symbol', icon:'❗', name:'Wykrzyknik', meaning:'Szkodliwe, drażniące (słabsza toksyczność)'},
-      {t:'ghs-symbol', icon:'🫁', name:'Zagrożenie dla zdrowia', meaning:'Rakotwórcze, uszkadzające narządy, drogi oddechowe'},
-      {t:'ghs-symbol', icon:'🐟', name:'Środowisko', meaning:'Niebezpieczne dla środowiska wodnego'},
+      {t:'ghs-symbol', icon:'skull', name:'Czaszka i piszczele', meaning:['toksyczność ostra (kat. 1, 2, 3)']},
+      {t:'ghs-symbol', icon:'corrosion', name:'Korozja', meaning:['działanie żrące na skórę','poważne uszkodzenie oczu','działanie korodujące na metale']},
+      {t:'ghs-symbol', icon:'exclaim', name:'Wykrzyknik', meaning:[
+        'toksyczność ostra (droga pokarmowa, po naniesieniu na skórę, po narażeniu inhalacyjnym) (kat. 4)',
+        'działanie drażniące na skórę (kat. 2)',
+        'działanie drażniące na oczy (kat. 2)',
+        'działanie uczulające na skórę (kat. 1)',
+        'działanie toksyczne na narządy docelowe – narażenie jednorazowe (kat. 3)',
+        'działanie drażniące na drogi oddechowe',
+        'skutek narkotyczny'
+      ]},
+      {t:'ghs-symbol', icon:'health', name:'Zagrożenie dla zdrowia', meaning:[
+        'działanie uczulające na drogi oddechowe (kat. 1)',
+        'działanie mutagenne na komórki rozrodcze (kat. 1A, 1B, 2)',
+        'rakotwórczość (kat. 1A, 1B, 2)',
+        'działanie szkodliwe na rozrodczość (kat. 1A, 1B, 2)',
+        'działanie toksyczne na narządy docelowe – narażenie jednorazowe (kat. 1, 2)',
+        'działanie toksyczne na narządy docelowe – narażenie powtarzane (kat. 1, 2)',
+        'zagrożenie spowodowane aspiracją (kat. 1)'
+      ]},
+      {t:'ghs-symbol', icon:'flame', name:'Płomień', meaning:[
+        'łatwopalne',
+        'samoreaktywne (B, C, D, E, F)',
+        'piroforyczne (samozapłon w kontakcie z tlenem)',
+        'nadtlenki organiczne (B, C, D, E, F)',
+        'samonagrzewające się',
+        'w kontakcie z wodą wydzielają gazy łatwopalne'
+      ]},
+      {t:'ghs-symbol', icon:'flame_circle', name:'Płomień nad okręgiem', meaning:['gazy, ciecze i ciała stałe utleniające']},
+      {t:'ghs-symbol', icon:'cylinder', name:'Butla gazowa', meaning:['gazy pod ciśnieniem']},
+      {t:'ghs-symbol', icon:'cracker', name:'Wybuchająca bomba', meaning:[
+        'niestabilne materiały wybuchowe',
+        'materiały wybuchowe',
+        'substancje i mieszaniny samoreaktywne, typu A, B',
+        'nadtlenki organiczne, typu A, B'
+      ]},
+      {t:'ghs-symbol', icon:'environment', name:'Środowisko', meaning:['stwarzające zagrożenie dla środowiska wodnego:','toksyczność ostra (kat. 1)','toksyczność przewlekła (kat. 1, 2)']},
       {t:'h', text:'Stare oznaczenia UE (jeszcze spotykane, sprzed 2015)'},
       {t:'legacy-symbol', code:'F+', name:'Skrajnie łatwopalny'},
       {t:'legacy-symbol', code:'F', name:'Wysoce łatwopalny'},
@@ -3993,22 +4041,6 @@ var WIEDZA_BASE=[
       {t:'legacy-symbol', code:'N', name:'Niebezpieczny dla środowiska'},
       {t:'h', text:'Budowa tablicy ADR'},
       {t:'img', src:'images/wiedza/tablica-adr-przyklad.png', cap:'Przykład: górny numer to numer rozpoznawczy niebezpieczeństwa (np. X423 — absolutny zakaz kontaktu z wodą), dolny to numer ONZ (np. 1428).'},
-      {t:'h', text:'Pierwsza cyfra — rodzaj niebezpieczeństwa materiału'},
-      {t:'table', cols:['Klasa','Rodzaj niebezpieczeństwa'], rows:[
-        ['1','Materiał wybuchowy'],
-        ['2','Gazy'],
-        ['3','Materiał ciekły zapalny'],
-        ['4.1','Materiał stały zapalny'],
-        ['4.2','Materiały samozapalne'],
-        ['4.3','Materiały wytwarzające z wodą gazy zapalne'],
-        ['5.1','Materiały utleniające'],
-        ['5.2','Nadtlenki organiczne'],
-        ['6.1','Materiały trujące'],
-        ['6.2','Materiały zakaźne'],
-        ['7','Materiały promieniotwórcze'],
-        ['8','Materiały żrące'],
-        ['9','Różne materiały i przedmioty niebezpieczne']
-      ]},
       {t:'h', text:'Pełna tabela numerów rozpoznawczych (Kemlera)'},
       {t:'p', text:'Podwojenie cyfry oznacza spotęgowanie głównego zagrożenia (np. 33, 66, 88). Litera „X" na początku oznacza bezwzględny zakaz kontaktu z wodą (materiał reaguje z nią niebezpiecznie).'},
       {t:'table', cols:['Numer','Znaczenie'], rows:[
@@ -4587,6 +4619,18 @@ function backToWiedzaList(){
   else showWiedzaHub();
 }
 
+var GHS_ICONS={
+  explosive:'<circle cx="12" cy="12" r="2.3"/><g stroke="#000" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="12" x2="12" y2="3"/><line x1="12" y1="12" x2="19" y2="6"/><line x1="12" y1="12" x2="21" y2="12"/><line x1="12" y1="12" x2="19" y2="18"/><line x1="12" y1="12" x2="12" y2="21"/><line x1="12" y1="12" x2="5" y2="18"/><line x1="12" y1="12" x2="3" y2="12"/><line x1="12" y1="12" x2="5" y2="6"/></g>',
+  flame:'<path d="M12 2.5c-1.2 3-4.3 4.8-4.3 9a4.3 4.3 0 008.6 0c0-1.9-.9-3.1-1.7-4.2.2 1.7-.8 2.3-1.4 1.8.9-1.8-.4-3.9-1.2-6.6z"/>',
+  flame_circle:'<circle cx="12" cy="13.2" r="7.3" fill="none" stroke="#000" stroke-width="1.5"/><path d="M12 4.5c-1 2.6-3.6 4.1-3.6 7.7a3.6 3.6 0 007.2 0c0-1.6-.8-2.6-1.4-3.5.2 1.4-.7 2-1.2 1.5.7-1.5-.3-3.3-1-5.7z"/>',
+  cylinder:'<rect x="9.3" y="7" width="5.4" height="15" rx="2.5"/><rect x="10.4" y="2" width="3.2" height="4"/>',
+  corrosion:'<path d="M5 3.5l6 3-1.4 3.4-6-3z"/><path d="M9.8 9l1.6 3.5c-2.3 3-4.5 5-8.4 5.5l-.4-2.4c3-.7 4.7-2.6 5.6-4.6z"/><path d="M14.5 12.5c1.8.3 3.2 1.2 3.9 3 .6 1.7.2 3.4-.9 4.8l-2-1.1c.7-.9.9-1.8.6-2.7-.3-.9-1-1.4-2.1-1.6z"/><rect x="13" y="17.3" width="8" height="2.6" rx="1"/>',
+  skull:'<circle cx="12" cy="10" r="6.2"/><circle cx="9.3" cy="9.3" r="1.3" fill="#fff"/><circle cx="14.7" cy="9.3" r="1.3" fill="#fff"/><path d="M10.3 13.8h3.4l-.5 2.4h-.8l-.3 1.4h-1.2l-.3-1.4h-.8z" fill="#fff"/><g stroke="#000" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="19" x2="10" y2="15.5"/><line x1="4" y1="15.5" x2="10" y2="19"/><line x1="14" y1="19" x2="20" y2="15.5"/><line x1="14" y1="15.5" x2="20" y2="19"/></g><circle cx="4" cy="17.2" r="1.3"/><circle cx="10" cy="17.2" r="1.3"/><circle cx="14" cy="17.2" r="1.3"/><circle cx="20" cy="17.2" r="1.3"/>',
+  exclaim:'<rect x="10" y="2" width="4" height="13" rx="1.8"/><circle cx="12" cy="19.3" r="2.4"/>',
+  health:'<circle cx="12" cy="5" r="2.6"/><path d="M7 21v-6.5c0-2.8 2.2-5 5-5s5 2.2 5 5V21z"/><g stroke="#fff" stroke-width="1.3"><line x1="12" y1="10.5" x2="12" y2="17.5"/><line x1="8.7" y1="12" x2="15.3" y2="16"/><line x1="15.3" y1="12" x2="8.7" y2="16"/></g>',
+  environment:'<path d="M8 22V13c-2.8-.3-4.5-2-4.5-4.3C3.5 6 6 4 8.3 4.3 9 2.3 11 1 13 1.8c1.7.6 2.6 2.2 2.4 3.9 2 0 3.6 1.7 3.6 3.7 0 2.2-1.9 3.9-4.3 3.9H13V22z"/><path d="M17.5 15.5c1.8 0 3.3.9 4 2.3-.8 1.4-2.3 2.3-4 2.3-1.2 0-2.2-.4-3-1.1l-1.7 1v-4.4l1.7 1c.8-.7 1.8-1.1 3-1.1z"/>',
+  cracker:'<circle cx="12" cy="12" r="2.3"/><g stroke="#000" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="12" x2="12" y2="3"/><line x1="12" y1="12" x2="19" y2="6"/><line x1="12" y1="12" x2="21" y2="12"/><line x1="12" y1="12" x2="19" y2="18"/><line x1="12" y1="12" x2="12" y2="21"/><line x1="12" y1="12" x2="5" y2="18"/><line x1="12" y1="12" x2="3" y2="12"/><line x1="12" y1="12" x2="5" y2="6"/></g>'
+};
 function renderWiedzaBlocks(blocks){
   return (blocks||[]).map(function(b){
     if(b.t==='p') return '<p class="wiedza-p">'+escAttr(b.text)+'</p>';
@@ -4597,6 +4641,9 @@ function renderWiedzaBlocks(blocks){
       var tbody=b.rows.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+escAttr(c)+'</td>';}).join('')+'</tr>';}).join('');
       return '<div class="wiedza-table-wrap"><table class="wiedza-table"><thead>'+thead+'</thead><tbody>'+tbody+'</tbody></table></div>';
     }
+    if(b.t==='bullets'){
+      return '<ul class="wiedza-bullets">'+b.items.map(function(it){return '<li>'+escAttr(it)+'</li>';}).join('')+'</ul>';
+    }
     if(b.t==='adr-plate'){
       return '<div class="wiedza-adr-block">'+
         '<div class="adr-plate wiedza-adr-plate"><div class="adr-plate-top">'+escAttr(b.kemler)+'</div><div class="adr-plate-line"></div><div class="adr-plate-bottom">'+escAttr(b.un)+'</div></div>'+
@@ -4605,9 +4652,10 @@ function renderWiedzaBlocks(blocks){
       '</div>';
     }
     if(b.t==='ghs-symbol'){
+      var iconSvg=GHS_ICONS[b.icon]||'';
       return '<div class="ghs-row">'+
-        '<div class="ghs-diamond"><span class="ghs-diamond-icon">'+b.icon+'</span></div>'+
-        '<div class="ghs-info"><div class="ghs-name">'+escAttr(b.name)+'</div><div class="ghs-meaning">'+escAttr(b.meaning)+'</div></div>'+
+        '<div class="ghs-diamond"><svg class="ghs-diamond-icon" viewBox="0 0 24 24">'+iconSvg+'</svg></div>'+
+        '<div class="ghs-info"><div class="ghs-name">'+escAttr(b.name)+'</div><ul class="ghs-meaning-list">'+b.meaning.map(function(m){return '<li>'+escAttr(m)+'</li>';}).join('')+'</ul></div>'+
       '</div>';
     }
     if(b.t==='legacy-symbol'){
