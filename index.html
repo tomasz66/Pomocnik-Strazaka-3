@@ -17,24 +17,24 @@
 html { height: 100%; }
 body { height: 100%; overscroll-behavior: none; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; }
 
-/* ── TOKENY — Ember (ciemny, domyślny) ── */
+/* ── TOKENY — ciemny (Ember, wybierany ☾/☀) — neutralna czerń, bez brązowego podtonu ── */
 :root {
   color-scheme: dark;
-  --bg:        #15130F;
-  --surface:   #201C18;
-  --surface-2: #2A2521;
-  --border:    rgba(255,246,238,.08);
-  --border-2:  rgba(255,246,238,.16);
-  --text:      #F5EFE8;
-  --text-2:    #E3DAD0;
-  --text-muted:#B8AEA4;
-  --text-faint:#7A716A;
-  --accent:    #E63946;
-  --accent-2:  #FF7A45;
-  --accent-bg: rgba(230,57,70,.14);
-  --green:     #34D399;
-  --green-bg:  rgba(52,211,153,.12);
-  --glow:      radial-gradient(140% 90% at 12% -10%, rgba(255,122,69,.14), transparent 55%);
+  --bg:        #000000;
+  --surface:   #1c1c1e;
+  --surface-2: #2c2c2e;
+  --border:    rgba(255,255,255,.09);
+  --border-2:  rgba(255,255,255,.16);
+  --text:      #ffffff;
+  --text-2:    #ebebf5;
+  --text-muted:#98989d;
+  --text-faint:#48484a;
+  --accent:    #ff453a;
+  --accent-2:  #ff8a3d;
+  --accent-bg: rgba(255,69,58,.14);
+  --green:     #30d158;
+  --green-bg:  rgba(48,209,88,.12);
+  --glow:      none;
   --tab-h:     calc(56px + env(safe-area-inset-bottom));
   --header-h:  calc(56px + env(safe-area-inset-top));
   --radius:    14px;
@@ -1940,7 +1940,7 @@ function applyTheme(t){
   var icon=t==='light'?'☾':'☼';
   var el=document.getElementById('theme-btn');if(el)el.textContent=icon;
   var ti=document.getElementById('tab-theme-icon');if(ti)ti.textContent=icon;
-  document.querySelector('meta[name=theme-color]').content=t==='light'?'#ffffff':'#15130F';
+  document.querySelector('meta[name=theme-color]').content=t==='light'?'#ffffff':'#000000';
   try{localStorage.setItem('wst_v9',t);}catch(e){}
   if(document.getElementById('view-vehicle').classList.contains('active')&&curV){
     var svg=document.getElementById('v-svg');
