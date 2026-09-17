@@ -512,7 +512,7 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .photo-lightbox img {
   max-width: 100%; max-height: 100%;
   object-fit: contain; border-radius: 8px;
-  touch-action: pinch-zoom;
+  touch-action: none; transform-origin: center center;
 }
 .photo-lightbox-close {
   position: absolute; top: max(16px, env(safe-area-inset-top));
@@ -5283,14 +5283,86 @@ function clearQuizSearch(){
   document.getElementById('quiz-search-clear').classList.remove('visible');
 }
 
+/* Appka ma globalnie wyłączone natywne pinch-zoom (user-scalable=no w viewport,
+   celowa naprawka z 05.09 żeby appka nie zapamiętywała przypadkowego uszczypnięcia).
+   Dlatego powiększanie zdjęć w lightboxie robimy własną obsługą dotyku, nie licząc na przeglądarkę. */
+var _lbState={scale:1,tx:0,ty:0,lastTapTime:0,lastTapX:0,lastTapY:0,
+  pinchStartDist:0,pinchStartScale:1,panStartX:0,panStartY:0,panStartTx:0,panStartTy:0,
+  moved:false,mode:null,closeTimer:null};
+function _lbApply(){
+  var img=document.getElementById('photo-lightbox-img');
+  if(img) img.style.transform='translate('+_lbState.tx+'px,'+_lbState.ty+'px) scale('+_lbState.scale+')';
+}
+function _lbReset(){
+  _lbState.scale=1; _lbState.tx=0; _lbState.ty=0;
+  _lbApply();
+}
+function _lbDist(t0,t1){ return Math.hypot(t1.clientX-t0.clientX, t1.clientY-t0.clientY); }
+function _lbClampScale(s){ return Math.max(1, Math.min(4, s)); }
 function openPhotoLightbox(src){
+  if(_lbState.closeTimer){ clearTimeout(_lbState.closeTimer); _lbState.closeTimer=null; }
   document.getElementById('photo-lightbox-img').src=src;
   document.getElementById('photo-lightbox').classList.add('open');
+  _lbReset();
 }
 function closePhotoLightbox(){
   document.getElementById('photo-lightbox').classList.remove('open');
   document.getElementById('photo-lightbox-img').src='';
+  _lbReset();
 }
+(function(){
+  var img=document.getElementById('photo-lightbox-img');
+  if(!img) return;
+  img.addEventListener('touchstart', function(e){
+    _lbState.moved=false;
+    if(e.touches.length===2){
+      e.preventDefault();
+      _lbState.mode='pinch';
+      _lbState.pinchStartDist=_lbDist(e.touches[0], e.touches[1]);
+      _lbState.pinchStartScale=_lbState.scale;
+    } else if(e.touches.length===1){
+      var now=Date.now();
+      var t=e.touches[0];
+      if(now-_lbState.lastTapTime<320 && Math.hypot(t.clientX-_lbState.lastTapX, t.clientY-_lbState.lastTapY)<30){
+        e.preventDefault();
+        if(_lbState.closeTimer){ clearTimeout(_lbState.closeTimer); _lbState.closeTimer=null; }
+        _lbState.mode=null;
+        if(_lbState.scale>1){ _lbReset(); } else { _lbState.scale=2.5; _lbApply(); }
+        _lbState.lastTapTime=0;
+        return;
+      }
+      _lbState.lastTapTime=now; _lbState.lastTapX=t.clientX; _lbState.lastTapY=t.clientY;
+      if(_lbState.scale>1){
+        _lbState.mode='pan';
+        _lbState.panStartX=t.clientX; _lbState.panStartY=t.clientY;
+        _lbState.panStartTx=_lbState.tx; _lbState.panStartTy=_lbState.ty;
+      } else {
+        _lbState.mode='maybe-close';
+      }
+    }
+  }, {passive:false});
+  img.addEventListener('touchmove', function(e){
+    _lbState.moved=true;
+    if(_lbState.mode==='pinch' && e.touches.length===2){
+      e.preventDefault();
+      var d=_lbDist(e.touches[0], e.touches[1]);
+      _lbState.scale=_lbClampScale(_lbState.pinchStartScale * (d/_lbState.pinchStartDist));
+      _lbApply();
+    } else if(_lbState.mode==='pan' && e.touches.length===1){
+      e.preventDefault();
+      var t=e.touches[0];
+      _lbState.tx=_lbState.panStartTx + (t.clientX - _lbState.panStartX);
+      _lbState.ty=_lbState.panStartTy + (t.clientY - _lbState.panStartY);
+      _lbApply();
+    }
+  }, {passive:false});
+  img.addEventListener('touchend', function(e){
+    if(_lbState.mode==='maybe-close' && !_lbState.moved){
+      _lbState.closeTimer=setTimeout(function(){ _lbState.closeTimer=null; closePhotoLightbox(); }, 300);
+    }
+    _lbState.mode=null;
+  });
+})();
 
 loadTheme();renderHome();
 document.getElementById('search-input').addEventListener('input',handleSearch);
