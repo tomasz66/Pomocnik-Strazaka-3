@@ -386,6 +386,9 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .fiszki-map-wrap{position:relative;margin-top:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);cursor:zoom-in}
 .fiszki-map-wrap:active{opacity:.85}
 .dz-guess-map{display:block;width:100%;height:140px;object-fit:cover;border-radius:var(--radius-sm);margin-top:14px;border:1px solid var(--border)}
+.adr-plate{margin:18px auto 0;width:190px;background:#f39c12;border:3px solid #1c1c1e;border-radius:4px;overflow:hidden;box-shadow:0 4px 10px -4px rgba(0,0,0,.3)}
+.adr-plate-top,.adr-plate-bottom{padding:14px 8px;font-size:23px;font-weight:900;color:#1c1c1e;text-align:center;letter-spacing:.5px;font-family:"SF Mono","Fira Code",monospace}
+.adr-plate-line{height:3px;background:#1c1c1e}
 .dz-sort-card{text-align:center}
 .dz-basket{margin-top:16px;border:2px dashed var(--accent);border-radius:var(--radius);padding:16px 10px;
   font-size:16px;font-weight:800;color:var(--accent);min-height:60px;
@@ -3943,9 +3946,87 @@ var WIEDZA_BASE=[
         ['8','Materiały żrące'],
         ['9','Różne materiały i przedmioty niebezpieczne']
       ]},
-      {t:'h', text:'Druga i trzecia cyfra — stopień zagrożenia'},
-      {t:'p', text:'Brak dodatkowego zagrożenia, wybuchowość, zdolność wytwarzania gazu, łatwopalność, właściwości utleniające, toksyczność, działanie radioaktywne, działanie żrące, niebezpieczeństwo samoczynnej i gwałtownej reakcji.'},
-      {t:'p', text:'Uwaga: podwójna cyfra oznacza intensywność głównego niebezpieczeństwa, np. 33.'}
+      {t:'h', text:'Pełna tabela numerów rozpoznawczych (Kemlera)'},
+      {t:'p', text:'Podwojenie cyfry oznacza spotęgowanie głównego zagrożenia (np. 33, 66, 88). Litera „X" na początku oznacza bezwzględny zakaz kontaktu z wodą (materiał reaguje z nią niebezpiecznie).'},
+      {t:'table', cols:['Numer','Znaczenie'], rows:[
+        ['20','Gaz obojętny'],
+        ['22','Gaz schłodzony'],
+        ['223','Gaz schłodzony palny'],
+        ['225','Gaz schłodzony utleniający'],
+        ['23','Gaz palny'],
+        ['239','Gaz palny mogący powodować samorzutną i gwałtowną reakcję'],
+        ['25','Gaz utleniający'],
+        ['26','Gaz trujący'],
+        ['263','Gaz trujący, palny'],
+        ['265','Gaz trujący i utleniający'],
+        ['266','Gaz silnie trujący'],
+        ['268','Gaz trujący i żrący'],
+        ['286','Gaz żrący i trujący'],
+        ['30','Ciecz zapalna (temp. zapłonu 21–100°C)'],
+        ['33','Ciecz łatwo zapalna (temp. zapłonu poniżej 21°C)'],
+        ['X333','Ciecz samozapalna reagująca niebezpiecznie z wodą'],
+        ['336','Ciecz łatwo zapalna i trująca'],
+        ['338','Ciecz łatwo zapalna i żrąca'],
+        ['X338','Ciecz łatwo zapalna i żrąca, reagująca niebezpiecznie z wodą'],
+        ['339','Ciecz łatwo zapalna mogąca powodować samorzutną i gwałtowną reakcję'],
+        ['39','Ciecz zapalna mogąca powodować samorzutną i gwałtowną reakcję'],
+        ['40','Materiał stały zapalny'],
+        ['X423','Materiał stały zapalny reagujący niebezpiecznie z wodą, wydzielający gaz zapalny'],
+        ['44','Materiał stały zapalny, w podwyższonej temp., w stanie stopionym'],
+        ['446','Materiał stały zapalny i trujący, w podwyższonej temp., w stanie stopionym'],
+        ['46','Materiał stały zapalny i trujący'],
+        ['50','Materiał utleniający'],
+        ['539','Nadtlenek organiczny zapalny'],
+        ['558','Materiał silnie utleniający i żrący'],
+        ['559','Materiał silnie utleniający i żrący, mogący powodować samorzutną i gwałtowną reakcję'],
+        ['589','Materiał utleniający i żrący, mogący powodować samorzutną i gwałtowną reakcję'],
+        ['60','Materiał trujący lub szkodliwy'],
+        ['606','Materiał zakaźny'],
+        ['63','Materiał trujący/szkodliwy i zapalny (temp. zapłonu 21–55°C)'],
+        ['638','Materiał trujący/szkodliwy, zapalny (21–55°C) i żrący'],
+        ['66','Materiał silnie trujący'],
+        ['663','Materiał silnie trujący i zapalny (temp. zapłonu do 55°C)'],
+        ['68','Materiał trujący/szkodliwy i żrący'],
+        ['69','Materiał trujący/szkodliwy, mogący powodować samorzutną i gwałtowną reakcję'],
+        ['76','Materiał radioaktywny i trujący/szkodliwy'],
+        ['78','Materiał radioaktywny i żrący'],
+        ['80','Materiał żrący (lub o mniejszym stopniu żrącości)'],
+        ['X80','Materiał żrący, reagujący niebezpiecznie z wodą'],
+        ['83','Materiał żrący i zapalny (temp. zapłonu 21–55°C)'],
+        ['839','Materiał żrący, zapalny (21–55°C), mogący powodować samorzutną i gwałtowną reakcję'],
+        ['85','Materiał żrący i utleniający'],
+        ['856','Materiał żrący, utleniający i trujący'],
+        ['86','Materiał żrący i trujący'],
+        ['88','Materiał silnie żrący'],
+        ['X88','Materiał silnie żrący, reagujący niebezpiecznie z wodą'],
+        ['883','Materiał silnie żrący i zapalny (temp. zapłonu 21–55°C)'],
+        ['885','Materiał silnie żrący i utleniający'],
+        ['886','Materiał silnie żrący i trujący'],
+        ['X886','Materiał silnie żrący i trujący, reagujący niebezpiecznie z wodą'],
+        ['89','Materiał żrący, mogący powodować samorzutną i gwałtowną reakcję']
+      ]}
+    ]
+  },
+  {
+    id:'w-tablice-adr-przyklady', cat:'materialy-niebezpieczne', title:'Najważniejsze tablice ADR — ściąga',
+    blocks:[
+      {t:'p', text:'Najczęściej spotykane w Polsce kombinacje numer Kemlera / numer ONZ - te same liczby, które widzisz na pomarańczowej tablicy z przodu i z tyłu cysterny.'},
+      {t:'table', cols:['Kemler','ONZ','Materiał','Klasa'], rows:[
+        ['33','1203','Benzyna silnikowa','3'],
+        ['30','1202','Olej napędowy (diesel)','3'],
+        ['23','1965','Gaz płynny LPG (propan-butan)','2.1'],
+        ['23','1978','Propan','2.1'],
+        ['23','1049','Wodór sprężony','2.1'],
+        ['239','1001','Acetylen rozpuszczony','2.1'],
+        ['25','1072','Tlen sprężony','2.2'],
+        ['20','1013','Dwutlenek węgla (CO₂)','2.2'],
+        ['268','1017','Chlor','2.3 (+8)'],
+        ['268','1005','Amoniak bezwodny','2.3 (+8)'],
+        ['80','1830','Kwas siarkowy','8'],
+        ['80','1789','Kwas solny (chlorowodorowy)','8'],
+        ['X423','1428','Sód (metal)','4.3']
+      ]},
+      {t:'p', text:'Chlor i amoniak mają ten sam numer Kemlera (268 - gaz trujący i żrący), bo oba są toksycznymi, żrącymi gazami - rozróżnia je dopiero numer ONZ pod spodem.'}
     ]
   },
   {
@@ -4726,6 +4807,100 @@ function showFiszkiHub(){
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
   wrap.appendChild(drow);
+
+  var adrTotal=ADR_TABLICE.length;
+  var adrKnown=fiszkiAdrKnownCount();
+  var adrPct=adrTotal?Math.round(adrKnown/adrTotal*100):0;
+  var arow=document.createElement('div');
+  arow.className='vehicle-row';
+  arow.onclick=function(){startAdrSession();};
+  arow.innerHTML=
+    '<div class="vehicle-badge" style="background:#d68910">ADR</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">Tablice ADR</div>'+
+      '<div class="fiszki-progress-txt">Opanowane '+adrKnown+' / '+adrTotal+'</div>'+
+      '<div class="fiszki-bar-track"><div class="fiszki-bar-fill" style="width:'+adrPct+'%"></div></div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  wrap.appendChild(arow);
+}
+
+/* ── FISZKI — TABLICE ADR: numer Kemlera + ONZ -> zgadnij materiał ── */
+var ADR_TABLICE=[
+  {kemler:'33', un:'1203', name:'Benzyna silnikowa', klasa:'3'},
+  {kemler:'30', un:'1202', name:'Olej napędowy (diesel)', klasa:'3'},
+  {kemler:'23', un:'1965', name:'Gaz płynny LPG (propan-butan)', klasa:'2.1'},
+  {kemler:'23', un:'1978', name:'Propan', klasa:'2.1'},
+  {kemler:'23', un:'1049', name:'Wodór sprężony', klasa:'2.1'},
+  {kemler:'239', un:'1001', name:'Acetylen rozpuszczony', klasa:'2.1'},
+  {kemler:'25', un:'1072', name:'Tlen sprężony', klasa:'2.2'},
+  {kemler:'20', un:'1013', name:'Dwutlenek węgla (CO₂)', klasa:'2.2'},
+  {kemler:'268', un:'1017', name:'Chlor', klasa:'2.3 (+8)'},
+  {kemler:'268', un:'1005', name:'Amoniak bezwodny', klasa:'2.3 (+8)'},
+  {kemler:'80', un:'1830', name:'Kwas siarkowy', klasa:'8'},
+  {kemler:'80', un:'1789', name:'Kwas solny (chlorowodorowy)', klasa:'8'},
+  {kemler:'X423', un:'1428', name:'Sód (metal)', klasa:'4.3'}
+];
+function fiszkiAdrProgress(){
+  if(!FISZKI_PROGRESS.adr) FISZKI_PROGRESS.adr={items:{}};
+  return FISZKI_PROGRESS.adr;
+}
+function fiszkiAdrKnownCount(){
+  return Object.keys(fiszkiAdrProgress().items).length;
+}
+function startAdrSession(){
+  var progress=fiszkiAdrProgress();
+  var unknown=ADR_TABLICE.filter(function(t){return !progress.items[t.un];});
+  var known=ADR_TABLICE.filter(function(t){return progress.items[t.un];});
+  var queue=fiszkiShuffle(fiszkiShuffle(unknown).concat(fiszkiShuffle(known))).map(function(t){return {type:'adr', tab:t};});
+  if(!queue.length){ alert('Brak danych ADR.'); return; }
+  fiszkiSession={vid:'adr', v:null, mode:'adr', queue:queue, idx:0, total:queue.length, doneCount:0};
+  switchView('view-fiszki-session');
+  document.getElementById('fiszki-session-title').textContent='Tablice ADR';
+  document.getElementById('fiszki-progress-fill').style.width='0%';
+  fiszkiRenderCard();
+}
+function fiszkiRenderAdrCard(card, wrap){
+  var t=card.tab;
+  var others=fiszkiShuffle(ADR_TABLICE.filter(function(x){return x.name!==t.name;})).slice(0,3);
+  var options=fiszkiShuffle([t].concat(others));
+  wrap.innerHTML=
+    '<div class="fiszki-card">'+
+      '<div class="fiszki-kicker">Co oznacza ta tablica ADR?</div>'+
+      '<div class="adr-plate"><div class="adr-plate-top">'+escAttr(t.kemler)+'</div><div class="adr-plate-line"></div><div class="adr-plate-bottom">'+escAttr(t.un)+'</div></div>'+
+      '<div class="fiszki-opts" id="fiszki-opts"></div>'+
+    '</div>';
+  var optsWrap=document.getElementById('fiszki-opts');
+  options.forEach(function(opt){
+    var btn=document.createElement('div');
+    btn.className='fiszki-opt';
+    btn.textContent=opt.name;
+    btn.onclick=function(){ fiszkiAnswerAdr(t, opt, optsWrap, btn); };
+    optsWrap.appendChild(btn);
+  });
+}
+function fiszkiAnswerAdr(t, chosen, optsWrap, clickedBtn){
+  var sess=fiszkiSession;
+  var isCorrect=chosen.un===t.un;
+  Array.prototype.forEach.call(optsWrap.children, function(el){
+    el.onclick=null;
+    if(el.textContent===t.name) el.classList.add('correct');
+  });
+  if(!isCorrect) clickedBtn.classList.add('wrong');
+  if(isCorrect){
+    fiszkiAdrProgress().items[t.un]=true;
+    fiszkiSaveProgress();
+  } else {
+    var pos=Math.min(sess.queue.length, sess.idx+4);
+    sess.queue.splice(pos, 0, {type:'adr', tab:t});
+    sess.total=sess.queue.length;
+  }
+  sess.doneCount++;
+  var cardEl=optsWrap.parentElement;
+  var nextBtn=document.createElement('button');
+  nextBtn.type='button'; nextBtn.className='fiszki-check-btn'; nextBtn.textContent='Dalej';
+  nextBtn.onclick=function(){ sess.idx++; fiszkiRenderCard(); };
+  cardEl.appendChild(nextBtn);
 }
 
 /* ── FISZKI — ULICE ŚWIĘTOCHŁOWICE (dojazdy), jeden tryb: Mów na głos + Sprawdzam ── */
@@ -5076,6 +5251,7 @@ function fiszkiRenderCard(){
   else if(card.type==='street') fiszkiRenderStreetCard(card, wrap);
   else if(card.type==='district-guess') fiszkiRenderDistrictGuessCard(card, wrap);
   else if(card.type==='district-sort') fiszkiRenderDistrictSortCard(card, wrap);
+  else if(card.type==='adr') fiszkiRenderAdrCard(card, wrap);
   else fiszkiRenderWhatInCard(card, wrap);
 }
 function fiszkiRenderWhereCard(card, wrap){
@@ -5194,6 +5370,21 @@ function fiszkiRenderSummary(){
         '<div class="t">Sesja ukończona!</div>'+
         '<div class="s">Opanowane ulice: '+sKnown+' / '+sTotal+'</div>'+
         '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--f-green,#1e7a4c);color:#fff;font-weight:700;font-size:13.5px;border:none;margin-right:8px" onclick="startStreetsFiszkiSession()">Kolejna sesja</button>'+
+        '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--surface-2);color:var(--text);font-weight:700;font-size:13.5px;border:none" onclick="showFiszkiHub()">Powrót</button>'+
+      '</div>';
+    document.getElementById('fiszki-progress-fill').style.width='100%';
+    renderHome();
+    return;
+  }
+  if(s.vid==='adr'){
+    var aKnown=fiszkiAdrKnownCount();
+    var aTotal=ADR_TABLICE.length;
+    document.getElementById('fiszki-card-wrap').innerHTML=
+      '<div class="fiszki-summary">'+
+        '<div class="big">🎉</div>'+
+        '<div class="t">Sesja ukończona!</div>'+
+        '<div class="s">Opanowane tablice ADR: '+aKnown+' / '+aTotal+'</div>'+
+        '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--f-green,#1e7a4c);color:#fff;font-weight:700;font-size:13.5px;border:none;margin-right:8px" onclick="startAdrSession()">Kolejna sesja</button>'+
         '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--surface-2);color:var(--text);font-weight:700;font-size:13.5px;border:none" onclick="showFiszkiHub()">Powrót</button>'+
       '</div>';
     document.getElementById('fiszki-progress-fill').style.width='100%';
