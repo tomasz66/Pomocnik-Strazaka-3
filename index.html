@@ -385,6 +385,18 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .fiszki-reveal-item .q{font-family:"SF Mono","Fira Code",monospace;color:var(--text-muted);flex-shrink:0;white-space:nowrap}
 .fiszki-map-wrap{position:relative;margin-top:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);cursor:zoom-in}
 .fiszki-map-wrap:active{opacity:.85}
+.dz-guess-map{display:block;width:100%;height:140px;object-fit:cover;border-radius:var(--radius-sm);margin-top:14px;border:1px solid var(--border)}
+.dz-sort-card{text-align:center}
+.dz-basket{margin-top:16px;border:2px dashed var(--accent);border-radius:var(--radius);padding:16px 10px;
+  font-size:16px;font-weight:800;color:var(--accent);min-height:60px;
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px}
+.dz-basket .dz-chip.done{border-color:var(--f-green,#1e7a4c);background:var(--f-green-soft,rgba(30,122,76,.12));color:var(--f-green-ink,#1e7a4c);font-weight:700;cursor:default}
+.dz-pool{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.dz-chip{border:1.5px solid var(--border);border-radius:99px;padding:10px 16px;font-size:13.5px;font-weight:600;
+  color:var(--text);background:var(--surface);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.dz-chip.dragging{box-shadow:0 8px 20px -6px rgba(0,0,0,.4);cursor:grabbing}
+.dz-chip.shake{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);animation:dzshake .4s}
+@keyframes dzshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .fiszki-map-img{display:block;width:100%;height:auto}
 .fiszki-map-attr{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 6px;border-radius:5px}
 .fiszki-map-zoom-hint{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.55);color:#fff;font-size:10.5px;padding:3px 8px;border-radius:99px;font-weight:600}
@@ -4698,6 +4710,22 @@ function showFiszkiHub(){
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
   wrap.appendChild(srow);
+
+  var distTotal=districtsEligibleStreets().length;
+  var distKnown=districtsKnownCount();
+  var distPct=distTotal?Math.round(distKnown/distTotal*100):0;
+  var drow=document.createElement('div');
+  drow.className='vehicle-row';
+  drow.onclick=function(){showDistrictsModePicker();};
+  drow.innerHTML=
+    '<div class="vehicle-badge" style="background:#2874a6">DZ</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">Dzielnice</div>'+
+      '<div class="fiszki-progress-txt">Opanowane '+distKnown+' / '+distTotal+'</div>'+
+      '<div class="fiszki-bar-track"><div class="fiszki-bar-fill" style="width:'+distPct+'%"></div></div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  wrap.appendChild(drow);
 }
 
 /* ── FISZKI — ULICE ŚWIĘTOCHŁOWICE (dojazdy), jeden tryb: Mów na głos + Sprawdzam ── */
@@ -4774,6 +4802,213 @@ function fiszkiAnswerStreet(s, knew){
   fiszkiRenderCard();
 }
 
+/* ── FISZKI — DZIELNICE: 1) zgadnij dzielnicę (4 opcje) 2) dopasuj ulice przeciąganiem ── */
+function streetPrimaryDistrict(s){
+  return s.dzielnica ? s.dzielnica.split(',')[0].trim() : '';
+}
+function districtsEligibleStreets(){
+  return STREETS_BASE.filter(function(s){ return s.quiz!==false && streetPrimaryDistrict(s); });
+}
+function districtsAllList(){
+  var set={};
+  districtsEligibleStreets().forEach(function(s){ set[streetPrimaryDistrict(s)]=true; });
+  return Object.keys(set).sort();
+}
+function districtsProgress(){
+  if(!FISZKI_PROGRESS.districts) FISZKI_PROGRESS.districts={items:{}};
+  return FISZKI_PROGRESS.districts;
+}
+function districtsKnownCount(){
+  return Object.keys(districtsProgress().items).length;
+}
+function showDistrictsModePicker(){
+  switchView('view-fiszki-mode');
+  document.getElementById('fiszki-mode-title').textContent='Dzielnice';
+  var wrap=document.getElementById('fiszki-mode-list');
+  wrap.innerHTML='';
+  var modes=[
+    {fn:startDistrictsGuessSession, lab:'Zgadnij dzielnicę', desc:'Widzisz nazwę ulicy — wybierasz właściwą dzielnicę spośród kilku opcji.'},
+    {fn:startDistrictsSortSession, lab:'Dopasuj ulice', desc:'Widzisz dzielnicę — przeciągasz do niej ulice, które w niej leżą.'}
+  ];
+  modes.forEach(function(m){
+    var card=document.createElement('div');
+    card.className='fiszki-mode-card';
+    card.onclick=function(){ m.fn(); };
+    card.innerHTML='<div class="lab">'+m.lab+'</div><div class="desc">'+m.desc+'</div>';
+    wrap.appendChild(card);
+  });
+}
+
+/* Tryb 1: zgadnij dzielnicę */
+function startDistrictsGuessSession(){
+  var eligible=districtsEligibleStreets();
+  var progress=districtsProgress();
+  var unknown=eligible.filter(function(s){return !progress.items[s.id];});
+  var known=eligible.filter(function(s){return progress.items[s.id];});
+  var pick=fiszkiShuffle(unknown).slice(0,20);
+  if(pick.length<20) pick=pick.concat(fiszkiShuffle(known).slice(0,20-pick.length));
+  var queue=fiszkiShuffle(pick).map(function(s){return {type:'district-guess', street:s};});
+  if(!queue.length){ alert('Brak ulic do nauki.'); return; }
+  fiszkiSession={vid:'districts-guess', v:null, mode:'districts-guess', queue:queue, idx:0, total:queue.length, doneCount:0};
+  switchView('view-fiszki-session');
+  document.getElementById('fiszki-session-title').textContent='Dzielnice — zgadnij';
+  document.getElementById('fiszki-progress-fill').style.width='0%';
+  fiszkiRenderCard();
+}
+function fiszkiRenderDistrictGuessCard(card, wrap){
+  var s=card.street;
+  var correct=streetPrimaryDistrict(s);
+  var others=districtsAllList().filter(function(d){return d!==correct;});
+  var options=fiszkiShuffle([correct].concat(fiszkiShuffle(others).slice(0,3)));
+  wrap.innerHTML=
+    '<div class="fiszki-card">'+
+      '<div class="fiszki-kicker">W jakiej dzielnicy leży ta ulica?</div>'+
+      '<div class="fiszki-name">'+escAttr(s.ulica)+'</div>'+
+      '<img class="dz-guess-map" src="images/streets/'+s.id+'.jpg" alt="" onerror="this.remove()">'+
+      '<div class="fiszki-opts" id="fiszki-opts"></div>'+
+    '</div>';
+  var optsWrap=document.getElementById('fiszki-opts');
+  options.forEach(function(d){
+    var btn=document.createElement('div');
+    btn.className='fiszki-opt';
+    btn.textContent=d;
+    btn.onclick=function(){ fiszkiAnswerDistrictGuess(s, d, correct, optsWrap, btn); };
+    optsWrap.appendChild(btn);
+  });
+}
+function fiszkiAnswerDistrictGuess(s, chosen, correct, optsWrap, clickedBtn){
+  var sess=fiszkiSession;
+  var isCorrect=chosen===correct;
+  Array.prototype.forEach.call(optsWrap.children, function(el){
+    el.onclick=null;
+    if(el.textContent===correct) el.classList.add('correct');
+  });
+  if(!isCorrect) clickedBtn.classList.add('wrong');
+  if(isCorrect){
+    districtsProgress().items[s.id]=true;
+    fiszkiSaveProgress();
+  } else {
+    var pos=Math.min(sess.queue.length, sess.idx+4);
+    sess.queue.splice(pos, 0, {type:'district-guess', street:s});
+    sess.total=sess.queue.length;
+  }
+  sess.doneCount++;
+  var cardEl=optsWrap.parentElement;
+  var nextBtn=document.createElement('button');
+  nextBtn.type='button'; nextBtn.className='fiszki-check-btn'; nextBtn.textContent='Dalej';
+  nextBtn.onclick=function(){ sess.idx++; fiszkiRenderCard(); };
+  cardEl.appendChild(nextBtn);
+}
+
+/* Tryb 2: dopasuj ulice do dzielnicy (przeciąganie) */
+function startDistrictsSortSession(){
+  var districts=districtsAllList();
+  var eligible=districtsEligibleStreets();
+  var progress=districtsProgress();
+  var byDistrict={};
+  eligible.forEach(function(s){
+    var d=streetPrimaryDistrict(s);
+    if(!byDistrict[d]) byDistrict[d]=[];
+    byDistrict[d].push(s);
+  });
+  var rounds=[];
+  var roundsCount=Math.min(12, districts.length*2);
+  for(var i=0;i<roundsCount;i++){
+    var d=districts[i % districts.length];
+    var pool=byDistrict[d]||[];
+    if(pool.length<2) continue;
+    var unknown=pool.filter(function(s){return !progress.items[s.id];});
+    var known=pool.filter(function(s){return progress.items[s.id];});
+    var correctPick=fiszkiShuffle(unknown).slice(0,3);
+    if(correctPick.length<2) correctPick=correctPick.concat(fiszkiShuffle(known).slice(0,3-correctPick.length));
+    if(correctPick.length<2) continue;
+    var otherDistrictStreets=eligible.filter(function(s){return streetPrimaryDistrict(s)!==d;});
+    var decoys=fiszkiShuffle(otherDistrictStreets).slice(0,Math.max(2,correctPick.length));
+    var chips=fiszkiShuffle(
+      correctPick.map(function(s){return {street:s, correct:true};})
+      .concat(decoys.map(function(s){return {street:s, correct:false};}))
+    );
+    rounds.push({type:'district-sort', district:d, chips:chips});
+  }
+  rounds=fiszkiShuffle(rounds);
+  if(!rounds.length){ alert('Za mało danych do tego trybu.'); return; }
+  fiszkiSession={vid:'districts-sort', v:null, mode:'districts-sort', queue:rounds, idx:0, total:rounds.length, doneCount:0};
+  switchView('view-fiszki-session');
+  document.getElementById('fiszki-session-title').textContent='Dzielnice — dopasuj';
+  document.getElementById('fiszki-progress-fill').style.width='0%';
+  fiszkiRenderCard();
+}
+function fiszkiRenderDistrictSortCard(card, wrap){
+  card._remaining=card.chips.filter(function(c){return c.correct;}).length;
+  wrap.innerHTML=
+    '<div class="fiszki-card dz-sort-card">'+
+      '<div class="fiszki-kicker">Przeciągnij pasujące ulice do dzielnicy</div>'+
+      '<div class="dz-basket" id="dz-basket">'+escAttr(card.district)+'</div>'+
+      '<div class="dz-pool" id="dz-pool"></div>'+
+    '</div>';
+  var pool=document.getElementById('dz-pool');
+  var basket=document.getElementById('dz-basket');
+  card.chips.forEach(function(c){
+    var chip=document.createElement('div');
+    chip.className='dz-chip';
+    chip.textContent=c.street.ulica;
+    pool.appendChild(chip);
+    dzWireDrag(chip, c, card, basket);
+  });
+}
+function dzWireDrag(chip, c, card, basket){
+  var startX, startY, origLeft, origTop, dragging=false;
+  function resetPos(){
+    chip.style.position=''; chip.style.left=''; chip.style.top=''; chip.style.width=''; chip.style.zIndex='';
+  }
+  chip.addEventListener('pointerdown', function(e){
+    if(chip.classList.contains('done')) return;
+    chip.setPointerCapture(e.pointerId);
+    var r=chip.getBoundingClientRect();
+    origLeft=r.left; origTop=r.top;
+    startX=e.clientX; startY=e.clientY;
+    chip.style.position='fixed';
+    chip.style.left=origLeft+'px';
+    chip.style.top=origTop+'px';
+    chip.style.width=r.width+'px';
+    chip.style.zIndex=999;
+    chip.classList.add('dragging');
+    dragging=true;
+  });
+  chip.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    var dx=e.clientX-startX, dy=e.clientY-startY;
+    chip.style.left=(origLeft+dx)+'px';
+    chip.style.top=(origTop+dy)+'px';
+  });
+  chip.addEventListener('pointerup', function(e){
+    if(!dragging) return;
+    dragging=false;
+    chip.classList.remove('dragging');
+    var br=basket.getBoundingClientRect();
+    var cr=chip.getBoundingClientRect();
+    var cx=cr.left+cr.width/2, cy=cr.top+cr.height/2;
+    var overBasket=cx>=br.left && cx<=br.right && cy>=br.top && cy<=br.bottom;
+    if(overBasket && c.correct){
+      chip.classList.add('done');
+      resetPos();
+      basket.appendChild(chip);
+      districtsProgress().items[c.street.id]=true;
+      fiszkiSaveProgress();
+      card._remaining--;
+      if(card._remaining<=0){
+        var sess=fiszkiSession;
+        setTimeout(function(){ sess.doneCount++; sess.idx++; fiszkiRenderCard(); }, 500);
+      }
+    } else if(overBasket && !c.correct){
+      chip.classList.add('shake');
+      setTimeout(function(){ chip.classList.remove('shake'); resetPos(); }, 400);
+    } else {
+      resetPos();
+    }
+  });
+}
+
 function showFiszkiModePicker(vid){
   var v=D.vehicles[vid];
   if(!v) return;
@@ -4839,6 +5074,8 @@ function fiszkiRenderCard(){
   var card=s.queue[s.idx];
   if(card.type==='where') fiszkiRenderWhereCard(card, wrap);
   else if(card.type==='street') fiszkiRenderStreetCard(card, wrap);
+  else if(card.type==='district-guess') fiszkiRenderDistrictGuessCard(card, wrap);
+  else if(card.type==='district-sort') fiszkiRenderDistrictSortCard(card, wrap);
   else fiszkiRenderWhatInCard(card, wrap);
 }
 function fiszkiRenderWhereCard(card, wrap){
@@ -4958,6 +5195,22 @@ function fiszkiRenderSummary(){
         '<div class="s">Opanowane ulice: '+sKnown+' / '+sTotal+'</div>'+
         '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--f-green,#1e7a4c);color:#fff;font-weight:700;font-size:13.5px;border:none;margin-right:8px" onclick="startStreetsFiszkiSession()">Kolejna sesja</button>'+
         '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--surface-2);color:var(--text);font-weight:700;font-size:13.5px;border:none" onclick="showFiszkiHub()">Powrót</button>'+
+      '</div>';
+    document.getElementById('fiszki-progress-fill').style.width='100%';
+    renderHome();
+    return;
+  }
+  if(s.vid==='districts-guess' || s.vid==='districts-sort'){
+    var dKnown=districtsKnownCount();
+    var dTotal=districtsEligibleStreets().length;
+    var again=s.vid==='districts-guess'?'startDistrictsGuessSession()':'startDistrictsSortSession()';
+    document.getElementById('fiszki-card-wrap').innerHTML=
+      '<div class="fiszki-summary">'+
+        '<div class="big">🎉</div>'+
+        '<div class="t">Sesja ukończona!</div>'+
+        '<div class="s">Opanowane dzielnice ulic: '+dKnown+' / '+dTotal+'</div>'+
+        '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--f-green,#1e7a4c);color:#fff;font-weight:700;font-size:13.5px;border:none;margin-right:8px" onclick="'+again+'">Kolejna sesja</button>'+
+        '<button type="button" style="display:inline-block;padding:12px 22px;border-radius:12px;background:var(--surface-2);color:var(--text);font-weight:700;font-size:13.5px;border:none" onclick="showDistrictsModePicker()">Zmień tryb</button>'+
       '</div>';
     document.getElementById('fiszki-progress-fill').style.width='100%';
     renderHome();
