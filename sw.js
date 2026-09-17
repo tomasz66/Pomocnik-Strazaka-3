@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pomocnik-strazaka-v4';
+const CACHE_NAME = 'pomocnik-strazaka-v5';
 const SHELL_FILES = [
   './',
   './index.html',
@@ -59,14 +59,18 @@ function isFirebaseRequest(url) {
 /* Sieć zawsze na pierwszym miejscu — dzięki temu przy normalnym zasięgu zawsze widzisz
    najnowszą wersję. Zapisana kopia (cache) używana jest TYLKO gdy sieć naprawdę zawiedzie
    (brak zasięgu) — dokładnie po to zbudowany jest tryb offline, nie po to żeby pokazywać
-   starszą wersję kiedy internet działa. */
+   starszą wersję kiedy internet działa.
+   Ważne: zwykłe fetch(event.request) potrafi po cichu oddać starą odpowiedź z pamięci
+   podręcznej przeglądarki (HTTP cache), nawet w trybie "sieć najpierw" — GitHub Pages
+   wysyła nagłówek każący trzymać pliki przez kilka minut. Dlatego wymuszamy tu
+   cache:'no-store', żeby faktycznie zapytać serwer za każdym razem. */
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const url = event.request.url;
   if (isFirebaseRequest(url)) return;
 
   event.respondWith(
-    fetch(event.request).then((response) => {
+    fetch(event.request, { cache: 'no-store' }).then((response) => {
       if (response && response.status === 200) {
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
