@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl" data-theme="dark">
+<html lang="pl" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Pomocnik Strażaka">
-  <meta name="theme-color" content="#15130F">
+  <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="dark light">
 <title>Pomocnik Strażaka</title>
 <style>
@@ -1927,11 +1927,11 @@ function norm(s){
 }
 
 function loadTheme(){
-  var t='dark';
+  var t='light';
   try{
-    // v8 - domyslnie ciemny motyw (Ember), chyba ze ktos jawnie wybral jasny
-    var saved=localStorage.getItem('wst_v8');
-    t=saved||'dark';
+    // v9 - domyslnie jasny motyw, Ember (ciemny) dostepny recznie przez przelacznik
+    var saved=localStorage.getItem('wst_v9');
+    t=saved||'light';
   }catch(e){}
   applyTheme(t);
 }
@@ -1941,7 +1941,7 @@ function applyTheme(t){
   var el=document.getElementById('theme-btn');if(el)el.textContent=icon;
   var ti=document.getElementById('tab-theme-icon');if(ti)ti.textContent=icon;
   document.querySelector('meta[name=theme-color]').content=t==='light'?'#ffffff':'#15130F';
-  try{localStorage.setItem('wst_v8',t);}catch(e){}
+  try{localStorage.setItem('wst_v9',t);}catch(e){}
   if(document.getElementById('view-vehicle').classList.contains('active')&&curV){
     var svg=document.getElementById('v-svg');
     if(curV==='v1'){svg.setAttribute('viewBox','0 0 322 470');svg.innerHTML=buildGBASvg();}
