@@ -390,6 +390,9 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .fiszki-reveal-item .q{font-family:"SF Mono","Fira Code",monospace;color:var(--text-muted);flex-shrink:0;white-space:nowrap}
 .fiszki-map-wrap{position:relative;margin-top:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);cursor:zoom-in}
 .fiszki-map-wrap:active{opacity:.85}
+.wiedza-img-zoom-wrap{position:relative;overflow:hidden;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface-2);touch-action:pan-y}
+.wiedza-img-zoom-wrap img{display:block;width:100%;height:100%;object-fit:contain;touch-action:pan-y}
+.wiedza-img-zoom-hint{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;font-size:10.5px;padding:3px 8px;border-radius:99px;font-weight:600;pointer-events:none}
 .dz-guess-map{display:block;width:100%;height:140px;object-fit:cover;border-radius:var(--radius-sm);margin-top:14px;border:1px solid var(--border)}
 .adr-plate{margin:18px auto 0;width:190px;background:#f39c12;border:3px solid #1c1c1e;border-radius:4px;overflow:hidden;box-shadow:0 4px 10px -4px rgba(0,0,0,.3)}
 .adr-plate-top,.adr-plate-bottom{padding:14px 8px;font-size:23px;font-weight:900;color:#1c1c1e;text-align:center;letter-spacing:.5px;font-family:"SF Mono","Fira Code",monospace}
@@ -3977,9 +3980,9 @@ var WIEDZA_BASE=[
         'klasa 9 - różne materiały i przedmioty niebezpieczne'
       ]},
       {t:'h', text:'Oznaczenia związane z bezpieczeństwem chemicznym'},
-      {t:'img', src:'images/wiedza/oznaczenia-chemiczne-tabela.png', cap:'Dotychczasowe oznaczenia pomarańczowe oraz nowe piktogramy GHS (obowiązujące od 2010 r.).'},
+      {t:'img-zoom', src:'images/wiedza/oznaczenia-chemiczne-tabela.png', cap:'Dotychczasowe oznaczenia pomarańczowe oraz nowe piktogramy GHS (obowiązujące od 2010 r.).'},
       {t:'h', text:'Oznaczenia związane z transportem'},
-      {t:'img', src:'images/wiedza/oznaczenia-transport-tabela.png', cap:'Towar zwolniony (LQ) oraz pełny zestaw nalepek transportowych ADR wg klas i podklas.'},
+      {t:'img-zoom', src:'images/wiedza/oznaczenia-transport-tabela.png', cap:'Towar zwolniony (LQ) oraz pełny zestaw nalepek transportowych ADR wg klas i podklas.'},
       {t:'h', text:'Budowa tablicy ADR'},
       {t:'img', src:'images/wiedza/tablica-adr-przyklad.png', cap:'Przykład: górny numer to numer rozpoznawczy niebezpieczeństwa (np. X423 — absolutny zakaz kontaktu z wodą), dolny to numer ONZ (np. 1428).'},
       {t:'h', text:'Pełna tabela numerów rozpoznawczych (Kemlera)'},
@@ -4504,7 +4507,7 @@ function wiedzaSearch(nq){
     return (w.blocks||[]).some(function(b){
       if(b.t==='p') return norm2(b.text).indexOf(nq)>=0;
       if(b.t==='table') return (b.rows||[]).some(function(r){return r.some(function(c){return norm2(c).indexOf(nq)>=0;});}) || norm2((b.cols||[]).join(' ')).indexOf(nq)>=0;
-      if(b.t==='img') return norm2(b.cap).indexOf(nq)>=0;
+      if(b.t==='img' || b.t==='img-zoom') return norm2(b.cap).indexOf(nq)>=0;
       return false;
     });
   });
@@ -4565,6 +4568,7 @@ function renderWiedzaBlocks(blocks){
     if(b.t==='p') return '<p class="wiedza-p">'+escAttr(b.text)+'</p>';
     if(b.t==='h') return '<div class="wiedza-h">'+escAttr(b.text)+'</div>';
     if(b.t==='img') return '<img class="wiedza-img" src="'+b.src+'" alt="'+escAttr(b.cap||'')+'" style="cursor:zoom-in" onclick="openPhotoLightbox(this.src)">'+(b.cap?'<div class="wiedza-img-cap">'+escAttr(b.cap)+'</div>':'');
+    if(b.t==='img-zoom') return '<div class="wiedza-img-zoom-wrap"><img src="'+b.src+'" alt="'+escAttr(b.cap||'')+'"><div class="wiedza-img-zoom-hint">🔍 Uszczypnij, aby powiększyć</div></div>'+(b.cap?'<div class="wiedza-img-cap">'+escAttr(b.cap)+'</div>':'');
     if(b.t==='table'){
       var thead='<tr>'+b.cols.map(function(c){return '<th>'+escAttr(c)+'</th>';}).join('')+'</tr>';
       var tbody=b.rows.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+escAttr(c)+'</td>';}).join('')+'</tr>';}).join('');
@@ -4596,6 +4600,69 @@ function showWiedzaEntry(id){
     '<div class="wiedza-entry-cat">'+(cat?cat.name:'')+'</div>'+
     '<div class="notice-title" style="font-size:19px;margin-bottom:12px">'+w.title+'</div>'+
     renderWiedzaBlocks(w.blocks);
+  initInlineZoomImages(document.getElementById('wiedza-entry-body'));
+}
+
+/* Powiekszanie obrazkow wprost w tresci (bez klikania) - ten sam mechanizm reczny co
+   w lightboxie (_lb*), bo appka ma globalnie wylaczone natywne pinch-zoom (viewport user-scalable=no). */
+function initInlineZoomImages(container){
+  var wraps=container.querySelectorAll('.wiedza-img-zoom-wrap:not([data-zoom-init])');
+  wraps.forEach(function(wrap){
+    wrap.setAttribute('data-zoom-init','1');
+    var img=wrap.querySelector('img');
+    if(!img) return;
+    var st={scale:1,tx:0,ty:0,pinchStartDist:0,pinchStartScale:1,
+      panStartX:0,panStartY:0,panStartTx:0,panStartTy:0,
+      lastTapTime:0,lastTapX:0,lastTapY:0,mode:null,moved:false};
+    function apply(){ img.style.transform='translate('+st.tx+'px,'+st.ty+'px) scale('+st.scale+')'; }
+    function reset(){ st.scale=1; st.tx=0; st.ty=0; apply(); }
+    function dist(t0,t1){ return Math.hypot(t1.clientX-t0.clientX, t1.clientY-t0.clientY); }
+    function clampScale(s){ return Math.max(1, Math.min(4, s)); }
+    function setAspect(){ if(img.naturalWidth) wrap.style.aspectRatio=img.naturalWidth+'/'+img.naturalHeight; }
+    if(img.complete && img.naturalWidth) setAspect(); else img.addEventListener('load', setAspect);
+    wrap.addEventListener('touchstart', function(e){
+      st.moved=false;
+      if(e.touches.length===2){
+        e.preventDefault();
+        st.mode='pinch';
+        st.pinchStartDist=dist(e.touches[0], e.touches[1]);
+        st.pinchStartScale=st.scale;
+      } else if(e.touches.length===1){
+        var now=Date.now(); var t=e.touches[0];
+        if(now-st.lastTapTime<320 && Math.hypot(t.clientX-st.lastTapX, t.clientY-st.lastTapY)<30){
+          e.preventDefault();
+          st.mode=null;
+          if(st.scale>1){ reset(); } else { st.scale=2.5; apply(); }
+          st.lastTapTime=0;
+          return;
+        }
+        st.lastTapTime=now; st.lastTapX=t.clientX; st.lastTapY=t.clientY;
+        if(st.scale>1){
+          st.mode='pan';
+          st.panStartX=t.clientX; st.panStartY=t.clientY;
+          st.panStartTx=st.tx; st.panStartTy=st.ty;
+        } else {
+          st.mode=null;
+        }
+      }
+    }, {passive:false});
+    wrap.addEventListener('touchmove', function(e){
+      st.moved=true;
+      if(st.mode==='pinch' && e.touches.length===2){
+        e.preventDefault();
+        var d=dist(e.touches[0], e.touches[1]);
+        st.scale=clampScale(st.pinchStartScale * (d/st.pinchStartDist));
+        apply();
+      } else if(st.mode==='pan' && e.touches.length===1){
+        e.preventDefault();
+        var t=e.touches[0];
+        st.tx=st.panStartTx + (t.clientX - st.panStartX);
+        st.ty=st.panStartTy + (t.clientY - st.panStartY);
+        apply();
+      }
+    }, {passive:false});
+    wrap.addEventListener('touchend', function(){ st.mode=null; });
+  });
 }
 
 /* ── FISZKI — dojazdy do ulic Świętochłowic (dane statyczne, jak WIEDZA_BASE) ── */
