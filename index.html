@@ -106,7 +106,7 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
   background: color-mix(in srgb, var(--surface) 86%, transparent);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border);
-  display: grid; grid-template-columns: repeat(5, 1fr);
+  display: grid; grid-template-columns: repeat(6, 1fr);
   padding-bottom: env(safe-area-inset-bottom);
 }
 .tab-item {
@@ -1461,6 +1461,10 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   <button class="tab-item" id="tab-taktyka" onclick="showTaktyka()">
     <span class="tab-icon">⚑</span>
     <span class="tab-label">Taktyka</span>
+  </button>
+  <button class="tab-item" id="tab-mapa" onclick="showCityMap()">
+    <span class="tab-icon">📍</span>
+    <span class="tab-label">Mapa</span>
   </button>
   <button class="tab-item" id="tab-adr" onclick="showAdrFromTab()">
     <span class="tab-icon">⚠</span>
@@ -4600,6 +4604,8 @@ function streetsSearch(nq){
 }
 function showCityMap(){
   switchView('view-city-map');
+  document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('tab-mapa').classList.add('active');
   initInlineZoomImages(document.getElementById('view-city-map'), '.fiszki-map-wrap');
 }
 function showStreetDetail(id){
@@ -4764,7 +4770,7 @@ function initInlineZoomImages(container, selector){
     function apply(){ img.style.transform='translate('+st.tx+'px,'+st.ty+'px) scale('+st.scale+')'; }
     function reset(){ st.scale=1; st.tx=0; st.ty=0; apply(); }
     function dist(t0,t1){ return Math.hypot(t1.clientX-t0.clientX, t1.clientY-t0.clientY); }
-    function clampScale(s){ return Math.max(1, Math.min(8, s)); }
+    function clampScale(s){ return Math.max(1, Math.min(20, s)); }
     /* niektore obrazki (np. tabele Wiedzy) maja height:100% wiec ich opakowanie
        potrzebuje wymuszonych proporcji — mapki ulic maja juz height:auto i wlasny
        wymiar, wiec ten krok jest wtedy zbedny (offsetHeight juz > 0) */
