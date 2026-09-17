@@ -390,6 +390,9 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .fiszki-reveal-item .q{font-family:"SF Mono","Fira Code",monospace;color:var(--text-muted);flex-shrink:0;white-space:nowrap}
 .fiszki-map-wrap{position:relative;margin-top:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);touch-action:pan-y}
 .fiszki-map-wrap img{touch-action:pan-y}
+.city-map-legend{display:flex;flex-wrap:wrap;gap:8px 14px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+.city-map-legend-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-2)}
+.city-map-legend-item .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1px solid rgba(0,0,0,.15)}
 .wiedza-img-zoom-wrap{position:relative;overflow:hidden;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface-2);touch-action:pan-y}
 .wiedza-img-zoom-wrap img{display:block;width:100%;height:100%;object-fit:contain;touch-action:pan-y}
 .wiedza-img-zoom-hint{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;font-size:10.5px;padding:3px 8px;border-radius:99px;font-weight:600;pointer-events:none}
@@ -695,6 +698,8 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       <div class="list-group" id="wiedza-section-list"></div>
       <div class="section-label">Fiszki</div>
       <div class="list-group fiszki-green" id="fiszki-section-list"></div>
+      <div class="section-label">Mapa</div>
+      <div class="list-group" id="mapa-section-list"></div>
       <div class="section-label">JRG</div>
       <div class="list-group" id="jrg-list"></div>
       <div class="edit-tools-panel">
@@ -1256,6 +1261,44 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   </div>
   <div class="scroll-content">
     <div class="wiedza-entry-body" id="street-detail-body"></div>
+  </div>
+</div>
+
+<!-- ═══ MAPA MIASTA (hydranty + obiekty uzytecznosci publicznej z OSM) ═══ -->
+<div class="view" id="view-city-map">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Główna</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text" style="font-size:17px">Mapa miasta</div>
+        <div class="nav-title-sub">Świętochłowice — dane OpenStreetMap</div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div style="padding:16px">
+      <div class="city-map-legend">
+        <div class="city-map-legend-item"><span class="dot" style="background:#2980b9"></span>Hydrant</div>
+        <div class="city-map-legend-item"><span class="dot" style="background:#c0392b"></span>Straż pożarna (PSP/OSP)</div>
+        <div class="city-map-legend-item"><span class="dot" style="background:#e74c3c"></span>Szpital</div>
+        <div class="city-map-legend-item"><span class="dot" style="background:#17202a"></span>Policja / Straż Miejska</div>
+        <div class="city-map-legend-item"><span class="dot" style="background:#6f4e37"></span>Urząd Miejski</div>
+        <div class="city-map-legend-item"><span class="dot" style="background:#f39c12"></span>Szkoła</div>
+        <div class="city-map-legend-item"><span class="dot" style="background:#9b59b6"></span>Przedszkole</div>
+        <div class="city-map-legend-item"><span class="dot" style="background:#1abc9c"></span>Apteka / przychodnia</div>
+        <div class="city-map-legend-item"><span class="dot" style="background:#7f8c8d"></span>Dom kultury / inne</div>
+      </div>
+      <div class="fiszki-map-wrap" id="city-map-wrap" style="margin-top:14px">
+        <img class="fiszki-map-img" src="images/mapa-miasta.jpg" alt="Mapa Świętochłowic z hydrantami i obiektami użyteczności publicznej">
+        <div class="fiszki-map-zoom-hint">🔍 Uszczypnij, aby powiększyć</div>
+        <div class="fiszki-map-attr">© OpenStreetMap</div>
+      </div>
+      <div class="tak-note" style="margin-top:10px">Dane hydrantów i obiektów pochodzą z OpenStreetMap i mogą być niekompletne — nie zastępują rozpoznania na miejscu.</div>
+    </div>
   </div>
 </div>
 
@@ -2210,6 +2253,21 @@ function renderHome(){
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
   fl.appendChild(frow);
+
+  // Mapa — wiersz po Fiszkach
+  var mml=document.getElementById('mapa-section-list');
+  mml.innerHTML='';
+  var mmrow=document.createElement('div');
+  mmrow.className='vehicle-row';
+  mmrow.onclick=function(){showCityMap();};
+  mmrow.innerHTML=
+    '<div class="vehicle-badge" style="background:#2471a3">MAPA</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">Mapa miasta</div>'+
+      '<div class="vehicle-meta">Hydranty i obiekty użyteczności publicznej</div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  mml.appendChild(mmrow);
 
   // JRG — hub: Biuro, Przegląd (Garaż przeniesiony na główną, zaraz po SCD)
   var jl=document.getElementById('jrg-list');
@@ -4539,6 +4597,10 @@ function streetsSearch(nq){
   return STREETS_BASE.filter(function(s){
     return norm2(s.ulica).indexOf(nq)>=0 || norm2(s.dzielnica||'').indexOf(nq)>=0;
   }).slice(0,20);
+}
+function showCityMap(){
+  switchView('view-city-map');
+  initInlineZoomImages(document.getElementById('view-city-map'), '.fiszki-map-wrap');
 }
 function showStreetDetail(id){
   var s=STREETS_BASE.find(function(x){return x.id===id;});
