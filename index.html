@@ -4764,7 +4764,7 @@ function initInlineZoomImages(container, selector){
     function apply(){ img.style.transform='translate('+st.tx+'px,'+st.ty+'px) scale('+st.scale+')'; }
     function reset(){ st.scale=1; st.tx=0; st.ty=0; apply(); }
     function dist(t0,t1){ return Math.hypot(t1.clientX-t0.clientX, t1.clientY-t0.clientY); }
-    function clampScale(s){ return Math.max(1, Math.min(4, s)); }
+    function clampScale(s){ return Math.max(1, Math.min(8, s)); }
     /* niektore obrazki (np. tabele Wiedzy) maja height:100% wiec ich opakowanie
        potrzebuje wymuszonych proporcji — mapki ulic maja juz height:auto i wlasny
        wymiar, wiec ten krok jest wtedy zbedny (offsetHeight juz > 0) */
