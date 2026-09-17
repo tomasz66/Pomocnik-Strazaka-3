@@ -4662,6 +4662,11 @@ function initInlineZoomImages(container){
       }
     }, {passive:false});
     wrap.addEventListener('touchend', function(){ st.mode=null; });
+    /* Safari (iOS) generuje osobne zdarzenia "gesture*" przy szczypaniu dwoma palcami,
+       niezaleznie od touchstart/touchmove — bez zablokowania ich Safari i tak wywoluje
+       wlasne natywne powiekszenie calej strony zamiast oddac szczypanie do naszego kodu. */
+    wrap.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+    wrap.addEventListener('gesturechange', function(e){ e.preventDefault(); });
   });
 }
 
