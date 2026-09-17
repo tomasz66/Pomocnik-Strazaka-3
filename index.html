@@ -1239,6 +1239,26 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   </div>
 </div>
 
+<!-- ═══ ULICA — SZCZEGÓŁY (z wyszukiwarki) ═══ -->
+<div class="view" id="view-street-detail">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Szukaj</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text" id="street-detail-title">Ulica</div>
+        <div class="nav-title-sub" id="street-detail-sub"></div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="wiedza-entry-body" id="street-detail-body"></div>
+  </div>
+</div>
+
 <!-- ═══ FISZKI — HUB (3 POJAZDY) ═══ -->
 <div class="view fiszki-green" id="view-fiszki-hub">
   <div class="nav-header">
@@ -2808,10 +2828,11 @@ function handleSearch(e){
   var nres=noticesSearch(nq);
   var ires=inspectionsSearch(nq);
   var vres=vehicleSpecsSearch(nq);
+  var strres=streetsSearch(nq);
   var cnt=document.getElementById('results-count');
   var list=document.getElementById('results-list');
-  if(!res.length && !qres.length && !wres.length && !sres.length && !nres.length && !ires.length && !vres.length){cnt.textContent='';list.innerHTML='<div class="empty">Brak wyników dla „'+q+'"</div>';return;}
-  var totalCnt=res.length+qres.length+wres.length+sres.length+nres.length+ires.length+vres.length;
+  if(!res.length && !qres.length && !wres.length && !sres.length && !nres.length && !ires.length && !vres.length && !strres.length){cnt.textContent='';list.innerHTML='<div class="empty">Brak wyników dla „'+q+'"</div>';return;}
+  var totalCnt=res.length+qres.length+wres.length+sres.length+nres.length+ires.length+vres.length+strres.length;
   cnt.textContent=totalCnt+' '+(totalCnt===1?'wynik':'wyników');
   list.innerHTML='';
   res.forEach(function(r){
@@ -2961,6 +2982,28 @@ function handleSearch(e){
           '<div class="result-info">'+
             '<div class="result-name">'+r.v.name+'</div>'+
             '<div class="result-path"><span style="background:var(--accent);color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">'+r.v.icon+'</span>'+(r.matchedSpec?escAttr(r.matchedSpec):(r.v.sub||''))+'</div>'+
+          '</div>'+
+          '<div class="result-chev">›</div>'+
+        '</div>';
+      list.appendChild(card);
+    });
+  }
+  if(strres.length){
+    var strlabel=document.createElement('div');
+    strlabel.className='list-label';
+    strlabel.style.margin='12px 0 6px';
+    strlabel.textContent='Ulice';
+    list.appendChild(strlabel);
+    strres.forEach(function(s){
+      var card=document.createElement('div');
+      card.className='result-card';
+      card.style.marginBottom='10px';
+      card.innerHTML=
+        '<div class="result-head" onclick="showStreetDetail(\''+s.id+'\')">'+
+          '<div class="result-dot" style="background:#c0392b"></div>'+
+          '<div class="result-info">'+
+            '<div class="result-name">'+escAttr(s.ulica)+'</div>'+
+            '<div class="result-path"><span style="background:#c0392b;color:#fff;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:5px">ULICA</span>'+escAttr(s.dzielnica||'')+'</div>'+
           '</div>'+
           '<div class="result-chev">›</div>'+
         '</div>';
@@ -4492,6 +4535,26 @@ var curWiedzaCat=null;
 
 function norm2(s){ return norm(String(s||'')); }
 /* ── wyszukiwarka „jak Finder" — przeszukuje też czujniki, biuro, przegląd i dane pojazdów ── */
+function streetsSearch(nq){
+  return STREETS_BASE.filter(function(s){
+    return norm2(s.ulica).indexOf(nq)>=0 || norm2(s.dzielnica||'').indexOf(nq)>=0;
+  }).slice(0,20);
+}
+function showStreetDetail(id){
+  var s=STREETS_BASE.find(function(x){return x.id===id;});
+  if(!s) return;
+  switchView('view-street-detail');
+  document.getElementById('street-detail-title').textContent=s.ulica;
+  document.getElementById('street-detail-sub').textContent=s.dzielnica||'';
+  document.getElementById('street-detail-body').innerHTML=
+    (s.dojazd?'<div class="fiszki-reveal-list"><div class="fiszki-reveal-item"><span class="n">'+escAttr(s.dojazd)+'</span></div></div>':'')+
+    '<div class="fiszki-map-wrap" id="street-detail-map-wrap">'+
+      '<img class="fiszki-map-img" src="images/streets/'+s.id+'.jpg" alt="Mapa ulicy '+escAttr(s.ulica)+'" onerror="this.parentElement.remove()">'+
+      '<div class="fiszki-map-zoom-hint">🔍 Uszczypnij, aby powiększyć</div>'+
+      '<div class="fiszki-map-attr">© OpenStreetMap</div>'+
+    '</div>';
+  initInlineZoomImages(document.getElementById('street-detail-body'), '.fiszki-map-wrap');
+}
 function sensorsSearch(nq){
   return SENSORS.filter(function(s){
     if(norm2(s.name).indexOf(nq)>=0 || norm2(s.sub||'').indexOf(nq)>=0) return true;
