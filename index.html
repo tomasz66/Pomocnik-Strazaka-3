@@ -3938,8 +3938,10 @@ var WIEDZA_BASE=[
     ]
   },
   {
-    id:'w-tablica-adr', cat:'materialy-niebezpieczne', title:'Tablica ADR — numer rozpoznawczy i numer ONZ',
+    id:'w-materialy-niebezpieczne-adr', cat:'materialy-niebezpieczne', title:'Materiały niebezpieczne (ADR) — wszystko w jednym miejscu',
     blocks:[
+      {t:'p', text:'Cała wiedza o ADR na jednej, przewijanej stronie - żeby w stresie nie szukać po zakładkach, tylko przewinąć i rozpoznać po tablicy/obrazku.'},
+      {t:'h', text:'Budowa tablicy ADR'},
       {t:'img', src:'images/wiedza/tablica-adr-przyklad.png', cap:'Przykład: górny numer to numer rozpoznawczy niebezpieczeństwa (np. X423 — absolutny zakaz kontaktu z wodą), dolny to numer ONZ (np. 1428).'},
       {t:'h', text:'Pierwsza cyfra — rodzaj niebezpieczeństwa materiału'},
       {t:'table', cols:['Klasa','Rodzaj niebezpieczeństwa'], rows:[
@@ -4015,34 +4017,8 @@ var WIEDZA_BASE=[
         ['886','Materiał silnie żrący i trujący'],
         ['X886','Materiał silnie żrący i trujący, reagujący niebezpiecznie z wodą'],
         ['89','Materiał żrący, mogący powodować samorzutną i gwałtowną reakcję']
-      ]}
-    ]
-  },
-  {
-    id:'w-tablice-adr-historyczne', cat:'materialy-niebezpieczne', title:'Zagrożenia historyczne dla strażaków — tablice',
-    blocks:[
-      {t:'p', text:'Te materiały mają udokumentowaną historię wypadków i zagrożeń dla strażaków - nie tylko teoretyczną klasyfikację, ale realny mechanizm dlaczego są szczególnie niebezpieczne w akcji.'},
-      {t:'adr-plate', kemler:'239', un:'1001', name:'Acetylen rozpuszczony', klasa:'2.1',
-        why:'Niestabilny - może ulec samorzutnemu rozkładowi wybuchowemu nawet BEZ dostępu tlenu i nawet wiele godzin po pozornym ugaszeniu pożaru. Zasada szkoleniowa: butlę acetylenową w pożarze zawsze traktować jako zagrożenie wybuchem, chłodzić z osłony przez długi czas, nie podchodzić od czoła butli.'},
-      {t:'adr-plate', kemler:'23', un:'1965', name:'Gaz płynny LPG (propan-butan)', klasa:'2.1',
-        why:'Ryzyko BLEVE (wybuch rozprężających się par wrzącej cieczy) - płaszcz zbiornika nagrzewany płomieniem od zewnątrz może pęknąć mimo działania zaworu bezpieczeństwa. W Polsce: Jezierzyce Słupskie 2004 - pożar cysterny po rozerwaniu węży, BLEVE nastąpiło ok. 18 minut po rozgorzeniu. Zasada: chłodzić zbiornik od strony fazy ciekłej, ewakuować strefę zagrożenia, nie podchodzić od czół zbiornika.'},
-      {t:'adr-plate', kemler:'25', un:'1072', name:'Tlen sprężony', klasa:'2.2',
-        why:'Sam się nie pali, ale drastycznie przyspiesza spalanie innych materiałów - w atmosferze wzbogaconej tlenem nawet metal czy tkanina zapalają się gwałtownie i trudne do przewidzenia tempo. Wycieki instalacji tlenowych (szpitale, przemysł) wielokrotnie powodowały nietypowo szybki rozwój pożaru.'},
-      {t:'adr-plate', kemler:'33', un:'1203', name:'Benzyna silnikowa', klasa:'3',
-        why:'Opary są cięższe od powietrza - spływają i gromadzą się nisko (studzienki, piwnice, wnętrze pojazdu, rowy) w oddaleniu od miejsca wycieku. Klasyczne zagrożenie przy wypadkach drogowych i awariach zbiorników - wybuch par od najmniejszej iskry, czasem z dala od widocznego źródła.'},
-      {t:'adr-plate', kemler:'30', un:'1202', name:'Olej napędowy (diesel)', klasa:'3',
-        why:'Mniej lotny niż benzyna (trudniej się zapala), ale przy pożarach cystern/zbiorników daje bardzo duże, długotrwałe i trudne do ugaszenia pożary o wysokiej wartości opałowej - typowe zagrożenie przy wypadkach cystern paliwowych.'},
-      {t:'adr-plate', kemler:'268', un:'1017', name:'Chlor', klasa:'2.3 (+8)',
-        why:'Gaz cięższy od powietrza - tworzy nisko sunącą, toksyczną chmurę zamiast się rozproszyć w górę. Klasyczny przypadek szkoleniowy HazMat na świecie: wykolejenie cysterny w Graniteville w USA (2005), wyciek chloru spowodował ofiary śmiertelne i ewakuację tysięcy osób.'},
-      {t:'adr-plate', kemler:'268', un:'1005', name:'Amoniak bezwodny', klasa:'2.3 (+8)',
-        why:'Toksyczny i żrący gaz, bardzo powszechny w przemysłowym chłodnictwie (chłodnie, lodowiska, zakłady mięsne). Wycieki z instalacji chłodniczych to jedne z częstszych realnych zdarzeń HazMat w Polsce, nie tylko transportowych.'},
-      {t:'adr-plate', kemler:'X423', un:'1428', name:'Sód (metal)', klasa:'4.3',
-        why:'Reaguje gwałtownie z wodą, wydzielając ciepło i wodór (gaz palny) - polanie wodą pożaru metalu może pogorszyć sytuację lub spowodować wybuch. Pożary metali reaktywnych (klasa D) gasi się na sucho (piasek, proszek specjalny D), nigdy standardowo wodą czy pianą.'}
-    ]
-  },
-  {
-    id:'w-tablice-adr-przyklady', cat:'materialy-niebezpieczne', title:'Najważniejsze tablice ADR — ściąga',
-    blocks:[
+      ]},
+      {t:'h', text:'Najważniejsze tablice — ściąga'},
       {t:'p', text:'Najczęściej spotykane w Polsce kombinacje numer Kemlera / numer ONZ - te same liczby, które widzisz na pomarańczowej tablicy z przodu i z tyłu cysterny.'},
       {t:'table', cols:['Kemler','ONZ','Materiał','Klasa'], rows:[
         ['33','1203','Benzyna silnikowa','3'],
@@ -4059,12 +4035,26 @@ var WIEDZA_BASE=[
         ['80','1789','Kwas solny (chlorowodorowy)','8'],
         ['X423','1428','Sód (metal)','4.3']
       ]},
-      {t:'p', text:'Chlor i amoniak mają ten sam numer Kemlera (268 - gaz trujący i żrący), bo oba są toksycznymi, żrącymi gazami - rozróżnia je dopiero numer ONZ pod spodem.'}
-    ]
-  },
-  {
-    id:'w-parametry-toksyczne', cat:'materialy-niebezpieczne', title:'Parametry toksyczne materiałów niebezpiecznych',
-    blocks:[
+      {t:'p', text:'Chlor i amoniak mają ten sam numer Kemlera (268 - gaz trujący i żrący), bo oba są toksycznymi, żrącymi gazami - rozróżnia je dopiero numer ONZ pod spodem.'},
+      {t:'h', text:'Zagrożenia historyczne dla strażaków — te same tablice ze szczegółami'},
+      {t:'p', text:'Te materiały mają udokumentowaną historię wypadków i zagrożeń dla strażaków - nie tylko teoretyczną klasyfikację, ale realny mechanizm dlaczego są szczególnie niebezpieczne w akcji.'},
+      {t:'adr-plate', kemler:'239', un:'1001', name:'Acetylen rozpuszczony', klasa:'2.1',
+        why:'Niestabilny - może ulec samorzutnemu rozkładowi wybuchowemu nawet BEZ dostępu tlenu i nawet wiele godzin po pozornym ugaszeniu pożaru. Zasada szkoleniowa: butlę acetylenową w pożarze zawsze traktować jako zagrożenie wybuchem, chłodzić z osłony przez długi czas, nie podchodzić od czoła butli.'},
+      {t:'adr-plate', kemler:'23', un:'1965', name:'Gaz płynny LPG (propan-butan)', klasa:'2.1',
+        why:'Ryzyko BLEVE (wybuch rozprężających się par wrzącej cieczy) - płaszcz zbiornika nagrzewany płomieniem od zewnątrz może pęknąć mimo działania zaworu bezpieczeństwa. W Polsce: Jezierzyce Słupskie 2004 - pożar cysterny po rozerwaniu węży, BLEVE nastąpiło ok. 18 minut po rozgorzeniu. Zasada: chłodzić zbiornik od strony fazy ciekłej, ewakuować strefę zagrożenia, nie podchodzić od czół zbiornika.'},
+      {t:'adr-plate', kemler:'25', un:'1072', name:'Tlen sprężony', klasa:'2.2',
+        why:'Sam się nie pali, ale drastycznie przyspiesza spalanie innych materiałów - w atmosferze wzbogaconej tlenem nawet metal czy tkanina zapalają się gwałtownie i trudne do przewidzenia tempo. Wycieki instalacji tlenowych (szpitale, przemysł) wielokrotnie powodowały nietypowo szybki rozwój pożaru.'},
+      {t:'adr-plate', kemler:'33', un:'1203', name:'Benzyna silnikowa', klasa:'3',
+        why:'Opary są cięższe od powietrza - spływają i gromadzą się nisko (studzienki, piwnice, wnętrze pojazdu, rowy) w oddaleniu od miejsca wycieku. Klasyczne zagrożenie przy wypadkach drogowych i awariach zbiorników - wybuch par od najmniejszej iskry, czasem z dala od widocznego źródła.'},
+      {t:'adr-plate', kemler:'30', un:'1202', name:'Olej napędowy (diesel)', klasa:'3',
+        why:'Mniej lotny niż benzyna (trudniej się zapala), ale przy pożarach cystern/zbiorników daje bardzo duże, długotrwałe i trudne do ugaszenia pożary o wysokiej wartości opałowej - typowe zagrożenie przy wypadkach cystern paliwowych.'},
+      {t:'adr-plate', kemler:'268', un:'1017', name:'Chlor', klasa:'2.3 (+8)',
+        why:'Gaz cięższy od powietrza - tworzy nisko sunącą, toksyczną chmurę zamiast się rozproszyć w górę. Klasyczny przypadek szkoleniowy HazMat na świecie: wykolejenie cysterny w Graniteville w USA (2005), wyciek chloru spowodował ofiary śmiertelne i ewakuację tysięcy osób.'},
+      {t:'adr-plate', kemler:'268', un:'1005', name:'Amoniak bezwodny', klasa:'2.3 (+8)',
+        why:'Toksyczny i żrący gaz, bardzo powszechny w przemysłowym chłodnictwie (chłodnie, lodowiska, zakłady mięsne). Wycieki z instalacji chłodniczych to jedne z częstszych realnych zdarzeń HazMat w Polsce, nie tylko transportowych.'},
+      {t:'adr-plate', kemler:'X423', un:'1428', name:'Sód (metal)', klasa:'4.3',
+        why:'Reaguje gwałtownie z wodą, wydzielając ciepło i wodór (gaz palny) - polanie wodą pożaru metalu może pogorszyć sytuację lub spowodować wybuch. Pożary metali reaktywnych (klasa D) gasi się na sucho (piasek, proszek specjalny D), nigdy standardowo wodą czy pianą.'},
+      {t:'h', text:'Parametry toksyczne materiałów niebezpiecznych'},
       {t:'h', text:'Dawka trująca (DT)'},
       {t:'p', text:'Oznacza najmniejszą ilość substancji trującej wywołującą wyraźne objawy zatrucia.'},
       {t:'h', text:'Dawka śmiertelna (DL)'},
@@ -4078,12 +4068,8 @@ var WIEDZA_BASE=[
       {t:'h', text:'Najwyższe dopuszczalne stężenie progowe (NDSP)'},
       {t:'p', text:'Stężenie czynników szkodliwych dla zdrowia, które ze względu na zagrożenie zdrowia lub życia pracownika nie mogą być przekroczone w środowisku pracy.'},
       {t:'h', text:'Próg wyczuwalności węchowej'},
-      {t:'p', text:'Dana liczbowa określająca minimalną ilość danej substancji w atmosferze, która może być już wyczuwalna przez zmysł powonienia człowieka.'}
-    ]
-  },
-  {
-    id:'w-strefy-wybuchowe', cat:'materialy-niebezpieczne', title:'Strefy zagrożenia wybuchem',
-    blocks:[
+      {t:'p', text:'Dana liczbowa określająca minimalną ilość danej substancji w atmosferze, która może być już wyczuwalna przez zmysł powonienia człowieka.'},
+      {t:'h', text:'Strefy zagrożenia wybuchem'},
       {t:'h', text:'Dla gazów — Z0'},
       {t:'p', text:'Strefa, w której mieszanina wybuchowa gazów, par lub mgieł występuje stale lub długotrwale w normalnych warunkach pracy.'},
       {t:'h', text:'Z1'},
@@ -4099,21 +4085,13 @@ var WIEDZA_BASE=[
       {t:'h', text:'Dolna granica wybuchowości (DGW)'},
       {t:'p', text:'Najniższe stężenie substancji palnej (gazów, par, pyłów) w mieszaninie z powietrzem, przy którym może nastąpić zapalenie się tej substancji (wybuch) pod wpływem bodźca termicznego.'},
       {t:'h', text:'Górna granica wybuchowości (GGW)'},
-      {t:'p', text:'Najwyższe stężenie substancji palnej w mieszaninie z powietrzem, przy którym jeszcze może nastąpić zapalenie się tej substancji i jej wybuch pod wpływem bodźca termicznego.'}
-    ]
-  },
-  {
-    id:'w-nalepki-adr', cat:'materialy-niebezpieczne', title:'Wzory nalepek ADR (klasy 1–9)',
-    blocks:[
+      {t:'p', text:'Najwyższe stężenie substancji palnej w mieszaninie z powietrzem, przy którym jeszcze może nastąpić zapalenie się tej substancji i jej wybuch pod wpływem bodźca termicznego.'},
+      {t:'h', text:'Wzory nalepek ADR (klasy 1–9)'},
       {t:'p', text:'Nalepki ostrzegawcze ADR umieszczane na opakowaniach i pojazdach przewożących materiały niebezpieczne — kolor tła, symbol i cyfra w dolnym narożu jednoznacznie identyfikują klasę zagrożenia.'},
       {t:'img', src:'images/wiedza/nalepki-adr-1.png', cap:'Klasa 1 (materiały wybuchowe, podklasy 1.1–1.6) i klasa 2 (gazy palne, niepalne/nietrujące, trujące).'},
       {t:'img', src:'images/wiedza/nalepki-adr-2.png', cap:'Klasa 3 (ciecze zapalne), 4.1–4.3 (materiały stałe zapalne, samozapalne, reagujące z wodą), 5.1–5.2 (utleniające, nadtlenki organiczne).'},
-      {t:'img', src:'images/wiedza/nalepki-adr-3.png', cap:'Klasa 6.1–6.2 (trujące, zakaźne), 7 (promieniotwórcze, kategorie I–III), 8 (żrące), 9 (różne materiały niebezpieczne).'}
-    ]
-  },
-  {
-    id:'w-diament-niebezpieczenstwa', cat:'materialy-niebezpieczne', title:'Diament niebezpieczeństwa (NFPA 704)',
-    blocks:[
+      {t:'img', src:'images/wiedza/nalepki-adr-3.png', cap:'Klasa 6.1–6.2 (trujące, zakaźne), 7 (promieniotwórcze, kategorie I–III), 8 (żrące), 9 (różne materiały niebezpieczne).'},
+      {t:'h', text:'Diament niebezpieczeństwa (NFPA 704)'},
       {t:'p', text:'System natychmiastowej oceny niebezpieczeństwa w wypadkach z materiałami niebezpiecznymi.'},
       {t:'img', src:'images/wiedza/diament-niebezpieczenstwa.png', cap:'Cztery sektory: biały (zagrożenia specjalne), żółty (eksplozja), czerwony (zapalność), niebieski (zdrowie) — każdy ze skalą 0–4.'},
       {t:'h', text:'Sektor 1 — biały (zagrożenia specjalne)'},
@@ -4123,12 +4101,8 @@ var WIEDZA_BASE=[
       {t:'h', text:'Sektor 3 — czerwony (zapalność)'},
       {t:'p', text:'4 — materiał ekstremalnie łatwopalny przy każdej temperaturze. 3 — niebezpieczeństwo zapalenia przy normalnej temperaturze. 2 — niebezpieczeństwo zapalenia przy ogrzaniu. 1 — niebezpieczeństwo zapalenia przy kontakcie z ogniem (płomieniem). 0 — nie występuje niebezpieczeństwo zapalenia w normalnych warunkach.'},
       {t:'h', text:'Sektor 4 — niebieski (zagrożenie zdrowia)'},
-      {t:'p', text:'4 — bardzo niebezpieczny, unikać kontaktu z płynem lub parami bez pełnej ochrony, unikać obecności w strefie zagrożenia. 3 — bardzo niebezpieczny, obecność w strefie zagrożenia tylko w pełnym ubraniu ochronnym i aparacie izolującym. 2 — niebezpieczny, obecność w strefie zagrożenia tylko w aparacie ochrony dróg oddechowych. 1 — małe niebezpieczeństwo, zalecane maski z wkładami filtrującymi. 0 — brak zagrożenia.'}
-    ]
-  },
-  {
-    id:'w-barwy-rurociagow', cat:'materialy-niebezpieczne', title:'Barwy rozpoznawcze rurociągów',
-    blocks:[
+      {t:'p', text:'4 — bardzo niebezpieczny, unikać kontaktu z płynem lub parami bez pełnej ochrony, unikać obecności w strefie zagrożenia. 3 — bardzo niebezpieczny, obecność w strefie zagrożenia tylko w pełnym ubraniu ochronnym i aparacie izolującym. 2 — niebezpieczny, obecność w strefie zagrożenia tylko w aparacie ochrony dróg oddechowych. 1 — małe niebezpieczeństwo, zalecane maski z wkładami filtrującymi. 0 — brak zagrożenia.'},
+      {t:'h', text:'Barwy rozpoznawcze rurociągów'},
       {t:'p', text:'Barwy rozpoznawcze dla identyfikacji czynników przesyłanych rurociągami.'},
       {t:'table', cols:['Rodzaj czynnika','Barwa rozpoznawcza'], rows:[
         ['Woda (w stanie ciekłym)','Zielona'],
@@ -4536,10 +4510,15 @@ function showWiedzaHub(){
   var wrap=document.getElementById('wiedza-cat-list');
   wrap.innerHTML='';
   WIEDZA_CATEGORIES.forEach(function(c){
-    var cnt=WIEDZA.filter(function(w){return w.cat===c.id;}).length;
+    var entriesInCat=WIEDZA.filter(function(w){return w.cat===c.id;});
+    var cnt=entriesInCat.length;
     var row=document.createElement('div');
     row.className='vehicle-row';
-    row.onclick=function(){showWiedzaList(c.id);};
+    row.onclick=function(){
+      curWiedzaCat=c.id;
+      if(cnt===1) showWiedzaEntry(entriesInCat[0].id);
+      else showWiedzaList(c.id);
+    };
     row.innerHTML=
       '<div class="vehicle-info">'+
         '<div class="vehicle-name">'+c.name+'</div>'+
@@ -4571,7 +4550,8 @@ function showWiedzaList(catId){
 }
 
 function backToWiedzaList(){
-  if(curWiedzaCat) showWiedzaList(curWiedzaCat);
+  var cnt=curWiedzaCat?WIEDZA.filter(function(w){return w.cat===curWiedzaCat;}).length:0;
+  if(curWiedzaCat && cnt>1) showWiedzaList(curWiedzaCat);
   else showWiedzaHub();
 }
 
