@@ -106,7 +106,7 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
   background: color-mix(in srgb, var(--surface) 86%, transparent);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border);
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(5, 1fr);
   padding-bottom: env(safe-area-inset-bottom);
 }
 .tab-item {
@@ -1381,9 +1381,13 @@ select.edit-input{-webkit-appearance:none;appearance:none}
     <span class="tab-icon">⚑</span>
     <span class="tab-label">Taktyka</span>
   </button>
-  <button class="tab-item" id="tab-theme" onclick="toggleTheme()">
-    <span class="tab-icon" id="tab-theme-icon">☾</span>
-    <span class="tab-label">Motyw</span>
+  <button class="tab-item" id="tab-adr" onclick="showAdrFromTab()">
+    <span class="tab-icon">⚠</span>
+    <span class="tab-label">ADR</span>
+  </button>
+  <button class="tab-item" id="tab-kpp" onclick="showKppFromTab()">
+    <span class="tab-icon">✚</span>
+    <span class="tab-label">KPP</span>
   </button>
 </div>
 
@@ -5618,6 +5622,23 @@ function updateTakOffset(){
 window.addEventListener('resize', function(){
   if(document.getElementById('view-taktyka') && document.getElementById('view-taktyka').classList.contains('active')) updateTakOffset();
 });
+function showAdrFromTab(){
+  showWiedzaEntry('w-materialy-niebezpieczne-adr');
+  document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('tab-adr').classList.add('active');
+}
+function showKppFromTab(){
+  showTaktyka();
+  document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('tab-kpp').classList.add('active');
+  setTimeout(function(){
+    var el=document.getElementById('tak-kpp');
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    document.querySelectorAll('.tak-jump-chip').forEach(function(c){c.classList.remove('active');});
+    var chip=document.getElementById('tak-jump-bar') && document.getElementById('tak-jump-bar').querySelector('[onclick*="tak-kpp"]');
+    if(chip) chip.classList.add('active');
+  }, 250);
+}
 
 /* ── BAZA PYTAŃ (QUIZ) ── */
 var QUIZ_SECTION_ORDER=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI'];
