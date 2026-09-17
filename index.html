@@ -400,13 +400,6 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .wiedza-adr-name{font-size:16px;font-weight:800;color:var(--text);margin-top:12px}
 .wiedza-adr-klasa{font-size:11.5px;font-weight:700;color:var(--text-muted);background:var(--surface-2);padding:2px 8px;border-radius:99px;margin-left:4px}
 .wiedza-adr-why{font-size:13.5px;color:var(--text-2);line-height:1.55;margin-top:8px;text-align:left}
-.ghs-row{display:flex;align-items:flex-start;gap:14px;padding:14px 4px;border-bottom:1px solid var(--border)}
-.ghs-row:last-of-type{border-bottom:none}
-.ghs-diamond-img{width:64px;height:64px;flex-shrink:0;border-radius:6px;background:#fff}
-.ghs-info{flex:1;min-width:0;padding-top:2px}
-.ghs-name{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:4px}
-.ghs-meaning-list{margin:0;padding-left:18px;list-style:disc}
-.ghs-meaning-list li{font-size:12.5px;color:var(--text-muted);line-height:1.5;margin-bottom:2px}
 .wiedza-bullets{margin:4px 0 0;padding-left:0;list-style:none}
 .wiedza-bullets li{position:relative;padding:6px 0 6px 18px;font-size:14px;color:var(--text-2);line-height:1.5}
 .wiedza-bullets li::before{content:"";position:absolute;left:0;top:14px;width:7px;height:7px;background:var(--accent);border-radius:2px}
@@ -3983,44 +3976,10 @@ var WIEDZA_BASE=[
         'klasa 8 - materiały żrące',
         'klasa 9 - różne materiały i przedmioty niebezpieczne'
       ]},
-      {t:'h', text:'Piktogramy GHS (na opakowaniach i pojemnikach)'},
-      {t:'ghs-symbol', icon:'ghs-toksycznosc-ostra', name:'Czaszka i piszczele', meaning:['toksyczność ostra (kat. 1, 2, 3)']},
-      {t:'ghs-symbol', icon:'ghs-korozja', name:'Korozja', meaning:['działanie żrące na skórę','poważne uszkodzenie oczu','działanie korodujące na metale']},
-      {t:'ghs-symbol', icon:'ghs-wykrzyknik', name:'Wykrzyknik', meaning:[
-        'toksyczność ostra (droga pokarmowa, po naniesieniu na skórę, po narażeniu inhalacyjnym) (kat. 4)',
-        'działanie drażniące na skórę (kat. 2)',
-        'działanie drażniące na oczy (kat. 2)',
-        'działanie uczulające na skórę (kat. 1)',
-        'działanie toksyczne na narządy docelowe – narażenie jednorazowe (kat. 3)',
-        'działanie drażniące na drogi oddechowe',
-        'skutek narkotyczny'
-      ]},
-      {t:'ghs-symbol', icon:'ghs-zdrowie', name:'Zagrożenie dla zdrowia', meaning:[
-        'działanie uczulające na drogi oddechowe (kat. 1)',
-        'działanie mutagenne na komórki rozrodcze (kat. 1A, 1B, 2)',
-        'rakotwórczość (kat. 1A, 1B, 2)',
-        'działanie szkodliwe na rozrodczość (kat. 1A, 1B, 2)',
-        'działanie toksyczne na narządy docelowe – narażenie jednorazowe (kat. 1, 2)',
-        'działanie toksyczne na narządy docelowe – narażenie powtarzane (kat. 1, 2)',
-        'zagrożenie spowodowane aspiracją (kat. 1)'
-      ]},
-      {t:'ghs-symbol', icon:'ghs-plomien', name:'Płomień', meaning:[
-        'łatwopalne',
-        'samoreaktywne (B, C, D, E, F)',
-        'piroforyczne (samozapłon w kontakcie z tlenem)',
-        'nadtlenki organiczne (B, C, D, E, F)',
-        'samonagrzewające się',
-        'w kontakcie z wodą wydzielają gazy łatwopalne'
-      ]},
-      {t:'ghs-symbol', icon:'ghs-utleniajace', name:'Płomień nad okręgiem', meaning:['gazy, ciecze i ciała stałe utleniające']},
-      {t:'ghs-symbol', icon:'ghs-butla', name:'Butla gazowa', meaning:['gazy pod ciśnieniem']},
-      {t:'ghs-symbol', icon:'ghs-wybuchajace', name:'Wybuchająca bomba', meaning:[
-        'niestabilne materiały wybuchowe',
-        'materiały wybuchowe',
-        'substancje i mieszaniny samoreaktywne, typu A, B',
-        'nadtlenki organiczne, typu A, B'
-      ]},
-      {t:'ghs-symbol', icon:'ghs-srodowisko', name:'Środowisko', meaning:['stwarzające zagrożenie dla środowiska wodnego:','toksyczność ostra (kat. 1)','toksyczność przewlekła (kat. 1, 2)']},
+      {t:'h', text:'Oznaczenia związane z bezpieczeństwem chemicznym'},
+      {t:'img', src:'images/wiedza/oznaczenia-chemiczne-tabela.png', cap:'Dotychczasowe oznaczenia pomarańczowe oraz nowe piktogramy GHS (obowiązujące od 2010 r.).'},
+      {t:'h', text:'Oznaczenia związane z transportem'},
+      {t:'img', src:'images/wiedza/oznaczenia-transport-tabela.png', cap:'Towar zwolniony (LQ) oraz pełny zestaw nalepek transportowych ADR wg klas i podklas.'},
       {t:'h', text:'Budowa tablicy ADR'},
       {t:'img', src:'images/wiedza/tablica-adr-przyklad.png', cap:'Przykład: górny numer to numer rozpoznawczy niebezpieczeństwa (np. X423 — absolutny zakaz kontaktu z wodą), dolny to numer ONZ (np. 1428).'},
       {t:'h', text:'Pełna tabela numerów rozpoznawczych (Kemlera)'},
@@ -4605,7 +4564,7 @@ function renderWiedzaBlocks(blocks){
   return (blocks||[]).map(function(b){
     if(b.t==='p') return '<p class="wiedza-p">'+escAttr(b.text)+'</p>';
     if(b.t==='h') return '<div class="wiedza-h">'+escAttr(b.text)+'</div>';
-    if(b.t==='img') return '<img class="wiedza-img" src="'+b.src+'" alt="'+escAttr(b.cap||'')+'">'+(b.cap?'<div class="wiedza-img-cap">'+escAttr(b.cap)+'</div>':'');
+    if(b.t==='img') return '<img class="wiedza-img" src="'+b.src+'" alt="'+escAttr(b.cap||'')+'" style="cursor:zoom-in" onclick="openPhotoLightbox(this.src)">'+(b.cap?'<div class="wiedza-img-cap">'+escAttr(b.cap)+'</div>':'');
     if(b.t==='table'){
       var thead='<tr>'+b.cols.map(function(c){return '<th>'+escAttr(c)+'</th>';}).join('')+'</tr>';
       var tbody=b.rows.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+escAttr(c)+'</td>';}).join('')+'</tr>';}).join('');
@@ -4619,12 +4578,6 @@ function renderWiedzaBlocks(blocks){
         '<div class="adr-plate wiedza-adr-plate"><div class="adr-plate-top">'+escAttr(b.kemler)+'</div><div class="adr-plate-line"></div><div class="adr-plate-bottom">'+escAttr(b.un)+'</div></div>'+
         '<div class="wiedza-adr-name">'+escAttr(b.name)+' <span class="wiedza-adr-klasa">klasa '+escAttr(b.klasa)+'</span></div>'+
         '<div class="wiedza-adr-why">'+escAttr(b.why)+'</div>'+
-      '</div>';
-    }
-    if(b.t==='ghs-symbol'){
-      return '<div class="ghs-row">'+
-        '<img class="ghs-diamond-img" src="images/wiedza/'+b.icon+'.png" alt="'+escAttr(b.name)+'">'+
-        '<div class="ghs-info"><div class="ghs-name">'+escAttr(b.name)+'</div><ul class="ghs-meaning-list">'+b.meaning.map(function(m){return '<li>'+escAttr(m)+'</li>';}).join('')+'</ul></div>'+
       '</div>';
     }
     return '';
