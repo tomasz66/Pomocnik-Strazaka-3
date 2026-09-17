@@ -383,6 +383,9 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .fiszki-reveal-item:last-child{border-bottom:none}
 .fiszki-reveal-item .n{font-weight:600;color:var(--text)}
 .fiszki-reveal-item .q{font-family:"SF Mono","Fira Code",monospace;color:var(--text-muted);flex-shrink:0;white-space:nowrap}
+.fiszki-map-wrap{position:relative;margin-top:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border)}
+.fiszki-map-img{display:block;width:100%;height:auto}
+.fiszki-map-attr{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 6px;border-radius:5px}
 .fiszki-assess-row{display:flex;gap:10px;margin-top:20px}
 .fiszki-assess-btn{flex:1;border-radius:12px;padding:12px 0;font-size:13px;font-weight:700;text-align:center;cursor:pointer;border:1px solid transparent}
 .fiszki-assess-no{background:var(--accent-bg);color:var(--accent);border-color:rgba(192,57,43,.25)}
@@ -4741,6 +4744,11 @@ function fiszkiRevealStreet(s){
   if(btnEl) btnEl.remove();
   document.getElementById('fiszki-reveal-area').innerHTML=
     '<div class="fiszki-reveal-list"><div class="fiszki-reveal-item"><span class="n">'+escAttr(s.dojazd)+'</span></div></div>'+
+    '<div class="fiszki-map-wrap" id="fiszki-map-wrap">'+
+      '<img class="fiszki-map-img" src="images/streets/'+s.id+'.jpg" alt="Mapa ulicy '+escAttr(s.ulica)+'" '+
+        'onerror="this.parentElement.remove()">'+
+      '<div class="fiszki-map-attr">© OpenStreetMap</div>'+
+    '</div>'+
     '<div class="fiszki-assess-row">'+
       '<div class="fiszki-assess-btn fiszki-assess-no" id="fiszki-no">✕ Nie umiałem</div>'+
       '<div class="fiszki-assess-btn fiszki-assess-yes" id="fiszki-yes">✓ Umiałem</div>'+
