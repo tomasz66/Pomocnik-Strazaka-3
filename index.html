@@ -844,7 +844,6 @@ select.edit-input{-webkit-appearance:none;appearance:none}
     <div class="tak-jump-chip" onclick="takJump('tak-prady')">Prądy gaśnicze</div>
     <div class="tak-jump-chip" onclick="takJump('tak-aparaty')">Aparaty powietrzne</div>
     <div class="tak-jump-chip" onclick="takJump('tak-przeliczniki')">Przeliczniki</div>
-    <div class="tak-jump-chip" onclick="takJump('tak-kpp')">Karta KPP</div>
   </div>
   <div class="scroll-content" id="tak-scroll">
 
@@ -1056,7 +1055,27 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
-    <div class="tak-section" id="tak-kpp">
+    <div class="tak-note">Powyższy schemat to propozycja mająca na celu ujednolicenie działań podczas pożarów wewnętrznych.</div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══ KPP ═══ -->
+<div class="view" id="view-kpp">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <div class="nav-title" style="text-align:left;padding-left:16px">
+        <div class="nav-title-text" style="font-size:22px;font-weight:800">KPP</div>
+        <div class="nav-title-sub" style="font-size:12px">Kwalifikowana Pierwsza Pomoc</div>
+      </div>
+    </div>
+  </div>
+  <div class="tak-jump-bar" id="kpp-jump-bar">
+    <div class="tak-jump-chip" onclick="takJump('kpp-karta')">Karta KPP</div>
+  </div>
+  <div class="scroll-content" id="kpp-scroll">
+
+    <div class="tak-section" id="kpp-karta">
       <div class="tak-section-title">Karta KPP</div>
       <div class="tak-full-card">
         <div class="tak-full-row">
@@ -1090,7 +1109,6 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
-    <div class="tak-note">Powyższy schemat to propozycja mająca na celu ujednolicenie działań podczas pożarów wewnętrznych.</div>
     <div style="height:16px"></div>
   </div>
 </div>
@@ -5609,18 +5627,20 @@ function deleteInspectionConfirm(id){
 function showTaktyka(){
   switchView('view-taktyka');
   document.getElementById('tab-taktyka').classList.add('active');
-  updateTakOffset();
+  updateJumpOffset('view-taktyka','tak-jump-bar');
 }
-function updateTakOffset(){
-  var bar=document.getElementById('tak-jump-bar');
+function updateJumpOffset(viewId, barId){
+  var bar=document.getElementById(barId);
   if(!bar) return;
   setTimeout(function(){
     var h=bar.offsetHeight;
-    document.getElementById('view-taktyka').style.setProperty('--tak-offset',(h+56+10)+'px');
+    var view=document.getElementById(viewId);
+    if(view) view.style.setProperty('--tak-offset',(h+56+10)+'px');
   },30);
 }
 window.addEventListener('resize', function(){
-  if(document.getElementById('view-taktyka') && document.getElementById('view-taktyka').classList.contains('active')) updateTakOffset();
+  if(document.getElementById('view-taktyka') && document.getElementById('view-taktyka').classList.contains('active')) updateJumpOffset('view-taktyka','tak-jump-bar');
+  if(document.getElementById('view-kpp') && document.getElementById('view-kpp').classList.contains('active')) updateJumpOffset('view-kpp','kpp-jump-bar');
 });
 function showAdrFromTab(){
   showWiedzaEntry('w-materialy-niebezpieczne-adr');
@@ -5628,16 +5648,10 @@ function showAdrFromTab(){
   document.getElementById('tab-adr').classList.add('active');
 }
 function showKppFromTab(){
-  showTaktyka();
+  switchView('view-kpp');
   document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active');});
   document.getElementById('tab-kpp').classList.add('active');
-  setTimeout(function(){
-    var el=document.getElementById('tak-kpp');
-    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
-    document.querySelectorAll('.tak-jump-chip').forEach(function(c){c.classList.remove('active');});
-    var chip=document.getElementById('tak-jump-bar') && document.getElementById('tak-jump-bar').querySelector('[onclick*="tak-kpp"]');
-    if(chip) chip.classList.add('active');
-  }, 250);
+  updateJumpOffset('view-kpp','kpp-jump-bar');
 }
 
 /* ── BAZA PYTAŃ (QUIZ) ── */
