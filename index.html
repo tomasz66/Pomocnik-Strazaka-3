@@ -388,8 +388,8 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .fiszki-reveal-item:last-child{border-bottom:none}
 .fiszki-reveal-item .n{font-weight:600;color:var(--text)}
 .fiszki-reveal-item .q{font-family:"SF Mono","Fira Code",monospace;color:var(--text-muted);flex-shrink:0;white-space:nowrap}
-.fiszki-map-wrap{position:relative;margin-top:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);cursor:zoom-in}
-.fiszki-map-wrap:active{opacity:.85}
+.fiszki-map-wrap{position:relative;margin-top:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);touch-action:pan-y}
+.fiszki-map-wrap img{touch-action:pan-y}
 .wiedza-img-zoom-wrap{position:relative;overflow:hidden;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface-2);touch-action:pan-y}
 .wiedza-img-zoom-wrap img{display:block;width:100%;height:100%;object-fit:contain;touch-action:pan-y}
 .wiedza-img-zoom-hint{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;font-size:10.5px;padding:3px 8px;border-radius:99px;font-weight:600;pointer-events:none}
@@ -4605,8 +4605,8 @@ function showWiedzaEntry(id){
 
 /* Powiekszanie obrazkow wprost w tresci (bez klikania) - ten sam mechanizm reczny co
    w lightboxie (_lb*), bo appka ma globalnie wylaczone natywne pinch-zoom (viewport user-scalable=no). */
-function initInlineZoomImages(container){
-  var wraps=container.querySelectorAll('.wiedza-img-zoom-wrap:not([data-zoom-init])');
+function initInlineZoomImages(container, selector){
+  var wraps=container.querySelectorAll((selector||'.wiedza-img-zoom-wrap')+':not([data-zoom-init])');
   wraps.forEach(function(wrap){
     wrap.setAttribute('data-zoom-init','1');
     var img=wrap.querySelector('img');
@@ -4618,7 +4618,10 @@ function initInlineZoomImages(container){
     function reset(){ st.scale=1; st.tx=0; st.ty=0; apply(); }
     function dist(t0,t1){ return Math.hypot(t1.clientX-t0.clientX, t1.clientY-t0.clientY); }
     function clampScale(s){ return Math.max(1, Math.min(4, s)); }
-    function setAspect(){ if(img.naturalWidth) wrap.style.aspectRatio=img.naturalWidth+'/'+img.naturalHeight; }
+    /* niektore obrazki (np. tabele Wiedzy) maja height:100% wiec ich opakowanie
+       potrzebuje wymuszonych proporcji — mapki ulic maja juz height:auto i wlasny
+       wymiar, wiec ten krok jest wtedy zbedny (offsetHeight juz > 0) */
+    function setAspect(){ if(wrap.offsetHeight<4 && img.naturalWidth) wrap.style.aspectRatio=img.naturalWidth+'/'+img.naturalHeight; }
     if(img.complete && img.naturalWidth) setAspect(); else img.addEventListener('load', setAspect);
     wrap.addEventListener('touchstart', function(e){
       st.moved=false;
@@ -5049,10 +5052,10 @@ function fiszkiRevealStreet(s){
   if(btnEl) btnEl.remove();
   document.getElementById('fiszki-reveal-area').innerHTML=
     '<div class="fiszki-reveal-list"><div class="fiszki-reveal-item"><span class="n">'+escAttr(s.dojazd)+'</span></div></div>'+
-    '<div class="fiszki-map-wrap" id="fiszki-map-wrap" onclick="openPhotoLightbox(\'images/streets/'+s.id+'.jpg\')">'+
+    '<div class="fiszki-map-wrap" id="fiszki-map-wrap">'+
       '<img class="fiszki-map-img" src="images/streets/'+s.id+'.jpg" alt="Mapa ulicy '+escAttr(s.ulica)+'" '+
         'onerror="this.parentElement.remove()">'+
-      '<div class="fiszki-map-zoom-hint">🔍 Dotknij, aby powiększyć</div>'+
+      '<div class="fiszki-map-zoom-hint">🔍 Uszczypnij, aby powiększyć</div>'+
       '<div class="fiszki-map-attr">© OpenStreetMap</div>'+
     '</div>'+
     '<div class="fiszki-assess-row">'+
@@ -5061,6 +5064,7 @@ function fiszkiRevealStreet(s){
     '</div>';
   document.getElementById('fiszki-yes').onclick=function(){ fiszkiAnswerStreet(s, true); };
   document.getElementById('fiszki-no').onclick=function(){ fiszkiAnswerStreet(s, false); };
+  initInlineZoomImages(document.getElementById('fiszki-reveal-area'), '.fiszki-map-wrap');
 }
 function fiszkiAnswerStreet(s, knew){
   var sess=fiszkiSession;
