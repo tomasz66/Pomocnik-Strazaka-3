@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pomocnik-strazaka-v6';
+const CACHE_NAME = 'pomocnik-strazaka-v7';
 const SHELL_FILES = [
   './',
   './index.html',
@@ -19,6 +19,7 @@ const SHELL_FILES = [
   './images/vehicles_v2_zone_map_d3.jpg',
   './images/vehicles_v2_zone_map_k2.jpg',
   './images/vehicles_v2_zone_map_k3.jpg',
+  './images/vehicles_v2_zone_map_dach.jpg',
   './images/vehicles_v3_zone_map_d1.jpg',
   './images/vehicles_v3_zone_map_d2.jpg',
   './images/vehicles_v3_zone_map_d3.jpg',
