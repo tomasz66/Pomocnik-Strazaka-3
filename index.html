@@ -481,6 +481,16 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .karty-jump .tak-jump-chip { padding: 5px 10px; font-size: 12px; }
 .karty-jump:empty { display: none; }
 .karty-card { scroll-margin-top: calc(var(--header-h) + 150px); }
+/* Procedura podnoszenia kabiny (tekstowa, np. SCD-42) */
+.tilt { padding: 4px 14px 14px; font-size: 14.5px; line-height: 1.45; color: var(--text); }
+.tilt-alarm { background: var(--accent-bg); border: 1.5px solid var(--accent); border-radius: var(--radius-sm); padding: 10px 12px; margin: 10px 0; }
+.tilt-alarm-t { font-weight: 800; color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+.tilt-h { font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); margin: 16px 0 6px; }
+.tilt ol, .tilt ul { margin: 0; padding-left: 20px; }
+.tilt li { margin: 4px 0; }
+.tilt-key { display: inline-block; font-weight: 800; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 6px; padding: 0 6px; }
+.tilt-check { font-size: 12px; font-weight: 700; color: #b9770e; border: 1px solid #b9770e; border-radius: 6px; padding: 0 5px; margin-left: 4px; white-space: nowrap; }
+.tilt-note { font-size: 12.5px; color: var(--text-muted); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; }
 .karty-empty { margin: 24px 16px; color: var(--text-muted); font-size: 14px; text-align: center; }
 .tak-section-title {
   font-size: 12px; font-weight: 700; text-transform: uppercase;
@@ -774,6 +784,13 @@ select.edit-input{-webkit-appearance:none;appearance:none}
         <span class="spec-chevron">▼</span>
       </div>
       <div class="spec-body" id="spec-body"></div>
+    </div>
+    <div class="spec-panel hidden" id="cabtilt-panel">
+      <div class="spec-toggle" onclick="this.parentElement.classList.toggle('open')">
+        <span class="spec-toggle-title">Podnoszenie kabiny</span>
+        <span class="spec-chevron">▼</span>
+      </div>
+      <div class="spec-body" id="cabtilt-body"></div>
     </div>
     <div class="schematic-wrap">
       <svg viewBox="0 0 360 180" id="v-svg" style="width:100%;height:auto;display:block"></svg>
@@ -2690,7 +2707,47 @@ function dkBuildGroup(vid,v,compId,compItems){
     '<div class="dk-group-card">'+rowsHtml+'</div>'+
   '</div>';
 }
-var CAB_TILT_VEHICLES=['v1','v2'];
+/* Tekstowe procedury podnoszenia kabiny - dla wozów, które nie mają zdjęcia z zasadami.
+   Źródło SCD-42: opis procedury przesłany przez Tomka 06.10.2026 (ogólny, nie z instrukcji
+   wozu) - miejsca oznaczone "sprawdź na wozie" czekają na potwierdzenie. */
+var CAB_TILT_PROCEDURES={
+  v3:
+    '<div class="tilt">'+
+      '<div class="tilt-alarm"><div class="tilt-alarm-t">⛔ Zanim dotkniesz pompy</div>'+
+        '<b>Drabina musi być uniesiona z&nbsp;łoża transportowego</b> i&nbsp;odchylona od osi kabiny. '+
+        'Kosz i&nbsp;ramię leżą nad dachem kabiny - podniesiona kabina uderzy w&nbsp;przęsła lub kosz.</div>'+
+      '<div class="tilt-h">Przygotowanie</div>'+
+      '<ol>'+
+        '<li>Unieś drabinę ze stanowiska głównego i&nbsp;odchyl od osi kabiny.</li>'+
+        '<li><b>Otwórz przednią atrapę</b> - zamknięta zostanie zmiażdżona przez kabinę.</li>'+
+        '<li>Opróżnij kabinę: aparaty ODO z&nbsp;oparć, radiostacje, luźny sprzęt. Zamknij drzwi.</li>'+
+        '<li>Zdejmij dodatkowe blokady kabiny, jeśli są założone.</li>'+
+      '</ol>'+
+      '<div class="tilt-h">Podnoszenie</div>'+
+      '<ol>'+
+        '<li>Pompa ręczna: <b>prawa strona (dowódcy)</b>, przy pierwszej skrytce lub za stopniem; obok wyłącznik prądu. <span class="tilt-check">sprawdź na wozie</span></li>'+
+        '<li>Wyjmij stalowy drążek ze schowka.</li>'+
+        '<li>Zawór: drążkiem <span class="tilt-key">maks. W PRAWO ↑</span> = podnoszenie.</li>'+
+        '<li>Pompuj (góra-dół) aż kabina przejdzie punkt równowagi i&nbsp;stanie w&nbsp;maks. wychyleniu, ok.&nbsp;60°. <span class="tilt-check">sprawdź na wozie</span></li>'+
+      '</ol>'+
+      '<div class="tilt-h">Opuszczanie</div>'+
+      '<ol>'+
+        '<li>Zawór: <span class="tilt-key">maks. W LEWO ↓</span> = opuszczanie.</li>'+
+        '<li><b>Kabina nie opadnie sama - trzeba pompować</b> (pompa dwukierunkowa).</li>'+
+        '<li>Pompuj do <b>metalicznego trzasku zamków</b> z&nbsp;tyłu kabiny.</li>'+
+        '<li><b>Kontrolka ryglowania kabiny na desce musi zgasnąć.</b></li>'+
+        '<li>Dopiero teraz zamknij przednią atrapę.</li>'+
+      '</ol>'+
+      '<div class="tilt-h">Gdy coś nie działa</div>'+
+      '<ul>'+
+        '<li><b>Unosi się ok. 5&nbsp;cm i&nbsp;staje</b> - nie zdjęte dodatkowe blokady kabiny.</li>'+
+        '<li><b>Pompa chodzi luźno, kabina stoi</b> - zapowietrzenie lub za mało oleju w&nbsp;zbiorniczku pompy.</li>'+
+      '</ul>'+
+      '<div class="tilt-note">Błąd grozi złamaniem drabiny, zniszczeniem kabiny i&nbsp;uszkodzeniem czujników układu Magirus CS. '+
+        'Opis ogólny dla Magirus M42L-AS na Iveco Eurocargo - punkty „sprawdź na wozie” potwierdź z&nbsp;instrukcją lub mechanikiem.</div>'+
+    '</div>'
+};
+var CAB_TILT_VEHICLES=['v1','v2','v3'];
 function dkCabTiltBannerHtml(vid){
   if(CAB_TILT_VEHICLES.indexOf(vid)<0) return '';
   return '<div class="dk-cabtilt-banner" onclick="showCabTilt(\''+vid+'\')">'+
@@ -2708,6 +2765,8 @@ function showCabTilt(vid){
   var wrap=document.getElementById('cab-tilt-content');
   if(photo){
     wrap.innerHTML='<img src="'+photo+'" style="width:100%;display:block;border-radius:var(--radius);cursor:zoom-in" onclick="openPhotoLightbox(this.src)">';
+  } else if(CAB_TILT_PROCEDURES[vid]){
+    wrap.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)">'+CAB_TILT_PROCEDURES[vid]+'</div>';
   } else {
     wrap.innerHTML='<div class="empty" style="padding:20px">Zdjęcie zasad podnoszenia dla tego pojazdu zostanie dodane wkrótce.</div>';
   }
@@ -2802,6 +2861,15 @@ function showVehicle(id){
     } else {
       svcPanel.classList.add('hidden');
     }
+  }
+
+  // Procedura podnoszenia kabiny - osobny panel, tylko dla wozów z opisaną procedurą
+  var tiltPanel=document.getElementById('cabtilt-panel');
+  if(CAB_TILT_PROCEDURES[id]){
+    tiltPanel.classList.remove('hidden');
+    document.getElementById('cabtilt-body').innerHTML=CAB_TILT_PROCEDURES[id];
+  } else {
+    tiltPanel.classList.add('hidden');
   }
 
   // Comp grid
