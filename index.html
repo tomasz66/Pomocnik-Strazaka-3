@@ -457,6 +457,31 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .tak-jump-chip:active { background: var(--surface-2); }
 .tak-jump-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .tak-section { margin: 12px 16px 0; scroll-margin-top: var(--tak-offset, 170px); }
+/* Karty pojazdów: cała zawartość wozu na jednym ekranie */
+.karty-bar { flex-direction: column; gap: 8px; }
+.karty-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.karty-row + .karty-row { padding-top: 8px; border-top: 1px solid var(--border); }
+.karty-group { margin: 16px 16px 0; }
+.karty-group-title { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+.karty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; align-items: start; }
+.karty-card { background: var(--surface); border: 1px solid var(--border-2); border-radius: var(--radius-sm); overflow: hidden; }
+.karty-card-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 8px 12px; background: var(--surface-2); border-bottom: 1px solid var(--border-2); }
+.karty-card-h b { font-size: 16px; font-weight: 800; color: var(--text); }
+.karty-card-h span { font-size: 12px; color: var(--text-muted); }
+.karty-row-it { display: flex; justify-content: space-between; gap: 10px; padding: 6px 12px; font-size: 14px; color: var(--text); border-bottom: 1px solid var(--border); }
+.karty-row-it:last-child { border-bottom: none; }
+.karty-row-it .q { font-weight: 800; white-space: nowrap; }
+.karty-row-it.sub { padding-left: 26px; font-size: 13.5px; color: var(--text-2); }
+.karty-row-grp { padding: 6px 12px; font-size: 13px; font-weight: 800; background: var(--accent-bg); color: var(--text); border-bottom: 1px solid var(--border); }
+.karty-spec { padding: 6px 12px; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+.karty-spec:last-child { border-bottom: none; }
+.karty-spec-k { color: var(--text-muted); font-size: 12px; }
+.karty-spec-v { color: var(--text); font-weight: 600; }
+.karty-tag { display: inline-block; font-size: 11px; font-weight: 700; border: 1px solid var(--border-2); border-radius: 6px; padding: 0 5px; margin-left: 6px; color: var(--text-muted); vertical-align: 1px; }
+.karty-jump .tak-jump-chip { padding: 5px 10px; font-size: 12px; }
+.karty-jump:empty { display: none; }
+.karty-card { scroll-margin-top: calc(var(--header-h) + 150px); }
+.karty-empty { margin: 24px 16px; color: var(--text-muted); font-size: 14px; text-align: center; }
 .tak-section-title {
   font-size: 12px; font-weight: 700; text-transform: uppercase;
   color: var(--text-faint); letter-spacing: .6px;
@@ -690,6 +715,8 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       <div class="section-label" style="margin-top:4px">Pojazdy</div>
       <div class="list-group" id="vehicles-list"></div>
       <button type="button" class="edit-fab-add" onclick="openVehicleSheet(null)">+ Dodaj pojazd</button>
+      <div class="section-label">Karty pojazdów</div>
+      <div class="list-group" id="karty-section-list"></div>
       <div class="section-label">Czujniki gazów</div>
       <div class="list-group" id="sensors-list"></div>
       <div class="section-label">Baza pytań</div>
@@ -1159,6 +1186,32 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   <div class="scroll-content">
     <div class="list-group" id="jrg-hub-list"></div>
     <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══ KARTY POJAZDÓW (skrytki i dane techniczne w pigułce) ═══ -->
+<div class="view" id="view-karty">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Główna</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text">Karty pojazdów</div>
+        <div class="nav-title-sub" id="karty-sub">Skrytki i dane techniczne</div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="tak-jump-bar karty-bar">
+    <div class="karty-row" id="karty-veh-chips"></div>
+    <div class="karty-row" id="karty-mode-chips"></div>
+    <div class="karty-row karty-jump" id="karty-jump-chips"></div>
+  </div>
+  <div class="scroll-content">
+    <div id="karty-content"></div>
+    <div style="height:24px"></div>
   </div>
 </div>
 
@@ -2195,6 +2248,21 @@ function renderHome(){
       '<div class="vehicle-arrow">›</div>';
     vl.appendChild(rGar);
   }
+  // Karty pojazdów — cała zawartość wozu i dane techniczne na jednym ekranie
+  var kl=document.getElementById('karty-section-list');
+  kl.innerHTML='';
+  var krow=document.createElement('div');
+  krow.className='vehicle-row';
+  krow.onclick=function(){showKarty();};
+  krow.innerHTML=
+    '<div class="vehicle-badge" style="background:#7b241c">KARTY</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">Karty pojazdów</div>'+
+      '<div class="vehicle-meta">Skrytki i dane techniczne w pigułce</div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  kl.appendChild(krow);
+
   // Czujniki — wiersz po Garażu
   var sl=document.getElementById('sensors-list');
   sl.innerHTML='';
@@ -2332,6 +2400,164 @@ function showJrgHub(){
   wrap.appendChild(rZes);
 
   switchView('view-jrg-hub');
+}
+
+/* ── KARTY POJAZDÓW ──
+   Jeden ekran = cały wóz: wszystkie skrytki z zawartością (do nauki "gdzie co jest
+   i ile") albo cały sprzęt z danymi technicznymi. Budowane na żywo z D, więc każda
+   edycja sprzętu od razu jest widoczna tutaj. */
+var KartyMode={SKRYTKI:'skrytki',DANE:'dane'};
+var kartyState={v:'v1',mode:KartyMode.SKRYTKI};
+
+// Kolejność jak na wozie: kabina, strona kierowcy, strona dowódcy, reszta
+var KARTY_SIDES=[
+  {title:'Kabina',test:function(id){return id==='kab';}},
+  {title:'Strona kierowcy',test:function(id){return /^k\d+$/.test(id);}},
+  {title:'Strona dowódcy',test:function(id){return /^d\d+$/.test(id);}}
+];
+var KARTY_NAME_NOISE=/\s*\((czujnik|czujka|czujnik, miernik|pilot|spodnie pilarza)\)/g;
+
+function showKarty(){
+  renderKarty();
+  switchView('view-karty');
+}
+function kartySet(key,val){
+  kartyState[key]=val;
+  renderKarty();
+  var sc=document.querySelector('#view-karty .scroll-content');
+  if(sc){ sc.scrollTop=0; }
+  window.scrollTo(0,0);
+}
+function kartyJump(cid){
+  var el=document.getElementById('karty-c-'+cid);
+  if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+function kartyQty(q){
+  var m=String(q||'').trim().match(/^(\d+) szt\.?$/);
+  return m?m[1]:escAttr(String(q||'').trim());
+}
+function kartyCompLabel(c){
+  return c.label||c.name;
+}
+
+/* Skrytki wozu pogrupowane w bloki: Kabina / Strona kierowcy / Strona dowódcy / reszta */
+function kartyGroups(v){
+  var used={};
+  var groups=KARTY_SIDES.map(function(side){
+    var comps=v.compartments.filter(function(c){ return side.test(c.id); });
+    comps.forEach(function(c){ used[c.id]=true; });
+    return {title:side.title,comps:comps};
+  });
+  var rest=v.compartments.filter(function(c){ return !used[c.id]; });
+  groups.push({title:rest.map(function(c){ return c.name; }).join(' · ')||'Pozostałe',comps:rest});
+  return groups.filter(function(g){ return g.comps.length; });
+}
+
+function kartyItemsCard(vid,c,items){
+  var html='<div class="karty-card"'+(c.id?' id="karty-c-'+c.id+'"':'')+'><div class="karty-card-h"><b>'+escAttr(kartyCompLabel(c))+'</b><span>'+
+    (c.label&&c.label!==c.name?escAttr(c.name)+' · ':'')+items.length+' poz.</span></div>';
+  var grpSeen={};
+  items.slice().sort(function(a,b){
+    var ga=a.group||'', gb=b.group||'';
+    if(ga!==gb){ return ga<gb?-1:1; }
+    return a.name.localeCompare(b.name,'pl');
+  }).forEach(function(it){
+    if(it.group && !grpSeen[it.group]){
+      grpSeen[it.group]=true;
+      var g=(D.groups||[]).find(function(x){ return x.id===it.group; });
+      html+='<div class="karty-row-grp">'+escAttr(g?g.name:it.group)+'</div>';
+    }
+    html+='<div class="karty-row-it'+(it.group?' sub':'')+'"><span>'+escAttr(it.name.replace(KARTY_NAME_NOISE,''))+'</span><span class="q">'+kartyQty(it.qty)+'</span></div>';
+  });
+  return html+'</div>';
+}
+
+function kartySpecsCard(title,tag,specs){
+  var html='<div class="karty-card"><div class="karty-card-h"><b>'+escAttr(title)+'</b>'+(tag?'<span>'+escAttr(tag)+'</span>':'')+'</div>';
+  Object.keys(specs).forEach(function(k){
+    html+='<div class="karty-spec"><div class="karty-spec-k">'+escAttr(k)+'</div><div class="karty-spec-v">'+escAttr(specs[k])+'</div></div>';
+  });
+  return html+'</div>';
+}
+
+function renderKartySkrytki(vid,v){
+  var html='';
+  if(vid==='garaz'){
+    // Garaż: każda "skrytka" to zwykle jedno urządzenie, więc pojedyncze sztuki
+    // zbieramy w jedną listę, a wieloelementowe (np. przyczepka, zestawienie) osobno
+    var single=[], multi='';
+    v.compartments.forEach(function(c){
+      var its=D.items.filter(function(it){ return it.v===vid && it.comp===c.id; });
+      if(its.length===1){ single.push(its[0]); }
+      else if(its.length>1){ multi+=kartyItemsCard(vid,c,its); }
+    });
+    html+='<div class="karty-group"><div class="karty-grid">'+
+      kartyItemsCard(vid,{label:'Sprzęt',name:'Sprzęt'},single)+multi+'</div></div>';
+    return html;
+  }
+  kartyGroups(v).forEach(function(g){
+    var cards=g.comps.map(function(c){
+      var its=D.items.filter(function(it){ return it.v===vid && it.comp===c.id; });
+      return its.length?kartyItemsCard(vid,c,its):'';
+    }).join('');
+    if(!cards){ return; }
+    html+='<div class="karty-group"><div class="karty-group-title">'+escAttr(g.title)+'</div><div class="karty-grid">'+cards+'</div></div>';
+  });
+  return html;
+}
+
+function renderKartyDane(vid,v){
+  var html='';
+  if(v.specs && Object.keys(v.specs).length && vid!=='garaz'){
+    html+='<div class="karty-group"><div class="karty-group-title">Pojazd</div><div class="karty-grid">'+
+      kartySpecsCard(v.name,v.sub,v.specs)+'</div></div>';
+  }
+  var groups=vid==='garaz'?[{title:'Sprzęt',comps:v.compartments}]:kartyGroups(v);
+  groups.forEach(function(g){
+    var cards='';
+    g.comps.forEach(function(c){
+      D.items.filter(function(it){
+        return it.v===vid && it.comp===c.id && it.specs && Object.keys(it.specs).length;
+      }).forEach(function(it){
+        var tag=vid==='garaz'?(it.nr||''):kartyCompLabel(c);
+        cards+=kartySpecsCard(it.name.replace(KARTY_NAME_NOISE,''),tag,it.specs);
+      });
+    });
+    if(!cards){ return; }
+    html+='<div class="karty-group"><div class="karty-group-title">'+escAttr(g.title)+'</div><div class="karty-grid">'+cards+'</div></div>';
+  });
+  return html||'<div class="karty-empty">Brak danych technicznych dla tego pojazdu.</div>';
+}
+
+function renderKarty(){
+  if(!D.vehicles[kartyState.v]){ kartyState.v='v1'; }
+  var vid=kartyState.v, v=D.vehicles[vid];
+
+  // Przełączniki: pojazd i rodzaj karty
+  var vehIds=Object.keys(D.vehicles).filter(function(id){ return id!=='garaz'; });
+  if(D.vehicles.garaz){ vehIds.push('garaz'); }
+  document.getElementById('karty-veh-chips').innerHTML=vehIds.map(function(id){
+    var label=id==='garaz'?'Garaż':D.vehicles[id].name;
+    return '<div class="tak-jump-chip'+(id===vid?' active':'')+'" onclick="kartySet(\'v\',\''+id+'\')">'+escAttr(label)+'</div>';
+  }).join('');
+  document.getElementById('karty-mode-chips').innerHTML=
+    '<div class="tak-jump-chip'+(kartyState.mode===KartyMode.SKRYTKI?' active':'')+'" onclick="kartySet(\'mode\',KartyMode.SKRYTKI)">Skrytki - co i ile</div>'+
+    '<div class="tak-jump-chip'+(kartyState.mode===KartyMode.DANE?' active':'')+'" onclick="kartySet(\'mode\',KartyMode.DANE)">Dane techniczne</div>';
+
+  // Szybki skok do skrytki - tylko w widoku skrytek prawdziwego wozu
+  var jumpComps=[];
+  if(kartyState.mode===KartyMode.SKRYTKI && vid!=='garaz'){
+    kartyGroups(v).forEach(function(g){ jumpComps=jumpComps.concat(g.comps); });
+    jumpComps=jumpComps.filter(function(c){ return D.items.some(function(it){ return it.v===vid && it.comp===c.id; }); });
+  }
+  document.getElementById('karty-jump-chips').innerHTML=jumpComps.map(function(c){
+    return '<div class="tak-jump-chip" onclick="kartyJump(\''+c.id+'\')">'+escAttr(kartyCompLabel(c))+'</div>';
+  }).join('');
+
+  var cnt=D.items.filter(function(it){ return it.v===vid; }).length;
+  document.getElementById('karty-sub').textContent=v.name+' · '+cnt+' poz.';
+  document.getElementById('karty-content').innerHTML=
+    kartyState.mode===KartyMode.SKRYTKI?renderKartySkrytki(vid,v):renderKartyDane(vid,v);
 }
 
 /* Powrót z widoku pojazdu: wszystkie pojazdy (w tym Garaż) wracają na główną */
