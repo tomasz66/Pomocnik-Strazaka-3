@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>Ściąga - dane techniczne pojazdów</title>
+<style>
+@page { size: A4; margin: 8mm; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 8.4pt; line-height: 1.3; color: #000; }
+.page { width: 194mm; height: 280mm; display: grid; grid-template-columns: 1fr 1fr; column-gap: 5mm; page-break-after: always; overflow: hidden; }
+.page:last-child { page-break-after: auto; }
+.col { display: flex; flex-direction: column; gap: 1.6mm; }
+.veh { border: 1.4pt solid #000; }
+.veh-h { background: #000; color: #fff; padding: 1.4mm 2mm; display: flex; justify-content: space-between; align-items: baseline; }
+.veh-h b { font-size: 12pt; letter-spacing: .3pt; }
+.veh-h span { font-size: 7pt; }
+.key { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1pt solid #000; }
+.key div { padding: .8mm 2mm; border-right: .5pt solid #999; border-bottom: .5pt solid #ccc; }
+.key div:nth-child(2n) { border-right: none; }
+.key div b { display: block; font-size: 8.4pt; }
+.key div small { font-size: 6.3pt; color: #333; text-transform: uppercase; letter-spacing: .2pt; }
+h3 { margin: 0; padding: .7mm 2mm; font-size: 7pt; text-transform: uppercase; letter-spacing: .5pt; background: #e6e6e6; border-top: .5pt solid #000; border-bottom: .5pt solid #000; }
+.it { padding: .6mm 2mm; border-bottom: .4pt dotted #aaa; }
+.it:last-child { border-bottom: none; }
+.it b { font-weight: 700; }
+.it i { font-style: normal; font-size: 6.2pt; border: .5pt solid #000; padding: 0 .7mm; margin-left: .8mm; vertical-align: .3pt; }
+.it .d { color: #111; }
+.warn { font-weight: 700; }
+table { width: 100%; border-collapse: collapse; }
+td, th { border: .5pt solid #000; padding: .6mm 1.2mm; text-align: center; }
+th { background: #e6e6e6; font-size: 6.8pt; }
+td:first-child { text-align: left; }
+.foot { font-size: 6pt; color: #444; padding: .8mm 2mm; }
+</style>
+</head>
+<body>
+
+<!-- ═══ STRONA 1: GBA + GCBA ═══ -->
+<div class="page">
+
+<div class="col">
+<div class="veh">
+  <div class="veh-h"><b>GBA 3/16</b><span>Volvo · 621-22 · SW55034</span></div>
+  <div class="key">
+    <div><small>Woda / środek</small><b>3010&nbsp;l / 330&nbsp;l</b></div>
+    <div><small>Autopompa A&nbsp;16/8</small><b>2691&nbsp;l/min @ 8&nbsp;bar</b></div>
+    <div><small>Węże</small><b>W&#8209;42 1×30 · W&#8209;52 13×20 · W&#8209;75 9×20</b></div>
+    <div><small>Suma odcinków</small><b>470&nbsp;m</b> (3× W&#8209;52 w&nbsp;noszaku)</div>
+    <div><small>Wymiary dł./szer./wys.</small><b>8,37 / 2,58 / 3,33&nbsp;m</b></div>
+    <div><small>DMC / masa własna</small><b>16&nbsp;t / 9,7&nbsp;t</b></div>
+  </div>
+
+  <h3>Urządzenia pomiarowe [KAB]</h3>
+  <div class="it"><b>Drager Xam 5000</b>&nbsp;- O<sub>2</sub> 19/23% · CO 20/100&nbsp;ppm · CH<sub>4</sub> 10/20% LEL · NH<sub>3</sub> 14/28&nbsp;ppm</div>
+  <div class="it"><b>Polytector</b>&nbsp;- O<sub>2</sub> 17/19/23% · CO 30/60&nbsp;ppm · CH<sub>4</sub> 20/40/60% LEL · NO<sub>2</sub> 2/4&nbsp;ppm · SO<sub>2</sub> 1/2&nbsp;ppm · H<sub>2</sub>S 5/10&nbsp;ppm</div>
+  <div class="it"><b>MRU GD400</b> (gaz)&nbsp;- 3 stopnie · metan, propan, wodór</div>
+  <div class="it"><b>Eko-C</b>&nbsp;- α, β, γ · <span class="warn">nie bliżej niż 3&nbsp;m lub 100&nbsp;µSv</span></div>
+  <div class="it"><b>HOT STICK</b>&nbsp;- tylko prąd przemienny AC <span class="warn">(nie zmierzy DC&nbsp;- hybryda!)</span></div>
+  <div class="it"><b>TOX CO</b>&nbsp;- CO w&nbsp;wydychanym powietrzu · <b>pirometr, pulsoksymetr, kamera termowizyjna, kamera wziernikowa, papierki lakmusowe</b></div>
+
+  <h3>Woda i&nbsp;piana</h3>
+  <div class="it"><b>Szybkie natarcie</b><i>D3</i>&nbsp;- 60&nbsp;m · 250&nbsp;l · 60&nbsp;bar · 100/230&nbsp;l/min · 40/55&nbsp;bar</div>
+  <div class="it"><b>Działko DWP 16</b><i>DACH</i>&nbsp;- regulowane, max 3200&nbsp;l/min · nastawy 800/1600/2400/3200</div>
+  <div class="it"><b>Niagara</b><i>D3</i>&nbsp;- 1200&nbsp;l/min · podnoszenie 30&nbsp;m · zanurzenie 7&nbsp;cm · kąt pracy 20°</div>
+  <div class="it"><b>Prądownica PP&#8209;4</b><i>D3</i>&nbsp;- ok. 400&nbsp;l/min · 0,55&nbsp;MPa · rzut do 28&nbsp;m · spienienie 12-15</div>
+  <div class="it"><b>Wytwornica WP&#8209;4-75</b><i>DACH</i>&nbsp;- 400&nbsp;l/min · spienienie 75 · nasada 52</div>
+  <div class="it"><b>Hydronetka Ermak</b><i>D2</i>&nbsp;- 25&nbsp;l</div>
+
+  <h3>Prąd, światło, wentylacja</h3>
+  <div class="it"><b>Agregat Endress</b><i>D1</i>&nbsp;- 3&nbsp;kW</div>
+  <div class="it"><b>Wentylator Ramfan EX50Li</b><i>D1</i>&nbsp;- 15&nbsp;200&nbsp;m³/h · 0,6&nbsp;kW · 25&nbsp;kg</div>
+  <div class="it"><b>Maszt Bocar MPE</b><i>DACH</i>&nbsp;- 2×&nbsp;300&nbsp;W · 24&nbsp;V · <b>Lampa DeWalt DCL079</b><i>D1</i>&nbsp;- 3000&nbsp;lm · 18&nbsp;V</div>
+
+  <h3>Ratownictwo techniczne</h3>
+  <div class="it"><b>Nożyce LUKAS S799/e3</b><i>K1</i>&nbsp;- cięcie 1376&nbsp;kN · rozwarcie 204&nbsp;mm · pręt 45&nbsp;mm · praca w&nbsp;wodzie do 3&nbsp;m</div>
+  <div class="it"><b>Kombi LUKAS</b><i>K1</i>&nbsp;- rozpieranie 1500&nbsp;kN · cięcie 492&nbsp;kN</div>
+  <div class="it"><b>Holmatro T1</b><i>K2</i>&nbsp;- rozpieranie 128&nbsp;mm / 33&nbsp;kN · pręt 18&nbsp;mm · 7,7&nbsp;kg</div>
+  <div class="it"><b>Poduszki Vetter</b><i>K2</i>&nbsp;- 8&nbsp;bar · V20: 48×58&nbsp;cm, 19&nbsp;t, 28&nbsp;cm · V31: 65×69&nbsp;cm, 31&nbsp;t, 37&nbsp;cm</div>
+  <div class="it"><b>Hi-Lift</b><i>K2</i>&nbsp;- 2113&nbsp;kg · 17-98&nbsp;cm · <b>Stab-Fast PT 1250</b>&nbsp;- 1200-1900&nbsp;mm, do 1500&nbsp;kg</div>
+  <div class="it"><b>Podpory SW&#8209;350</b><i>K1</i>&nbsp;- 90-350&nbsp;mm · do 1000&nbsp;kg · <b>Rolki</b>&nbsp;- 4×&nbsp;450&nbsp;kg</div>
+  <div class="it"><b>Wyciągarka Dragon DWT 18000</b><i>PRZÓD</i>&nbsp;- 8165&nbsp;kg · lina 28&nbsp;m · 24&nbsp;V</div>
+
+  <h3>Drabiny i&nbsp;ewakuacja</h3>
+  <div class="it"><b>Drabina dwuprzęsłowa</b><i>DACH</i>&nbsp;- 9,87&nbsp;m · 48&nbsp;kg · przęsło 5,5&nbsp;m · szczeble co 27&nbsp;cm</div>
+  <div class="it"><b>Drabina słupkowa D3,1</b><i>DACH</i>&nbsp;- 2,97&nbsp;m · 9 szczebli · 10&nbsp;kg</div>
+  <div class="it"><b>Skokochron</b><i>D1</i>&nbsp;- 3,5×3,5×1,7&nbsp;m · sprawianie 30&nbsp;s · <b>do 16&nbsp;m</b></div>
+  <div class="it"><b>Aparaty powietrzne</b><i>KAB</i>&nbsp;- 4 szt. · butla 6&nbsp;l · 300&nbsp;bar · 8,2&nbsp;kg</div>
+</div>
+</div>
+
+<div class="col">
+<div class="veh">
+  <div class="veh-h"><b>GCBA 5/32</b><span>Volvo FM 4x4 · 621 S 26 · SK198WL</span></div>
+  <div class="key">
+    <div><small>Woda / środek</small><b>5000&nbsp;l / 500&nbsp;l</b></div>
+    <div><small>Autopompa A&nbsp;32/8</small><b>3705&nbsp;l/min @ 8&nbsp;bar</b></div>
+    <div><small>Węże</small><b>W&#8209;42 4 · W&#8209;52 10 · W&#8209;75 10 (×20&nbsp;m)</b></div>
+    <div><small>Zasięg taktyczny</small><b>480&nbsp;m</b> (3× W&#8209;52 w&nbsp;noszaku)</div>
+    <div><small>Wymiary dł./szer./wys.</small><b>8,86 / 2,53 / 3,42&nbsp;m</b></div>
+    <div><small>DMC / masa własna</small><b>21&nbsp;t / 12,8&nbsp;t</b></div>
+  </div>
+
+  <h3>Urządzenia pomiarowe [KAB]</h3>
+  <div class="it"><b>Drager XAM 2500</b>&nbsp;- O<sub>2</sub> 19/23% · CO 20/100&nbsp;ppm · CH<sub>4</sub> 10/20% LEL · H<sub>2</sub>S 10/15&nbsp;ppm</div>
+  <div class="it"><b>CEM</b>&nbsp;- α, β, γ · <span class="warn">nie bliżej niż 3&nbsp;m lub 100&nbsp;µSv</span></div>
+  <div class="it"><b>LEADER Volt AC</b>&nbsp;- tylko prąd przemienny <span class="warn">(nie zmierzy DC&nbsp;- hybryda!)</span></div>
+  <div class="it"><b>CG&#8209;1U</b> (gaz) · <b>kamera termowizyjna Argus</b></div>
+
+  <h3>Woda i&nbsp;piana</h3>
+  <div class="it"><b>Szybkie natarcie</b><i>D3</i>&nbsp;- 80&nbsp;m · 250&nbsp;l · 60&nbsp;bar · 100/230&nbsp;l/min · 40/55&nbsp;bar</div>
+  <div class="it"><b>Działko DWP 32</b><i>DACH</i>&nbsp;- 800/1600/2400/3200&nbsp;l/min · 0,8&nbsp;MPa</div>
+  <div class="it"><b>Działko przenośne DWP</b><i>D1</i>&nbsp;- 3200&nbsp;l/min · 0,8&nbsp;MPa</div>
+  <div class="it"><b>Dozownik DSP 200</b>&nbsp;- 192&nbsp;l/min środka przy 3200&nbsp;l/min wody</div>
+  <div class="it"><b>Niagara GXV 160</b><i>D3</i>&nbsp;- 1200&nbsp;l/min · rzut 30&nbsp;m · 3&nbsp;atm · ssanie od 15&nbsp;mm</div>
+  <div class="it"><b>Kurtyna wodna ZW&#8209;52</b><i>D3</i>&nbsp;- 8 bar: 1200&nbsp;l/min, szer. 25&nbsp;m, wys. 10&nbsp;m</div>
+  <div class="it"><b>Prądownica PW&#8209;75 Delta</b><i>D3</i>&nbsp;- 115/230/400/475&nbsp;l/min · rzut 43,5&nbsp;m</div>
+  <div class="it"><b>Prądownica PP4 Delta</b><i>TYŁ</i>&nbsp;- ok. 400&nbsp;l/min · spienienie 12-15</div>
+  <div class="it"><b>Wytwornica WP 4/75</b><i>DACH</i>&nbsp;- 400&nbsp;l/min · spienienie 75 · rzut do 10&nbsp;m · 5,8&nbsp;kg</div>
+  <div class="it"><b>Zasysacz Z4</b><i>D3</i>&nbsp;- 400&nbsp;l/min · W52 · <b>Hydronetka Ermak</b><i>D1</i>&nbsp;- 25&nbsp;l</div>
+  <div class="it"><b>Pompa beczkowa LUTZ</b><i>K2</i>&nbsp;- 170&nbsp;l/min · do 12&nbsp;m · kwasy i&nbsp;zasady (rozcieńczone)</div>
+
+  <h3>Prąd, światło, wentylacja</h3>
+  <div class="it"><b>Agregat GEKO 8000</b><i>D1</i>&nbsp;- 5&nbsp;kW / 230&nbsp;V · 8&nbsp;kW / 400&nbsp;V (3 fazy)</div>
+  <div class="it"><b>Wentylator Rosenbauer FANERGY V16</b><i>K3</i>&nbsp;- 24&nbsp;000&nbsp;m³/h · 4,8&nbsp;kW · 110&nbsp;min · 41&nbsp;kg · mgła i&nbsp;piana</div>
+  <div class="it"><b>Maszt MPE</b>&nbsp;- 14&nbsp;000&nbsp;lm (sterowanie D1) · <b>Najaśnica Solaris</b><i>D1</i>&nbsp;- 20&nbsp;000&nbsp;lm</div>
+
+  <h3>Ratownictwo techniczne [K1]</h3>
+  <div class="it"><b>Agregat hydrauliczny LUKAS</b>&nbsp;- 700&nbsp;bar · przewody 20&nbsp;m</div>
+  <div class="it"><b>Rozpieracz SP 777</b>&nbsp;- 60&nbsp;t · ciągnięcie 6&nbsp;t · rozwarcie 813&nbsp;mm</div>
+  <div class="it"><b>Kombi SC358</b>&nbsp;- 150&nbsp;t · cięcie 49,2&nbsp;t · rozwarcie 368&nbsp;mm</div>
+  <div class="it"><b>Nożyce S788</b>&nbsp;- cięcie 110&nbsp;t · pręt 42&nbsp;mm · rozwarcie 200&nbsp;mm</div>
+  <div class="it"><b>Cylinder R412</b>&nbsp;- 680/1180&nbsp;mm · 135&nbsp;kN · 18&nbsp;kg · <b>R414</b>&nbsp;- 900/1600&nbsp;mm · 122&nbsp;kN · 24&nbsp;kg</div>
+  <div class="it"><b>Poduszki Vetter</b><i>K2</i>&nbsp;- V68: 95×95&nbsp;cm, 67,7&nbsp;t · V40: 78×69&nbsp;cm, 39,6&nbsp;t</div>
+  <div class="it"><b>Wyciągarka Kangaroo K60PRO</b><i>PRZÓD</i>&nbsp;- 6292&nbsp;kg · lina 28&nbsp;m · 24&nbsp;V</div>
+
+  <h3>Ewakuacja</h3>
+  <div class="it"><b>Drabina dwuprzęsłowa 9,5&nbsp;m, nasadkowa, słupkowa</b><i>DACH</i></div>
+  <div class="it"><b>Aparaty powietrzne</b><i>KAB</i>&nbsp;- 4 butle · 6&nbsp;l · 300&nbsp;bar · 8,2&nbsp;kg</div>
+</div>
+</div>
+
+</div>
+
+<!-- ═══ STRONA 2: SCD + WSPÓLNE ═══ -->
+<div class="page">
+
+<div class="col">
+<div class="veh">
+  <div class="veh-h"><b>SCD-42</b><span>Magirus M42L-AS · 621-51</span></div>
+  <div class="key">
+    <div><small>Wysokość robocza</small><b>42&nbsp;m</b></div>
+    <div><small>Maks. wiatr</small><b>12&nbsp;m/s</b></div>
+    <div><small>Węże</small><b>W&#8209;75 2×40 + 2×20 · W&#8209;52 2×20</b></div>
+    <div><small>Zasięg taktyczny</small><b>160&nbsp;m</b></div>
+    <div><small>Wymiary dł./szer./wys.</small><b>11,1 / 2,5 / 3,5&nbsp;m</b></div>
+    <div><small>DMC / masa własna</small><b>18&nbsp;t / 16,3&nbsp;t</b></div>
+    <div><small>Agregat wbudowany</small><b>11&nbsp;kW</b></div>
+    <div><small>Zasilanie awaryjne</small><b>400&nbsp;V</b></div>
+  </div>
+
+  <h3>Urządzenia pomiarowe [KAB]</h3>
+  <div class="it"><b>Kamera termowizyjna</b> · <b>dalmierz</b></div>
+
+  <h3>Sprzęt</h3>
+  <div class="it"><b>Działko wodno-pianowe</b><i>NAD</i>&nbsp;- 2500&nbsp;l/min</div>
+  <div class="it"><b>Agregat Endress</b><i>NAD</i>&nbsp;- 7,2&nbsp;kW · 230/400&nbsp;V · 3 fazy</div>
+  <div class="it"><b>Agregat oddymiający Leader ES 220</b><i>NAD</i>&nbsp;- 1,5&nbsp;kW przy 2750&nbsp;obr/min</div>
+  <div class="it"><b>Skokochron</b><i>K2</i>&nbsp;- 3,5×3,5×1,7&nbsp;m · składanie 30&nbsp;s · <b>do 16&nbsp;m</b></div>
+  <div class="it"><b>Lampy LED 50&nbsp;W</b><i>K3</i>&nbsp;- 2 szt. · do zamontowania w&nbsp;koszu</div>
+  <div class="it"><b>Zestawy wysokościowe</b><i>K1</i>&nbsp;- lina 100&nbsp;m Rollgliss + R350, liny 50&nbsp;m i&nbsp;25&nbsp;m, trójkąt ewakuacyjny BEAL</div>
+</div>
+
+<div class="veh">
+  <div class="veh-h"><b>PRĄDY GAŚNICZE</b><span>6-7&nbsp;bar</span></div>
+  <table>
+    <tr><th>Prąd</th><th>Wydajność</th><th>Prąd</th><th>Wydajność</th></tr>
+    <tr><td>Krótki puls</td><td>100-150&nbsp;l/min</td><td>Malowanie</td><td>100-150&nbsp;l/min</td></tr>
+    <tr><td>Długi puls</td><td>200-250&nbsp;l/min</td><td>Omiatanie</td><td>200-250&nbsp;l/min</td></tr>
+    <tr><td colspan="2"></td><td>Ołówkowanie</td><td>100-150&nbsp;l/min</td></tr>
+  </table>
+</div>
+
+<div class="veh">
+  <div class="veh-h"><b>GARAŻ JRG</b><span>sprzęt z&nbsp;danymi technicznymi</span></div>
+  <h3>Pompy</h3>
+  <div class="it"><b>Mammoth (Mamut)</b><i>621/M10</i>&nbsp;- 2400&nbsp;l/min · podnoszenie do 22&nbsp;m · nasada 110 · Honda GXV 390, 7,6&nbsp;kW · 58&nbsp;kg</div>
+  <div class="it"><b>Robin TH/63</b><i>4 szt.</i>&nbsp;- 2000&nbsp;l/min (przyczepka P1)</div>
+  <div class="it"><b>Niagara</b><i>3 szt.</i>&nbsp;- 1200&nbsp;l/min · podnoszenie 30&nbsp;m · zanurzenie 7&nbsp;cm · kąt pracy 20°</div>
+  <div class="it"><b>Posejdon II HD</b>&nbsp;- 1200&nbsp;l/min</div>
+  <div class="it"><b>Pompy szlamowe PH&#8209;2400, WT 40X</b>&nbsp;- 2000&nbsp;l/min · 2,3&nbsp;atm · tłoczenie 23&nbsp;m · ssanie 8&nbsp;m</div>
+  <h3>Prąd, światło, ogrzewanie, wentylacja</h3>
+  <div class="it"><b>mTower M07</b><i>621sP4</i>&nbsp;- maszt 7,5&nbsp;m · 4×&nbsp;150&nbsp;W LED (4×&nbsp;19&nbsp;500&nbsp;lm) · obrót 360° · agregat 1&nbsp;kW, 20&nbsp;l Pb · wiatr do 65 km/h · 300&nbsp;kg</div>
+  <div class="it"><b>Agregaty</b>&nbsp;- Honda ECT 7000: 5&nbsp;kW · Endress ESE 3000i: 3&nbsp;kW</div>
+  <div class="it"><b>Nagrzewnica Master BV 110</b><i>3 szt.</i>&nbsp;- 34&nbsp;kW · 1800&nbsp;m³/h · 2,71&nbsp;kg/h · diesel, HVO, nafta · 230&nbsp;V</div>
+  <div class="it"><b>Nagrzewnica Biemmedue EC 32</b><i>2 szt.</i>&nbsp;- 32&nbsp;kW (przyczepka P2)</div>
+  <div class="it"><b>Wentylator MT 236</b>&nbsp;- PPV · 52&nbsp;550&nbsp;m³/h (AMCA 33&nbsp;660) · Honda GX 160, 4,8&nbsp;KM · 2&nbsp;h 10&nbsp;min · 39,6&nbsp;kg · pochylenie -10°/+20°</div>
+  <div class="it"><b>Łódź pneumatyczna</b>&nbsp;- silnik Johnson 3,5&nbsp;KM</div>
+</div>
+</div>
+
+<div class="col">
+<div class="veh">
+  <div class="veh-h"><b>WĘŻE TŁOCZNE</b><span>ciśn. robocze 12&nbsp;bar · rozrywające ok. 40&nbsp;bar</span></div>
+  <table>
+    <tr><th></th><th>W&#8209;25</th><th>W&#8209;52</th><th>W&#8209;75</th><th>W&#8209;110</th></tr>
+    <tr><td>Odcinek</td><td>15&nbsp;m</td><td>20&nbsp;m</td><td>20&nbsp;m</td><td>20&nbsp;m</td></tr>
+    <tr><td>Pojemność</td><td>10&nbsp;l</td><td>42&nbsp;l</td><td>88&nbsp;l</td><td>190&nbsp;l</td></tr>
+    <tr><td>Przepływ</td><td>50&nbsp;l/min</td><td>200&nbsp;l/min</td><td>800&nbsp;l/min</td><td>1600&nbsp;l/min</td></tr>
+    <tr><td>Masa</td><td>1,7&nbsp;kg</td><td>5,4&nbsp;kg</td><td>9,6&nbsp;kg</td><td>16,9&nbsp;kg</td></tr>
+  </table>
+</div>
+
+<div class="veh">
+  <div class="veh-h"><b>PORÓWNANIE WOZÓW</b><span>najważniejsze liczby</span></div>
+  <table>
+    <tr><th></th><th>GBA</th><th>GCBA</th><th>SCD</th></tr>
+    <tr><td>Woda</td><td>3010&nbsp;l</td><td>5000&nbsp;l</td><td>-</td></tr>
+    <tr><td>Środek pianotwórczy</td><td>330&nbsp;l</td><td>500&nbsp;l</td><td>-</td></tr>
+    <tr><td>Autopompa @ 8&nbsp;bar</td><td>2691&nbsp;l/min</td><td>3705&nbsp;l/min</td><td>-</td></tr>
+    <tr><td>Szybkie natarcie</td><td>60&nbsp;m</td><td>80&nbsp;m</td><td>-</td></tr>
+    <tr><td>Zasięg taktyczny</td><td>470&nbsp;m</td><td>480&nbsp;m</td><td>160&nbsp;m</td></tr>
+    <tr><td>Agregat</td><td>3&nbsp;kW</td><td>5/8&nbsp;kW</td><td>7,2&nbsp;kW + 11&nbsp;kW</td></tr>
+    <tr><td>Działko</td><td>do 3200&nbsp;l/min</td><td>do 3200&nbsp;l/min</td><td>2500&nbsp;l/min</td></tr>
+    <tr><td>Wentylator</td><td>15&nbsp;200&nbsp;m³/h</td><td>24&nbsp;000&nbsp;m³/h</td><td>Leader 1,5&nbsp;kW</td></tr>
+    <tr><td>Wyciągarka</td><td>8165&nbsp;kg</td><td>6292&nbsp;kg</td><td>-</td></tr>
+    <tr><td>Wysokość</td><td>3,33&nbsp;m</td><td>3,42&nbsp;m</td><td>3,5&nbsp;m</td></tr>
+    <tr><td>DMC</td><td>16&nbsp;t</td><td>21&nbsp;t</td><td>18&nbsp;t</td></tr>
+  </table>
+</div>
+
+<div class="veh">
+  <div class="veh-h"><b>PRZYCZEPKI</b><span>Garaż JRG</span></div>
+  <div class="it"><b>P1 pompowa</b>&nbsp;- Robin/Subaru 4×&nbsp;2000&nbsp;l/min · Niagara 1200&nbsp;l/min</div>
+  <div class="it"><b>P2 namiotowa</b>&nbsp;- agregat EISEMANN 3,8&nbsp;kW · nagrzewnica Biemmedue 32&nbsp;kW</div>
+  <div class="it"><b>P3 lekka</b>&nbsp;- zbiornik na wodę 13&nbsp;000&nbsp;l · pas transportowy · klucz do kół · kliny</div>
+</div>
+
+<div class="veh">
+  <div class="veh-h"><b>ZESTAWIENIE JRG</b><span>gdzie jest sprzęt</span></div>
+  <table>
+    <tr><th></th><th>GBA</th><th>GCBA</th><th>SCD</th><th>Regał</th><th>Razem</th></tr>
+    <tr><td>Piły łańcuchowe</td><td>2</td><td>1</td><td>3</td><td>3</td><td><b>9</b></td></tr>
+    <tr><td>Piły tarczowe</td><td>1</td><td>1</td><td>-</td><td>1</td><td><b>3</b></td></tr>
+    <tr><td>Agregaty</td><td>3&nbsp;kW</td><td>5/8&nbsp;kW</td><td>7,2&nbsp;kW</td><td>2,5 · 3 · 5&nbsp;kW</td><td><b>7</b></td></tr>
+  </table>
+  <div class="it">+ agregat P2 (3,8&nbsp;kW) · <b>agregaty stacjonarne</b> 2 szt.&nbsp;- 55&nbsp;kW</div>
+</div>
+
+<div class="foot">Dane z&nbsp;aplikacji Pomocnik Strażaka, stan na 04.10.2026. [KAB] [K1] [D1] … = skrytka. Zasięg GBA to suma odcinków węży.</div>
+</div>
+
+</div>
+</body>
+</html>
