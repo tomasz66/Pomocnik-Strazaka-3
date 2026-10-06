@@ -2573,8 +2573,16 @@ function renderKarty(){
 
   var cnt=D.items.filter(function(it){ return it.v===vid; }).length;
   document.getElementById('karty-sub').textContent=v.name+' · '+cnt+' poz.';
-  document.getElementById('karty-content').innerHTML=
-    kartyState.mode===KartyMode.SKRYTKI?renderKartySkrytki(vid,v):renderKartyDane(vid,v);
+  // Procedura podnoszenia kabiny na samej górze karty (jeśli wóz ją ma), zwinięta
+  var tiltHtml=CAB_TILT_PROCEDURES[vid]?
+    '<div class="spec-panel" style="margin:14px 16px 0">'+
+      '<div class="spec-toggle" onclick="this.parentElement.classList.toggle(\'open\')">'+
+        '<span class="spec-toggle-title">⛔ Podnoszenie kabiny</span><span class="spec-chevron">▼</span>'+
+      '</div>'+
+      '<div class="spec-body">'+CAB_TILT_PROCEDURES[vid]+'</div>'+
+    '</div>':'';
+  document.getElementById('karty-content').innerHTML=tiltHtml+
+    (kartyState.mode===KartyMode.SKRYTKI?renderKartySkrytki(vid,v):renderKartyDane(vid,v));
 }
 
 /* Powrót z widoku pojazdu: wszystkie pojazdy (w tym Garaż) wracają na główną */
