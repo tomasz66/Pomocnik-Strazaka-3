@@ -479,7 +479,7 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .karty-spec-v { color: var(--text); font-weight: 600; }
 .karty-tag { display: inline-block; font-size: 11px; font-weight: 700; border: 1px solid var(--border-2); border-radius: 6px; padding: 0 5px; margin-left: 6px; color: var(--text-muted); vertical-align: 1px; }
 .karty-jump .tak-jump-chip { padding: 5px 10px; font-size: 12px; }
-.karty-jump:empty { display: none; }
+.karty-row:empty { display: none; }
 .karty-card { scroll-margin-top: calc(var(--header-h) + 150px); }
 /* Procedura podnoszenia kabiny (tekstowa, np. SCD-42) */
 .tilt { padding: 4px 14px 14px; font-size: 14.5px; line-height: 1.45; color: var(--text); }
@@ -491,6 +491,12 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .tilt-key { display: inline-block; font-weight: 800; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 6px; padding: 0 6px; }
 .tilt-check { font-size: 12px; font-weight: 700; color: #b9770e; border: 1px solid #b9770e; border-radius: 6px; padding: 0 5px; margin-left: 4px; white-space: nowrap; }
 .tilt-note { font-size: 12.5px; color: var(--text-muted); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; }
+.zest-row { display: flex; gap: 10px; padding: 7px 12px; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.4; color: var(--text); }
+.zest-row:last-child { border-bottom: none; }
+.zest-row.sum { background: var(--accent-bg); }
+.zest-l { flex: 0 0 52px; font-weight: 800; font-size: 12.5px; color: var(--text-muted); padding-top: 1px; }
+.zest-row.sum .zest-l { color: var(--accent); }
+.zest-v i { font-style: normal; font-size: 11px; font-weight: 700; border: 1px solid var(--border-2); border-radius: 5px; padding: 0 4px; color: var(--text-muted); white-space: nowrap; }
 .karty-empty { margin: 24px 16px; color: var(--text-muted); font-size: 14px; text-align: center; }
 .tak-section-title {
   font-size: 12px; font-weight: 700; text-transform: uppercase;
@@ -2270,7 +2276,7 @@ function renderHome(){
   kl.innerHTML='';
   var krow=document.createElement('div');
   krow.className='vehicle-row';
-  krow.onclick=function(){showKarty();};
+  krow.onclick=function(){ if(kartyState.v===KARTY_ALL){ kartyState.v='v1'; } showKarty(); };
   krow.innerHTML=
     '<div class="vehicle-badge" style="background:#7b241c">KARTY</div>'+
     '<div class="vehicle-info">'+
@@ -2279,6 +2285,17 @@ function renderHome(){
     '</div>'+
     '<div class="vehicle-arrow">›</div>';
   kl.appendChild(krow);
+  var zrow=document.createElement('div');
+  zrow.className='vehicle-row';
+  zrow.onclick=function(){showKarty(KARTY_ALL);};
+  zrow.innerHTML=
+    '<div class="vehicle-badge" style="background:#7b241c">RAZEM</div>'+
+    '<div class="vehicle-info">'+
+      '<div class="vehicle-name">Zestawienie wozów</div>'+
+      '<div class="vehicle-meta">Agregaty, kanistry, piły, węże - na każdym wozie i razem</div>'+
+    '</div>'+
+    '<div class="vehicle-arrow">›</div>';
+  kl.appendChild(zrow);
 
   // Czujniki — wiersz po Garażu
   var sl=document.getElementById('sensors-list');
@@ -2434,7 +2451,8 @@ var KARTY_SIDES=[
 ];
 var KARTY_NAME_NOISE=/\s*\((czujnik|czujka|czujnik, miernik|pilot|spodnie pilarza)\)/g;
 
-function showKarty(){
+function showKarty(vid){
+  if(vid){ kartyState.v=vid; }
   renderKarty();
   switchView('view-karty');
 }
@@ -2546,8 +2564,61 @@ function renderKartyDane(vid,v){
   return html||'<div class="karty-empty">Brak danych technicznych dla tego pojazdu.</div>';
 }
 
+/* Zestawienie wszystkich wozów - odpowiedzi na pytania "ile czego jest na aucie i razem".
+   Dane przepisane ręcznie ze stanu aplikacji 07.10.2026 (to samo co ściąga
+   sciagi/Zestawienie-sprzetu-GBA-GCBA-SCD.pdf). Kolejność wierszy: GBA, GCBA, SCD, Razem. */
+var KARTY_ALL='all';
+var ZESTAWIENIE=[
+  {q:'Jaki agregat',rows:[
+    'Endress 3 kW <i>D1</i>',
+    'GEKO 8000 ED-S - 5 kW / 230 V · 8 kW / 400 V (3 fazy) <i>D1</i>',
+    'Endress 7,2 kW, 230/400 V <i>NAD</i> + wbudowany 11 kW',
+    '<b>3 przenośne</b> + wbudowany 11 kW w SCD']},
+  {q:'Kanistry',rows:[
+    '10 l Pb <i>D1</i> · 20 l Pb <i>D1</i> · 5 l Pb <i>K2</i> · 5 l mieszanka STIHL <i>K2</i><br><b>= 40 l</b> (35 l Pb + 5 l mieszanki)',
+    '5 l <i>K2</i> · Stihl (mieszanka) <i>K2</i> · 20 l <i>K3</i><br><b>= 25 l + Stihl</b> (pojemność Stihl i rodzaj paliwa 5 l i 20 l - do sprawdzenia)',
+    '20 l <i>NAD</i> · 10 l Pb <i>D2</i> · 10 l mieszanka Stihl <i>D2</i> · 5 l mieszanka Husqvarna <i>D2</i> · 5 l mieszanka Husqvarna <i>D4</i><br><b>= 50 l</b> (10 l Pb + 20 l mieszanki + 20 l nieopisane)',
+    '<b>12 szt. · 115 l + Stihl</b><br>Pb 45 l · mieszanka 25 l + Stihl · nieopisane 45 l']},
+  {q:'Niagara - wydajność',rows:[
+    '<b>1200 l/min</b> <i>D3</i>',
+    '<b>1200 l/min</b> <i>D3</i>',
+    'brak',
+    '<b>2 szt.</b> po 1200 l/min']},
+  {q:'Pilarki do drewna',rows:[
+    'STIHL ×2 <i>K2</i> + akumulatorowe Dewalt: do gałęzi ×1, na wysięgniku ×1 <i>K2</i>',
+    'Stihl ×1 <i>K2</i>',
+    'Husqvarna 435 · Stihl MS 150 · Stihl MS 362 <i>K2</i>',
+    '<b>6 spalinowych</b> (GBA 2 · GCBA 1 · SCD 3) + 2 akumulatorowe Dewalt w GBA']},
+  {q:'Pilarki tarczowe',rows:[
+    'Piła do stali i betonu <i>K2</i> + piła tarczowa Dewalt (akumulatorowa) <i>K1</i>',
+    'Husqvarna <i>K2</i> · 7 zapasowych tarcz',
+    'brak',
+    '<b>2 spalinowe</b> (GBA 1 · GCBA 1) + Dewalt akumulatorowa w GBA']},
+  {q:'Węże ssawne',rows:[
+    '<b>3</b> × W-110 <i>DACH</i>',
+    '<b>4</b> × W-110 <i>DACH</i>',
+    'brak',
+    '<b>7</b> × W-110']},
+  {q:'Węże tłoczne',rows:[
+    'W-42: <b>1</b> × 30 m · W-52: <b>13</b> × 20 m (3 w noszaku) · W-75: <b>9</b> × 20 m<br>zasięg 470 m',
+    'W-42: <b>4</b> × 20 m · W-52: <b>10</b> × 20 m (3 w noszaku) · W-75: <b>10</b> × 20 m<br>zasięg 480 m',
+    'W-52: <b>2</b> × 20 m · W-75: <b>2</b> × 40 m + <b>2</b> × 20 m<br>zasięg 160 m',
+    'W-42: <b>5</b> · W-52: <b>25</b> · W-75: <b>23</b><br>53 odcinki · 1110 m']}
+];
+var ZESTAWIENIE_LABELS=['GBA','GCBA','SCD','Razem'];
+
+function renderZestawienie(){
+  return '<div class="karty-group"><div class="karty-grid">'+ZESTAWIENIE.map(function(z){
+    return '<div class="karty-card"><div class="karty-card-h"><b>'+z.q+'</b></div>'+
+      z.rows.map(function(r,i){
+        return '<div class="zest-row'+(i===3?' sum':'')+'"><span class="zest-l">'+ZESTAWIENIE_LABELS[i]+'</span><span class="zest-v">'+r+'</span></div>';
+      }).join('')+'</div>';
+  }).join('')+'</div></div>'+
+  '<div class="karty-empty" style="margin-top:12px">Stan na 07.10.2026 · oznaczenia skrytek w ramkach</div>';
+}
+
 function renderKarty(){
-  if(!D.vehicles[kartyState.v]){ kartyState.v='v1'; }
+  if(kartyState.v!==KARTY_ALL && !D.vehicles[kartyState.v]){ kartyState.v='v1'; }
   var vid=kartyState.v, v=D.vehicles[vid];
 
   // Przełączniki: pojazd i rodzaj karty
@@ -2556,7 +2627,17 @@ function renderKarty(){
   document.getElementById('karty-veh-chips').innerHTML=vehIds.map(function(id){
     var label=id==='garaz'?'Garaż':D.vehicles[id].name;
     return '<div class="tak-jump-chip'+(id===vid?' active':'')+'" onclick="kartySet(\'v\',\''+id+'\')">'+escAttr(label)+'</div>';
-  }).join('');
+  }).join('')+
+    '<div class="tak-jump-chip'+(vid===KARTY_ALL?' active':'')+'" onclick="kartySet(\'v\',KARTY_ALL)">Wszystkie wozy</div>';
+
+  // Zestawienie wszystkich wozów - osobny widok bez zakładek skrytki/dane
+  if(vid===KARTY_ALL){
+    document.getElementById('karty-mode-chips').innerHTML='';
+    document.getElementById('karty-jump-chips').innerHTML='';
+    document.getElementById('karty-sub').textContent='Wszystkie wozy';
+    document.getElementById('karty-content').innerHTML=renderZestawienie();
+    return;
+  }
   document.getElementById('karty-mode-chips').innerHTML=
     '<div class="tak-jump-chip'+(kartyState.mode===KartyMode.SKRYTKI?' active':'')+'" onclick="kartySet(\'mode\',KartyMode.SKRYTKI)">Skrytki - co i ile</div>'+
     '<div class="tak-jump-chip'+(kartyState.mode===KartyMode.DANE?' active':'')+'" onclick="kartySet(\'mode\',KartyMode.DANE)">Dane techniczne</div>';
