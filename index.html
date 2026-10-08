@@ -3281,6 +3281,11 @@ function itemMatchesQuery(it,nq){
   }
   return false;
 }
+var SEARCH_VEHICLE_ORDER=['v1','v2','v3'];
+function searchVehicleRank(vid){
+  var r=SEARCH_VEHICLE_ORDER.indexOf(vid);
+  return r<0?SEARCH_VEHICLE_ORDER.length:r;
+}
 function handleSearch(e){
   var q=e.target.value;
   var bc=document.getElementById('browse-content');
@@ -3290,6 +3295,10 @@ function handleSearch(e){
   bc.classList.add('hidden');rc.classList.remove('hidden');cl.classList.add('visible');
   var nq=norm(q.trim());
   var res=D.items.filter(function(it){return itemMatchesQuery(it,nq);});
+  // Wyniki zawsze po kolei: GBA, GCBA, SCD, potem Garaż i reszta (w obrębie wozu bez zmian)
+  res=res.map(function(it,i){ return {it:it,i:i}; }).sort(function(a,b){
+    return (searchVehicleRank(a.it.v)-searchVehicleRank(b.it.v)) || (a.i-b.i);
+  }).map(function(x){ return x.it; });
   var qres=(D.quiz||[]).filter(function(it){
     return norm(it.q).indexOf(nq)>=0 || String(it.num).indexOf(nq)>=0;
   }).slice(0,30);
