@@ -3818,6 +3818,19 @@ var WIEDZA_BASE=[
     ]
   },
   {
+    id:'w-licznik-motogodzin', cat:'wodno-pianowy', title:'Licznik motogodzin autopompy (GBA)',
+    blocks:[
+      {t:'p', text:'Licznik pracy autopompy w GBA 3/16 liczy jak zegar: godzina ma 60 minut.'},
+      {t:'table', cols:['Odczyt','Znaczy'], rows:[
+        ['0,01','1 minuta'],
+        ['12,45','12 godzin i 45 minut'],
+        ['12,59','12 godzin i 59 minut'],
+        ['13,00','następna minuta po 12,59']
+      ]},
+      {t:'p', text:'Po przecinku są minuty (od 00 do 59), a nie części godziny. 12,50 to 12 godzin i 50 minut, a nie 12 i pół godziny. Licznik nigdy nie pokaże 12,60 - po 12,59 od razu przeskakuje na 13,00.'}
+    ]
+  },
+  {
     id:'w-pradownice-pianowe', cat:'wodno-pianowy', title:'Prądownice pianowe',
     blocks:[
       {t:'table', cols:['Rodzaje prądownic','PP-2','PP-4','PP-8'], rows:[
