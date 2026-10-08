@@ -228,6 +228,10 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .driver-kit-arrow{font-size:20px;opacity:.85}
 .dk-cabtilt-banner{margin:12px 0 22px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:2px solid var(--accent);display:flex;align-items:center;gap:12px;cursor:pointer}
 .dk-cabtilt-banner:active{opacity:.8}
+.dk-note{margin:12px 0 0;padding:12px 16px;border-radius:var(--radius);background:var(--surface);border:2px solid var(--text-faint)}
+.dk-note-t{font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em}
+.dk-note-big{font-size:26px;font-weight:900;color:var(--text);margin-top:2px}
+.dk-note-sub{font-size:14px;font-weight:600;color:var(--text-2);margin-top:2px}
 .dk-cabtilt-info{flex:1;min-width:0}
 .dk-cabtilt-title{font-size:16px;font-weight:800;color:var(--text)}
 .dk-cabtilt-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
@@ -2836,6 +2840,14 @@ var CAB_TILT_PROCEDURES={
         'Opis ogólny dla Magirus M42L-AS na Iveco Eurocargo - punkty „sprawdź na wozie” potwierdź z&nbsp;instrukcją lub mechanikiem.</div>'+
     '</div>'
 };
+/* Krótkie przypomnienia na samej górze widoku Kierowca (duże, do odczytu w biegu) */
+var DRIVER_NOTES={
+  v1:'<div class="dk-note">'+
+       '<div class="dk-note-t">Licznik pompy: godzina = 60 minut</div>'+
+       '<div class="dk-note-big">0,01 = 1 minuta</div>'+
+       '<div class="dk-note-sub">12,45 = 12 h 45 min · po 12,59 → 13,00</div>'+
+     '</div>'
+};
 var CAB_TILT_VEHICLES=['v1','v2','v3'];
 function dkCabTiltBannerHtml(vid){
   if(CAB_TILT_VEHICLES.indexOf(vid)<0) return '';
@@ -2870,7 +2882,7 @@ function showDriverKit(vid){
     return ids.indexOf(it.id)>=0 || ids.indexOf(it.id+':'+it.comp)>=0;
   });
   var wrap=document.getElementById('dk-list');
-  wrap.innerHTML=dkCabTiltBannerHtml(vid);
+  wrap.innerHTML=(DRIVER_NOTES[vid]||'')+dkCabTiltBannerHtml(vid);
   if(!items.length){
     wrap.innerHTML+='<div class="empty" style="padding:20px">Brak pozycji</div>';
     switchView('view-driver-kit');
