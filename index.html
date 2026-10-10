@@ -471,7 +471,7 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .karty-card { background: var(--surface); border: 1px solid var(--border-2); border-radius: var(--radius-sm); overflow: hidden; }
 .karty-card-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 8px 12px; background: var(--surface-2); border-bottom: 1px solid var(--border-2); }
 .karty-card-h b { font-size: 16px; font-weight: 800; color: var(--text); }
-.karty-card-h span { font-size: 12px; color: var(--text-muted); }
+.karty-card-h span { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
 .karty-row-it { display: flex; justify-content: space-between; gap: 10px; padding: 6px 12px; font-size: 14px; color: var(--text); border-bottom: 1px solid var(--border); }
 .karty-row-it:last-child { border-bottom: none; }
 .karty-row-it .q { font-weight: 800; white-space: nowrap; }
@@ -3617,6 +3617,14 @@ var DEVICE_MEASURES={
   v2kab68:['EX']                        // CG-1U - gaz
 };
 var DEVICE_NOTES={ kab23:'w powietrzu wydechowym' };
+var DEVICE_TYPES=[
+  {id:'MULTI', name:'Detektory wielogazowe', ids:['kab11','kab13','v2kab08']},
+  {id:'CO1',   name:'Detektory jednogazowe CO', ids:['kab45']},
+  {id:'BREATH',name:'Miernik CO w wydychanym powietrzu', ids:['kab23']},
+  {id:'EXGAS', name:'Wykrywacze gazu palnego', ids:['kab06','v2kab68']},
+  {id:'RAD',   name:'Detektory promieniowania', ids:['kab07','kab08','kab09','v2kab06']},
+  {id:'VOLT',  name:'Detektory napięcia AC', ids:['kab10','v2kab07']}
+];
 var DEVICE_WORDS=/detektor|czujnik|miernik/i;
 
 function sensorDevices(){
@@ -3668,27 +3676,47 @@ function renderSensorWozy(){
 
 function renderSensorRazem(){
   var devs=sensorDevices();
+  var all=devs.reduce(function(n,it){ return n+deviceQty(it); },0);
   var html='';
+
+  // Każde urządzenie dokładnie raz - w swojej grupie (rodzaju). Suma grup = wszystkie urządzenia.
+  var used={};
+  DEVICE_TYPES.forEach(function(t){
+    var list=devs.filter(function(it){ return t.ids.indexOf(it.id)>=0; });
+    if(!list.length){ return; }
+    list.forEach(function(it){ used[it.id]=true; });
+    var total=list.reduce(function(n,it){ return n+deviceQty(it); },0);
+    html+='<div class="karty-card" style="margin-bottom:12px"><div class="karty-card-h"><b>'+escAttr(t.name)+'</b><span>'+total+' szt.</span></div>';
+    list.forEach(function(it){
+      var what=deviceMeasuresText(it);
+      html+='<div class="zest-row"><span class="zest-l">'+escAttr(D.vehicles[it.v].icon)+'</span><span class="zest-v">'+escAttr(deviceShortName(it))+
+        ' <i>'+escAttr(deviceCompLabel(it))+'</i>'+
+        (what?'<br><span style="color:var(--text-muted);font-size:13px">mierzy: '+escAttr(what)+(DEVICE_NOTES[it.id]?' ('+DEVICE_NOTES[it.id]+')':'')+'</span>':'')+
+        '</span><span style="font-weight:800;white-space:nowrap">'+deviceQty(it)+' szt.</span></div>';
+    });
+    html+='</div>';
+  });
+  var unknown=devs.filter(function(it){ return !used[it.id]; });
+  if(unknown.length){
+    html+='<div class="karty-card" style="margin-bottom:12px"><div class="karty-card-h"><b>Do uzupełnienia - jaki to rodzaj?</b></div>'+
+      unknown.map(function(it){ return '<div class="zest-row"><span class="zest-l">'+escAttr(D.vehicles[it.v].icon)+'</span><span class="zest-v">'+escAttr(deviceShortName(it))+'</span><span style="font-weight:800">'+deviceQty(it)+' szt.</span></div>'; }).join('')+'</div>';
+  }
+
+  // Szybka odpowiedź: ile z tych samych urządzeń wykryje dany gaz / zagrożenie
+  var quick='<div class="karty-card" style="margin-bottom:16px"><div class="karty-card-h"><b>Ile urządzeń wykryje…</b><span>z '+all+' urządzeń</span></div>';
   MEASURE_CATS.forEach(function(cat){
     var list=devs.filter(function(it){ return (DEVICE_MEASURES[it.id]||[]).indexOf(cat.id)>=0; });
     if(!list.length){ return; }
-    var total=list.reduce(function(n,it){ return n+deviceQty(it); },0);
-    html+='<div class="karty-card" style="margin-bottom:12px"><div class="karty-card-h"><b>'+escAttr(cat.name)+'</b></div>';
-    list.forEach(function(it){
-      html+='<div class="zest-row"><span class="zest-l">'+escAttr(D.vehicles[it.v].icon)+'</span><span class="zest-v">'+escAttr(deviceShortName(it))+
-        (DEVICE_NOTES[it.id]?' <span style="color:var(--text-muted)">('+DEVICE_NOTES[it.id]+')</span>':'')+
-        ' <i>'+escAttr(deviceCompLabel(it))+'</i></span><span style="font-weight:800;white-space:nowrap">'+deviceQty(it)+' szt.</span></div>';
-    });
-    html+='<div class="zest-row sum"><span class="zest-l">Razem</span><span class="zest-v"><b>'+total+' szt.</b></span></div></div>';
+    var n=list.reduce(function(k,it){ return k+deviceQty(it); },0);
+    quick+='<div class="zest-row"><span class="zest-v">'+escAttr(cat.name)+'</span><span style="font-weight:800;white-space:nowrap">'+n+' z '+all+'</span></div>';
   });
-  // Urządzenia bez opisu co mierzą (np. nowo dodane) - żeby nie zginęły z zestawienia
-  var unknown=devs.filter(function(it){ return !DEVICE_MEASURES[it.id]; });
-  if(unknown.length){
-    html+='<div class="karty-card" style="margin-bottom:12px"><div class="karty-card-h"><b>Do uzupełnienia - co mierzy?</b></div>'+
-      unknown.map(function(it){ return '<div class="zest-row"><span class="zest-l">'+escAttr(D.vehicles[it.v].icon)+'</span><span class="zest-v">'+escAttr(deviceShortName(it))+'</span></div>'; }).join('')+'</div>';
-  }
-  var all=devs.reduce(function(n,it){ return n+deviceQty(it); },0);
-  return '<div style="padding:12px 16px 0"><div class="karty-empty" style="margin:0 0 12px;text-align:left">Wszystkich urządzeń pomiarowych: <b style="color:var(--text)">'+all+' szt.</b> Jedno urządzenie wielogazowe liczy się w kilku grupach.</div>'+html+'</div>';
+  quick+='</div>';
+
+  return '<div style="padding:12px 16px 0">'+
+    '<div class="karty-card" style="margin-bottom:16px"><div class="zest-row sum"><span class="zest-v"><b>Wszystkich urządzeń pomiarowych</b></span><span style="font-weight:900;font-size:18px">'+all+' szt.</span></div></div>'+
+    html+quick+
+    '<div class="karty-empty" style="margin:0 0 12px;text-align:left">„Ile urządzeń wykryje…” liczy te same urządzenia co wyżej - np. Polytector wykrywa i CO, i tlen, ale to nadal jedno urządzenie.</div>'+
+  '</div>';
 }
 
 function setSensorMode(m){
@@ -3699,7 +3727,7 @@ function setSensorMode(m){
   window.scrollTo(0,0);
 }
 function renderSensorMode(){
-  var modes=[[SensorMode.PROGI,'Progi alarmowe'],[SensorMode.WOZY,'Na wozach'],[SensorMode.RAZEM,'Co mierzą - razem']];
+  var modes=[[SensorMode.PROGI,'Progi alarmowe'],[SensorMode.WOZY,'Na wozach'],[SensorMode.RAZEM,'Wszystkie razem']];
   document.getElementById('sensor-mode-chips').innerHTML=modes.map(function(m){
     return '<div class="tak-jump-chip'+(sensorMode===m[0]?' active':'')+'" onclick="setSensorMode(\''+m[0]+'\')">'+m[1]+'</div>';
   }).join('');
