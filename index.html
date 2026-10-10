@@ -500,6 +500,7 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .zest-row.sum { background: var(--accent-bg); }
 .zest-l { flex: 0 0 52px; font-weight: 800; font-size: 12.5px; color: var(--text-muted); padding-top: 1px; }
 .zest-row.sum .zest-l { color: var(--accent); }
+.zest-v { flex: 1; min-width: 0; }
 .zest-v i { font-style: normal; font-size: 11px; font-weight: 700; border: 1px solid var(--border-2); border-radius: 5px; padding: 0 4px; color: var(--text-muted); white-space: nowrap; }
 .karty-empty { margin: 24px 16px; color: var(--text-muted); font-size: 14px; text-align: center; }
 .tak-section-title {
@@ -1178,19 +1179,23 @@ select.edit-input{-webkit-appearance:none;appearance:none}
     <div class="nav-header-inner">
       <button class="nav-btn" onclick="showHome()" style="color:var(--accent)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-        <span id="back-s-lbl">JRG</span>
+        <span id="back-s-lbl">Główna</span>
       </button>
       <div class="nav-title">
         <div class="nav-title-text">Czujniki gazów</div>
-        <div class="nav-title-sub">Progi alarmowe</div>
+        <div class="nav-title-sub" id="sensor-sub">Progi alarmowe</div>
       </div>
       <div class="nav-right"></div>
     </div>
   </div>
+  <div class="tak-jump-bar" id="sensor-mode-chips"></div>
   <div class="scroll-content">
+    <div id="sensor-inv-wrap"></div>
+    <div id="sensor-progi-wrap">
     <div id="sensor-list-wrap" style="padding:8px 16px 0"></div>
     <button type="button" class="edit-fab-add" onclick="openSensorSheet(null)">+ Dodaj czujnik</button>
     <div id="sensor-cards-wrap" style="padding:8px 16px"></div>
+    </div>
     <div style="height:16px"></div>
   </div>
 </div>
@@ -3582,8 +3587,137 @@ function renderSensorEditList(){
   });
 }
 
+/* ── CZUJNIKI: zestawienia urządzeń pomiarowych na wozach ──
+   Lista urządzeń i ilości - na żywo ze spisu sprzętu (nazwa zawiera detektor/czujnik/miernik).
+   Co mierzy każde urządzenie - wpisane ręcznie poniżej (po id pozycji sprzętu). */
+var SensorMode={PROGI:'progi',WOZY:'wozy',RAZEM:'razem'};
+var sensorMode=SensorMode.PROGI;
+var MEASURE_CATS=[
+  {id:'CO',  name:'Tlenek węgla (CO)'},
+  {id:'EX',  name:'Gazy palne / wybuchowe (metan, propan, %LEL)'},
+  {id:'O2',  name:'Tlen (O₂)'},
+  {id:'H2S', name:'Siarkowodór (H₂S)'},
+  {id:'NH3', name:'Amoniak (NH₃)'},
+  {id:'NO2', name:'Dwutlenek azotu (NO₂)'},
+  {id:'SO2', name:'Dwutlenek siarki (SO₂)'},
+  {id:'RAD', name:'Promieniowanie (α, β, γ)'},
+  {id:'AC',  name:'Napięcie prądu przemiennego (AC)'}
+];
+var DEVICE_MEASURES={
+  kab06:['EX'],                         // MRU GD400 - metan, propan, wodór
+  kab07:['RAD'], kab08:['RAD'], kab09:['RAD'],
+  kab10:['AC'],
+  kab11:['CO','EX','O2','NH3'],         // Xam 5000
+  kab13:['CO','EX','O2','H2S','NO2','SO2'], // Polytector
+  kab23:['CO'],                         // TOX CO - w powietrzu wydechowym
+  kab45:['CO'],                         // Pac 6500
+  v2kab06:['RAD'],                      // CEM
+  v2kab07:['AC'],                       // LEADER Volt AC
+  v2kab08:['CO','EX','O2','H2S'],       // XAM 2500
+  v2kab68:['EX']                        // CG-1U - gaz
+};
+var DEVICE_NOTES={ kab23:'w powietrzu wydechowym' };
+var DEVICE_WORDS=/detektor|czujnik|miernik/i;
+
+function sensorDevices(){
+  return D.items.filter(function(it){
+    return DEVICE_WORDS.test(it.name) && !/^aparat/i.test(it.name);
+  }).sort(function(a,b){ return searchVehicleRank(a.v)-searchVehicleRank(b.v); });
+}
+function deviceQty(it){
+  var m=String(it.qty||'').match(/\d+/);
+  return m?parseInt(m[0],10):1;
+}
+function deviceShortName(it){
+  return it.name.replace(/\s*\([^()]*\)\s*$/,'');
+}
+function deviceCompLabel(it){
+  var v=D.vehicles[it.v]; var c=v&&v.compartments.find(function(x){ return x.id===it.comp; });
+  return c?(c.label||c.name):it.comp;
+}
+function deviceMeasuresText(it){
+  return (DEVICE_MEASURES[it.id]||[]).map(function(id){
+    var c=MEASURE_CATS.find(function(x){ return x.id===id; });
+    return c?c.name.replace(/\s*\(.*\)$/,'').replace(/ \/.*$/,''):id;
+  }).join(', ');
+}
+
+function renderSensorWozy(){
+  var devs=sensorDevices();
+  var vids=Object.keys(D.vehicles).sort(function(a,b){ return searchVehicleRank(a)-searchVehicleRank(b); });
+  var html='';
+  vids.forEach(function(vid){
+    var v=D.vehicles[vid];
+    var list=devs.filter(function(it){ return it.v===vid; });
+    var total=list.reduce(function(n,it){ return n+deviceQty(it); },0);
+    html+='<div class="karty-card" style="margin-bottom:12px"><div class="karty-card-h"><b>'+escAttr(v.name)+'</b><span>'+
+      (list.length?total+' szt.':'brak')+'</span></div>';
+    if(!list.length){
+      html+='<div class="zest-row"><span class="zest-v" style="color:var(--text-muted)">Brak czujników w spisie sprzętu</span></div>';
+    }
+    list.forEach(function(it){
+      var what=deviceMeasuresText(it);
+      html+='<div class="zest-row"><span class="zest-v"><b>'+escAttr(deviceShortName(it))+'</b> <i>'+escAttr(deviceCompLabel(it))+'</i>'+
+        (what?'<br><span style="color:var(--text-muted);font-size:13px">mierzy: '+escAttr(what)+(DEVICE_NOTES[it.id]?' ('+DEVICE_NOTES[it.id]+')':'')+'</span>':'')+
+        '</span><span class="q" style="font-weight:800;white-space:nowrap">'+deviceQty(it)+' szt.</span></div>';
+    });
+    html+='</div>';
+  });
+  return '<div style="padding:12px 16px 0">'+html+'</div>';
+}
+
+function renderSensorRazem(){
+  var devs=sensorDevices();
+  var html='';
+  MEASURE_CATS.forEach(function(cat){
+    var list=devs.filter(function(it){ return (DEVICE_MEASURES[it.id]||[]).indexOf(cat.id)>=0; });
+    if(!list.length){ return; }
+    var total=list.reduce(function(n,it){ return n+deviceQty(it); },0);
+    html+='<div class="karty-card" style="margin-bottom:12px"><div class="karty-card-h"><b>'+escAttr(cat.name)+'</b></div>';
+    list.forEach(function(it){
+      html+='<div class="zest-row"><span class="zest-l">'+escAttr(D.vehicles[it.v].icon)+'</span><span class="zest-v">'+escAttr(deviceShortName(it))+
+        (DEVICE_NOTES[it.id]?' <span style="color:var(--text-muted)">('+DEVICE_NOTES[it.id]+')</span>':'')+
+        ' <i>'+escAttr(deviceCompLabel(it))+'</i></span><span style="font-weight:800;white-space:nowrap">'+deviceQty(it)+' szt.</span></div>';
+    });
+    html+='<div class="zest-row sum"><span class="zest-l">Razem</span><span class="zest-v"><b>'+total+' szt.</b></span></div></div>';
+  });
+  // Urządzenia bez opisu co mierzą (np. nowo dodane) - żeby nie zginęły z zestawienia
+  var unknown=devs.filter(function(it){ return !DEVICE_MEASURES[it.id]; });
+  if(unknown.length){
+    html+='<div class="karty-card" style="margin-bottom:12px"><div class="karty-card-h"><b>Do uzupełnienia - co mierzy?</b></div>'+
+      unknown.map(function(it){ return '<div class="zest-row"><span class="zest-l">'+escAttr(D.vehicles[it.v].icon)+'</span><span class="zest-v">'+escAttr(deviceShortName(it))+'</span></div>'; }).join('')+'</div>';
+  }
+  var all=devs.reduce(function(n,it){ return n+deviceQty(it); },0);
+  return '<div style="padding:12px 16px 0"><div class="karty-empty" style="margin:0 0 12px;text-align:left">Wszystkich urządzeń pomiarowych: <b style="color:var(--text)">'+all+' szt.</b> Jedno urządzenie wielogazowe liczy się w kilku grupach.</div>'+html+'</div>';
+}
+
+function setSensorMode(m){
+  sensorMode=m;
+  renderSensorMode();
+  var sc=document.querySelector('#view-sensors .scroll-content');
+  if(sc){ sc.scrollTop=0; }
+  window.scrollTo(0,0);
+}
+function renderSensorMode(){
+  var modes=[[SensorMode.PROGI,'Progi alarmowe'],[SensorMode.WOZY,'Na wozach'],[SensorMode.RAZEM,'Co mierzą - razem']];
+  document.getElementById('sensor-mode-chips').innerHTML=modes.map(function(m){
+    return '<div class="tak-jump-chip'+(sensorMode===m[0]?' active':'')+'" onclick="setSensorMode(\''+m[0]+'\')">'+m[1]+'</div>';
+  }).join('');
+  document.getElementById('sensor-sub').textContent=modes.find(function(m){ return m[0]===sensorMode; })[1];
+  var progi=document.getElementById('sensor-progi-wrap');
+  var inv=document.getElementById('sensor-inv-wrap');
+  if(sensorMode===SensorMode.PROGI){
+    progi.classList.remove('hidden');
+    inv.innerHTML='';
+    return;
+  }
+  progi.classList.add('hidden');
+  inv.innerHTML=sensorMode===SensorMode.WOZY?renderSensorWozy():renderSensorRazem();
+}
+
 function showSensors(){
   switchView('view-sensors');
+  renderSensorMode();
   renderSensorEditList();
   var wrap=document.getElementById('sensor-cards-wrap');
   wrap.innerHTML='';
