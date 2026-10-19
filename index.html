@@ -2257,7 +2257,7 @@ function renderHome(){
     var cnt=D.items.filter(function(it){return it.v===id;}).length;
     var row=document.createElement('div');
     row.className='vehicle-row';
-    row.onclick=function(){showVehicle(id);};
+    row.onclick=function(){showVehicle(id); focusVehicleSearch();};
     var water=v.specs['Zbiornik wody']?' · '+v.specs['Zbiornik wody']:'';
     var metaLine=v.homeMeta||(v.sub+water+(cnt?' · '+cnt+' poz.':''));
     row.innerHTML=
@@ -2279,7 +2279,7 @@ function renderHome(){
     var cntGar=D.items.filter(function(it){return it.v==='garaz';}).length;
     var rGar=document.createElement('div');
     rGar.className='vehicle-row';
-    rGar.onclick=function(){showVehicle('garaz');};
+    rGar.onclick=function(){showVehicle('garaz'); focusVehicleSearch();};
     rGar.innerHTML=
       '<div class="vehicle-badge garage">'+vGar.icon+'</div>'+
       '<div class="vehicle-info">'+
@@ -3384,6 +3384,12 @@ function handleVehicleSearch(){
     }).join('')+'</div>';
     list.appendChild(card);
   }
+}
+// Kursor od razu w polu wyszukiwania po wejściu do wozu z głównej.
+// Musi być wywołane bezpośrednio w kliknięciu - inaczej iPhone nie pokaże klawiatury.
+function focusVehicleSearch(){
+  var input=document.getElementById('v-search-input');
+  try{ input.focus({preventScroll:true}); }catch(e){ input.focus(); }
 }
 function clearVehicleSearch(){
   document.getElementById('v-search-input').value='';
