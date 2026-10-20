@@ -391,6 +391,13 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .fiszki-reveal-list{text-align:left;margin-top:18px;border-top:1px solid var(--border);padding-top:14px;max-height:280px;overflow-y:auto}
 .fiszki-reveal-item{display:flex;justify-content:space-between;gap:10px;padding:8px 0;font-size:13px;border-bottom:1px solid var(--border)}
 .fiszki-reveal-item:last-child{border-bottom:none}
+.fiszki-details{text-align:left;margin-top:18px;border-top:1px solid var(--border);padding-top:14px}
+.fiszki-details .fiszki-kicker{text-align:center}
+.fiszki-details-rows{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.fiszki-details-rows .spec-v{font-size:12.5px;text-align:right}
+.fiszki-reveal-item.has-specs{flex-wrap:wrap;cursor:pointer}
+.fiszki-reveal-item.has-specs .n::after{content:" ⓘ";color:var(--text-faint);font-weight:400}
+.fiszki-reveal-item .fiszki-details{flex-basis:100%;margin-top:8px;padding-top:0;border-top:none}
 .fiszki-reveal-item .n{font-weight:600;color:var(--text)}
 .fiszki-reveal-item .q{font-family:"SF Mono","Fira Code",monospace;color:var(--text-muted);flex-shrink:0;white-space:nowrap}
 .fiszki-map-wrap{position:relative;margin-top:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);touch-action:pan-y}
@@ -6228,6 +6235,14 @@ function fiszkiAnswerWhere(item, chosenComp, options, optsWrap, clickedBtn){
   }
   s.doneCount++;
   var cardEl=optsWrap.parentElement;
+
+  // Po odpowiedzi: specyfikacja sprzętu jako dodatkowa nauka
+  var details=fiszkiItemDetailsEl(item);
+  if(details){
+    cardEl.appendChild(details);
+    loadItemPhotos([item]);
+  }
+
   var photo=s.v.zone_map && s.v.zone_map[item.comp] && s.v.zone_map[item.comp]._photo;
   if(photo && correctComp){
     var photoBlock=document.createElement('div');
@@ -6244,6 +6259,33 @@ function fiszkiAnswerWhere(item, chosenComp, options, optsWrap, clickedBtn){
   nextBtn.onclick=function(){ s.idx++; fiszkiRenderCard(); };
   cardEl.appendChild(nextBtn);
 }
+// Blok "co to za sprzęt": zdjęcia, uwagi, ilość, specyfikacja. Zwraca null, gdy nie ma nic poza ilością.
+function fiszkiItemDetailsEl(it){
+  var specs=it.specs||{};
+  var keys=Object.keys(specs);
+  var hasPhotos=it.photoIds && it.photoIds.length;
+  if(!keys.length && !it.notes && !hasPhotos){
+    return null;
+  }
+
+  var rows='';
+  if(it.qty){
+    rows+='<div class="spec-row"><span class="spec-k">Ilość</span><span class="spec-v">'+escAttr(it.qty)+'</span></div>';
+  }
+  keys.forEach(function(k){
+    rows+='<div class="spec-row"><span class="spec-k">'+escAttr(k)+'</span><span class="spec-v">'+escAttr(specs[k])+'</span></div>';
+  });
+
+  var el=document.createElement('div');
+  el.className='fiszki-details';
+  el.innerHTML=
+    '<div class="fiszki-kicker" style="margin-bottom:8px">Zapamiętaj też</div>'+
+    (hasPhotos?'<div class="item-photos" id="ip-'+it.id+'"></div>':'')+
+    (it.notes?'<div class="item-note">'+escAttr(it.notes)+'</div>':'')+
+    '<div class="fiszki-details-rows">'+rows+'</div>';
+  return el;
+}
+
 function fiszkiRenderWhatInCard(card, wrap){
   var s=fiszkiSession, v=s.v, comp=card.comp;
   wrap.innerHTML=
@@ -6265,7 +6307,8 @@ function fiszkiRevealWhatIn(comp){
   if(btnEl) btnEl.remove();
   var items=D.items.filter(function(it){return it.v===s.vid && it.comp===comp.id;});
   var listHtml=items.map(function(it){
-    return '<div class="fiszki-reveal-item"><span class="n">'+escAttr(it.name)+'</span><span class="q">'+escAttr(it.qty||'')+'</span></div>';
+    var hasSpecs=it.specs && Object.keys(it.specs).length;
+    return '<div class="fiszki-reveal-item'+(hasSpecs?' has-specs':'')+'" data-id="'+it.id+'"><span class="n">'+escAttr(it.name)+'</span><span class="q">'+escAttr(it.qty||'')+'</span></div>';
   }).join('') || '<div class="empty" style="padding:10px 0">Brak pozycji</div>';
   document.getElementById('fiszki-reveal-area').innerHTML=
     '<div class="fiszki-reveal-list">'+listHtml+'</div>'+
@@ -6273,6 +6316,24 @@ function fiszkiRevealWhatIn(comp){
       '<div class="fiszki-assess-btn fiszki-assess-no" id="fiszki-no">✕ Nie umiałem</div>'+
       '<div class="fiszki-assess-btn fiszki-assess-yes" id="fiszki-yes">✓ Umiałem</div>'+
     '</div>';
+  // Dotknięcie pozycji ze specyfikacją rozwija/zwija jej szczegóły
+  document.querySelectorAll('#fiszki-reveal-area .fiszki-reveal-item.has-specs').forEach(function(row){
+    row.onclick=function(){
+      var open=row.querySelector('.fiszki-details');
+      if(open){
+        open.remove();
+        return;
+      }
+      var it=items.find(function(x){return x.id===row.dataset.id;});
+      var details=fiszkiItemDetailsEl(it);
+      if(!details){
+        return;
+      }
+      details.querySelector('.fiszki-kicker').remove();
+      row.appendChild(details);
+      loadItemPhotos([it]);
+    };
+  });
   document.getElementById('fiszki-yes').onclick=function(){ fiszkiAnswerWhatIn(comp, true); };
   document.getElementById('fiszki-no').onclick=function(){ fiszkiAnswerWhatIn(comp, false); };
 }
