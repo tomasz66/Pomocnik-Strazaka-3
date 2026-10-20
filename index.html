@@ -405,6 +405,9 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .fiszki-zone img{flex:1;min-width:0;min-height:0;width:100%;height:100%;object-fit:contain;border-radius:12px;cursor:zoom-in}
 .fiszki-fit .fiszki-check-btn{flex-shrink:0;margin-top:auto}
 .fiszki-fit .fiszki-zone + .fiszki-check-btn{margin-top:12px}
+.fiszki-fit #fiszki-reveal-area{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+.fiszki-fit .fiszki-reveal-list{flex:0 1 auto;min-height:0;max-height:45%;margin-top:12px;padding-top:8px}
+.fiszki-fit .fiszki-assess-row{flex-shrink:0;margin-top:12px}
 .fiszki-reveal-item.has-specs{flex-wrap:wrap;cursor:pointer}
 .fiszki-reveal-item.has-specs .n::after{content:" ⓘ";color:var(--text-faint);font-weight:400}
 .fiszki-reveal-item .fiszki-details{flex-basis:100%;margin-top:8px;padding-top:0;border-top:none}
@@ -6348,8 +6351,10 @@ function fiszkiRevealWhatIn(comp){
     var hasSpecs=it.specs && Object.keys(it.specs).length;
     return '<div class="fiszki-reveal-item'+(hasSpecs?' has-specs':'')+'" data-id="'+it.id+'"><span class="n">'+escAttr(it.name)+'</span><span class="q">'+escAttr(it.qty||'')+'</span></div>';
   }).join('') || '<div class="empty" style="padding:10px 0">Brak pozycji</div>';
+  var zonePhoto=s.v.zone_map && s.v.zone_map[comp.id] && s.v.zone_map[comp.id]._photo;
   document.getElementById('fiszki-reveal-area').innerHTML=
     '<div class="fiszki-reveal-list">'+listHtml+'</div>'+
+    (zonePhoto?'<div class="fiszki-zone"><img src="'+zonePhoto+'" onclick="openPhotoLightbox(this.src)"></div>':'')+
     '<div class="fiszki-assess-row">'+
       '<div class="fiszki-assess-btn fiszki-assess-no" id="fiszki-no">✕ Nie umiałem</div>'+
       '<div class="fiszki-assess-btn fiszki-assess-yes" id="fiszki-yes">✓ Umiałem</div>'+
@@ -6373,6 +6378,7 @@ function fiszkiRevealWhatIn(comp){
     };
   });
   document.getElementById('fiszki-yes').onclick=function(){ fiszkiAnswerWhatIn(comp, true); };
+  fiszkiFitCard(document.getElementById('fiszki-flip-card'));
   document.getElementById('fiszki-no').onclick=function(){ fiszkiAnswerWhatIn(comp, false); };
 }
 function fiszkiAnswerWhatIn(comp, knew){
