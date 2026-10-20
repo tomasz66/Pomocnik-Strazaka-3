@@ -395,6 +395,16 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .fiszki-details .fiszki-kicker{text-align:center}
 .fiszki-details-rows{border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .fiszki-details-rows .spec-v{font-size:12.5px;text-align:right}
+.fiszki-card.fiszki-fit{box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;padding:16px 16px 14px}
+.fiszki-fit .fiszki-kicker{margin-bottom:6px}
+.fiszki-fit .fiszki-opts{margin-top:12px;flex-shrink:0}
+.fiszki-fit .fiszki-details{flex:0 1 auto;min-height:0;max-height:40%;overflow-y:auto;margin-top:12px;padding-top:10px}
+.fiszki-fit .fiszki-details .spec-row{padding:7px 12px}
+.fiszki-fit .fiszki-details .item-photos{padding:0 0 8px}
+.fiszki-zone{flex:1 1 0;min-height:110px;margin-top:12px;display:flex}
+.fiszki-zone img{flex:1;min-width:0;min-height:0;width:100%;height:100%;object-fit:contain;border-radius:12px;cursor:zoom-in}
+.fiszki-fit .fiszki-check-btn{flex-shrink:0;margin-top:auto}
+.fiszki-fit .fiszki-zone + .fiszki-check-btn{margin-top:12px}
 .fiszki-reveal-item.has-specs{flex-wrap:wrap;cursor:pointer}
 .fiszki-reveal-item.has-specs .n::after{content:" ⓘ";color:var(--text-faint);font-weight:400}
 .fiszki-reveal-item .fiszki-details{flex-basis:100%;margin-top:8px;padding-top:0;border-top:none}
@@ -6145,6 +6155,8 @@ function showFiszkiModePicker(vid){
 }
 
 var fiszkiSession=null;
+var FISZKI_FIT_GAP=12;   // odstęp fiszki od dolnego paska (px)
+var FISZKI_FIT_MIN=360;  // poniżej tej wysokości lepiej przewinąć niż ściskać (px)
 function startFiszkiSession(vid, mode){
   var v=D.vehicles[vid];
   if(!v) return;
@@ -6246,10 +6258,9 @@ function fiszkiAnswerWhere(item, chosenComp, options, optsWrap, clickedBtn){
   var photo=s.v.zone_map && s.v.zone_map[item.comp] && s.v.zone_map[item.comp]._photo;
   if(photo && correctComp){
     var photoBlock=document.createElement('div');
-    photoBlock.style.marginTop='16px';
+    photoBlock.className='fiszki-zone';
     photoBlock.innerHTML=
-      '<div class="fiszki-kicker" style="margin-bottom:8px">'+escAttr(correctComp.label+' ('+correctComp.side+')')+'</div>'+
-      '<img src="'+photo+'" style="width:100%;display:block;border-radius:12px;cursor:zoom-in" onclick="openPhotoLightbox(this.src)">';
+      '<img src="'+photo+'" onclick="openPhotoLightbox(this.src)">';
     cardEl.appendChild(photoBlock);
   }
   var nextBtn=document.createElement('button');
@@ -6258,6 +6269,33 @@ function fiszkiAnswerWhere(item, chosenComp, options, optsWrap, clickedBtn){
   nextBtn.textContent='Dalej';
   nextBtn.onclick=function(){ s.idx++; fiszkiRenderCard(); };
   cardEl.appendChild(nextBtn);
+
+  // Zostaw tylko wybraną i poprawną odpowiedź, żeby całość zmieściła się na ekranie
+  Array.prototype.forEach.call(optsWrap.children, function(el){
+    if(!el.classList.contains('correct') && !el.classList.contains('wrong')){
+      el.style.display='none';
+    }
+  });
+  fiszkiFitCard(cardEl);
+}
+
+// Dopasowuje fiszkę do wysokości ekranu (nad dolnym paskiem), żeby "Dalej" był widoczny bez przewijania.
+// Zdjęcie skrytki zmniejsza się, a długa specyfikacja przewija się w swoim okienku.
+function fiszkiFitCard(cardEl){
+  var sc=cardEl.closest('.scroll-content');
+  if(sc){
+    sc.scrollTop=0;
+  }
+  var tabBar=document.querySelector('.tab-bar');
+  var tabRect=tabBar ? tabBar.getBoundingClientRect() : null;
+  var bottom=tabRect && tabRect.height ? tabRect.top : window.innerHeight;
+  var available=Math.floor(bottom - cardEl.getBoundingClientRect().top - FISZKI_FIT_GAP);
+  var hasZonePhoto=!!cardEl.querySelector('.fiszki-zone');
+  if(!hasZonePhoto && cardEl.scrollHeight<=available){
+    return;
+  }
+  cardEl.classList.add('fiszki-fit');
+  cardEl.style.height=Math.max(available, FISZKI_FIT_MIN)+'px';
 }
 // Blok "co to za sprzęt": zdjęcia, uwagi, ilość, specyfikacja. Zwraca null, gdy nie ma nic poza ilością.
 function fiszkiItemDetailsEl(it){
