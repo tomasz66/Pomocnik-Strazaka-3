@@ -229,8 +229,8 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .driver-kit-arrow{font-size:20px;opacity:.85}
 .bib-banner{background:var(--surface);color:var(--text);border:1px solid var(--border-2)}
 .bib-banner .driver-kit-sub{color:var(--text-muted);opacity:1}
-.bib-tabs{display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto}
-.bib-tabs button{flex:1;padding:9px 6px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer}
+.bib-tabs{display:flex;gap:4px;padding:0 16px 10px;overflow-x:auto}
+.bib-tabs button{flex:1 1 auto;padding:9px 2px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:12px;letter-spacing:-.1px;font-weight:600;white-space:nowrap;cursor:pointer}
 .bib-tabs button.active{background:var(--text);border-color:var(--text);color:var(--bg)}
 .bib-tabs.hidden{display:none}
 .bib-cause{padding:10px 0;border-bottom:1px solid var(--border)}
@@ -246,6 +246,12 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .bib-row-t{flex:1;min-width:0;font-size:14.5px;font-weight:600;color:var(--text);line-height:1.3}
 .bib-row-s{font-size:12px;color:var(--text-muted);margin-top:2px;font-weight:400}
 .bib-row-c{color:var(--text-faint);font-size:15px}
+.bib-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bib-tile{padding:9px 11px;background:var(--surface);border:1px solid var(--border);border-radius:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;min-height:54px}
+.bib-tile:active{opacity:.7}
+.bib-tile-t{font-size:13px;font-weight:600;line-height:1.25;color:var(--text)}
+.bib-tile-s{font-size:11px;color:var(--text-muted);margin-top:3px}
+.bib-back{display:inline-block;font-size:14px;font-weight:600;color:var(--accent);padding:6px 0;cursor:pointer}
 .bib-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
 .bib-card img{display:block;width:100%;cursor:zoom-in;background:#fff}
 .bib-card-t{padding:10px 14px 2px;font-size:14px;font-weight:700;color:var(--text)}
@@ -973,6 +979,7 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   </div>
   <div class="bib-tabs" id="bib-tabs">
     <button type="button" data-tab="usterki" onclick="showBibTab('usterki')">Usterki</button>
+    <button type="button" data-tab="konserwacja" onclick="showBibTab('konserwacja')">Konserwacja</button>
     <button type="button" data-tab="instrukcja" onclick="showBibTab('instrukcja')">Instrukcja</button>
     <button type="button" data-tab="kontrolki" onclick="showBibTab('kontrolki')">Kontrolki</button>
     <button type="button" data-tab="szkolenie" onclick="showBibTab('szkolenie')">Szkolenie</button>
@@ -7004,7 +7011,17 @@ var BIB_QUICK=[          // skróty "gdy coś nie działa" do rozdziałów instr
   {id:'r178', t:'Bezpieczniki'},
   {id:'r197', t:'Rozruch - rozładowany akumulator'}
 ];
-var BIB=null, bibLoading=null, bibIndexList=[], bibTab='usterki', bibBackView='view-bib';
+var BIB_KONSERWACJA='Konserwacja';
+var BIB_KONS_QUICK=[     // najczęstsze czynności kierowcy; tabele planu otwieramy jako oryginalną stronę
+  {t:'Kontrola po każdym użyciu', id:'r203'},
+  {t:'Plan prac - czynności regularne (tabela)', page:204},
+  {t:'Plan prac - czynności dodatkowe (tabela)', page:205},
+  {t:'Kontrola poziomu oleju hydraulicznego', id:'r209', find:'Kontrola poziomu oleju hydraulicznego'},
+  {t:'Wymiana oleju hydraulicznego i filtra', id:'r209', find:'Wymiana oleju hydraulicznego i filtra'}
+];
+var BIB_HINT_SKIP=/^(OSTRZEŻENIE|UWAGA|NIEBEZPIECZEŃSTWO|Prosimy|Poniższą|Co\b|Dla Twojego)/;
+var BIB_HINT_MAX=4;      // tyle śródtytułów pokazujemy pod nazwą rozdziału konserwacji
+var BIB=null, bibLoading=null, bibIndexList=[], bibTab='usterki', bibBackView='view-bib', bibOpenChapter=null;
 
 function bibLoad(){
   if(BIB){
@@ -7153,6 +7170,8 @@ function renderBibTab(){
   var body=document.getElementById('bib-body');
   if(bibTab==='usterki'){
     body.innerHTML=bibUsterkiHtml();
+  } else if(bibTab==='konserwacja'){
+    body.innerHTML=bibKonserwacjaHtml();
   } else if(bibTab==='instrukcja'){
     body.innerHTML=bibInstrukcjaHtml();
   } else if(bibTab==='kontrolki'){
@@ -7214,17 +7233,124 @@ function bibUsterkiHtml(){
   return html;
 }
 
-function bibInstrukcjaHtml(){
-  var html='<div class="bib-card-d" style="padding:4px 2px 4px">'+escAttr(BIB.zrodlo)+'. Wasz wóz to M42L-AS (2022) - wyposażenie może się nieco różnić od opisu.</div>';
-  var ch=null;
-  BIB.rozdzialy.forEach(function(s){
-    if(s.rozdzial!==ch){
-      ch=s.rozdzial;
-      html+='<div class="list-label" style="padding:0;margin:18px 0 8px">'+escAttr(ch)+'</div>';
+// Wiersz z nazwą podrozdziału i stronami; opcjonalnie podpowiedź z jego śródtytułami
+function bibSectionRow(sec, hint){
+  var first=sec.strony[0].nr, last=sec.strony[sec.strony.length-1].nr;
+  return '<div class="bib-row" onclick="openBibSection(\''+sec.id+'\')"><div class="bib-row-t">'+escAttr(bibTitleCase(sec.tytul))+
+    '<div class="bib-row-s">'+(hint?escAttr(hint)+' · ':'')+'str. '+first+(last>first?'-'+last:'')+'</div></div><div class="bib-row-c">›</div></div>';
+}
+
+// Działy instrukcji w siatce 2 kolumn (wszystkie na jednym ekranie); dotknięcie działu pokazuje jego podrozdziały
+function bibChapters(){
+  var chapters=[];
+  BIB.rozdzialy.forEach(function(sec){
+    var last=chapters[chapters.length-1];
+    if(!last || last.name!==sec.rozdzial){
+      chapters.push(last={name:sec.rozdzial, secs:[]});
     }
-    var first=s.strony[0].nr, last=s.strony[s.strony.length-1].nr;
-    html+='<div class="bib-row" onclick="openBibSection(\''+s.id+'\')"><div class="bib-row-t">'+escAttr(bibTitleCase(s.tytul))+
-      '<div class="bib-row-s">str. '+first+(last>first?'-'+last:'')+'</div></div><div class="bib-row-c">›</div></div>';
+    last.secs.push(sec);
+  });
+  return chapters;
+}
+
+function bibInstrukcjaHtml(){
+  var chapters=bibChapters();
+  var open=chapters.find(function(ch){ return ch.name===bibOpenChapter; });
+  if(open){
+    return '<div class="bib-back" onclick="toggleBibChapter(-1)">‹ Wszystkie działy</div>'+
+      '<div class="list-label" style="padding:0;margin:6px 0 8px">'+escAttr(open.name)+'</div>'+
+      open.secs.map(function(sec){ return bibSectionRow(sec); }).join('');
+  }
+  var html='<div class="bib-grid">';
+  chapters.forEach(function(ch, i){
+    html+='<div class="bib-tile" onclick="toggleBibChapter('+i+')"><div class="bib-tile-t">'+escAttr(ch.name)+'</div>'+
+      '<div class="bib-tile-s">'+ch.secs.length+' '+bibPlural(ch.secs.length)+'</div></div>';
+  });
+  html+='</div>';
+  return html+'<div class="bib-card-d" style="padding:12px 2px 4px">'+escAttr(BIB.zrodlo)+'. Wasz wóz to M42L-AS (2022) - wyposażenie może się nieco różnić od opisu.</div>';
+}
+
+function bibPlural(n){
+  if(n===1){
+    return 'podrozdział';
+  }
+  return (n%10>=2 && n%10<=4 && (n%100<12 || n%100>14))?'podrozdziały':'podrozdziałów';
+}
+
+// i = numer działu w siatce, -1 = powrót do wszystkich działów
+function toggleBibChapter(i){
+  var chapters=bibChapters();
+  bibOpenChapter=i>=0?chapters[i].name:null;
+  renderBibTab();
+  var sc=document.querySelector('#view-bib .scroll-content');
+  if(sc){
+    sc.scrollTop=0;
+  }
+}
+
+// Śródtytuły rozdziału, np. "Kontrola lin · Smarowanie · Talerze podpór" - pomagają trafić bez czytania
+function bibSectionHint(sec){
+  var seen={}, out=[];
+  sec.strony.forEach(function(st){
+    st.a.forEach(function(a){
+      var t=a[1].replace(/[.:]$/,'');
+      if((a[0]!=='h' && a[0]!=='b') || t.length>45 || BIB_HINT_SKIP.test(t) || seen[t] || t===bibTitleCase(sec.tytul)){
+        return;
+      }
+      seen[t]=1;
+      out.push(t);
+    });
+  });
+  return out.slice(0, BIB_HINT_MAX).join(' · ');
+}
+
+// Gdzie prowadzi skrót: {page, ai} - strona i akapit ze śródtytułem q.find (albo początek rozdziału)
+function bibQuickTarget(q){
+  var sec=bibSection(q.id);
+  if(!sec){
+    return null;
+  }
+  for(var p=0;q.find && p<sec.strony.length;p++){
+    for(var a=0;a<sec.strony[p].a.length;a++){
+      if(sec.strony[p].a[a][1].indexOf(q.find)===0){
+        return {page:sec.strony[p].nr, ai:a};
+      }
+    }
+  }
+  return {page:sec.strony[0].nr, ai:null};
+}
+
+// Skrót otwiera rozdział w miejscu śródtytułu albo - dla tabel - oryginalną stronę
+function openBibQuick(i){
+  var q=BIB_KONS_QUICK[i];
+  if(q.page){
+    openPhotoLightbox(bibPageImg(q.page));
+    return;
+  }
+  var t=bibQuickTarget(q);
+  if(!t){
+    return;
+  }
+  if(t.ai===null){
+    openBibSection(q.id);
+    return;
+  }
+  openBibSection(q.id, t.page, t.ai);
+}
+
+function bibKonserwacjaHtml(){
+  var html='<div class="list-label" style="padding:0;margin:8px 0 8px">Najczęściej</div>';
+  BIB_KONS_QUICK.forEach(function(q, i){
+    var t=q.page?null:bibQuickTarget(q);
+    var page=q.page||(t?t.page:'');
+    html+='<div class="bib-row" onclick="openBibQuick('+i+')"><div class="bib-row-t">'+escAttr(q.t)+
+      '<div class="bib-row-s">str. '+page+'</div></div><div class="bib-row-c">›</div></div>';
+  });
+  html+='<div class="list-label" style="padding:0;margin:18px 0 8px">Według podzespołów</div>';
+  BIB.rozdzialy.forEach(function(sec){
+    if(sec.rozdzial===BIB_KONSERWACJA){
+      html+=bibSectionRow(sec, bibSectionHint(sec));
+    }
   });
   return html;
 }
