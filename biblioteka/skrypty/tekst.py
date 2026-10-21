@@ -8,6 +8,18 @@ COL2_X=290    # prawa kolumna (rysunki i podpisy)
 LABEL_RE=re.compile(r'^[A-Z]$|^\d{1,2}$')
 BULLETS=('→','-','–','•')
 
+SUPERSCRIPT=1  # flaga PyMuPDF: indeks górny
+
+# Znak stopnia w PDF-ie to małe "0" w indeksie górnym zaraz po liczbie (np. 75 + ⁰ = 75°)
+def line_text(spans):
+    out=''
+    for i,sp in enumerate(spans):
+        t=sp['text']
+        if i and t.strip() in ('0','o','O') and sp['flags'] & SUPERSCRIPT and out.rstrip()[-1:].isdigit():
+            t='°'
+        out+=t
+    return out
+
 def clean(s):
     s=re.sub(r'\s+',' ',s).strip()
     return s.replace(' ,',',').replace(' .','.')
@@ -26,7 +38,7 @@ def page_paras(pno):
         if y0<TOP or y0>BOTTOM: continue
         lines=[]
         for l in b['lines']:
-            t=''.join(s['text'] for s in l['spans'])
+            t=line_text(l['spans'])
             if not t.strip(): continue
             bold=all(('Bold' in s['font']) for s in l['spans'] if s['text'].strip())
             size=max(s['size'] for s in l['spans'] if s['text'].strip())

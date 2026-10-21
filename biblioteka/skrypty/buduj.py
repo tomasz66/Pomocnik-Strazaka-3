@@ -86,14 +86,14 @@ notatki = [l for l in notatki if l != 'Magirus szkolenie']
 
 os.makedirs(IMG + 'szkolenie', exist_ok=True)
 ZDJECIA = {  # strona PDF -> opis (z czerwonych dopisków na zdjęciach)
-    1: 'Kontrolki na desce rozdzielczej (kabina): blokada podpór, bieg N, hamulec postojowy P',
+    1: 'Kontrolki na desce rozdzielczej (zaznaczone na szkoleniu)',
     2: 'Pulpit podpór: kontrolka musi świecić przy obecności ratowników',
     3: 'Zawory podpór: 1 - zwolnienie lin blokady resorów',
     4: 'Pole pracy drabiny (wysokość i wysięg)',
     5: 'Poziomica pochylenia bocznego pojazdu',
     6: 'ZAWSZE wyłączamy automatyczne poziomowanie wieńca. Precyzyjne manewrowanie (2 cm mogą być edytowane przez drabinę do 20 cm). Linie z prądem: odległość min. 1,5 m od linii - minimum 2 długości izolatora - izolator ma 2 m - bezpieczna odległość 4 m',
     7: 'Przed przystąpieniem do pracy: ustawienie talerzy podpór na różnym podłożu (studzienka, krawężnik, podkłady)',
-    8: 'Wykres udźwigu drabiny (obciążenie a wysięg)',
+    8: 'Wykres ze szkolenia',
     9: 'Wyłączyć poziomowanie kosza i włączyć żółwia - musi być włączone',
     10: 'Włączanie trybu awaryjnego (przełącznik przy fotelu operatora)',
     11: 'Wyświetlacz: TEST PRAWIDŁOWY - GOTOWOŚĆ DO PRACY, WYŁĄCZONE PIONOWANIE, ZREDUKOWANE PRĘDKOŚCI, OPUŚCIĆ',
