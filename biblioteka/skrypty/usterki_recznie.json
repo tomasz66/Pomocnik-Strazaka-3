@@ -1,0 +1,48 @@
+[
+ {"grupa":"Przed rozpoczęciem pracy","usterka":"Po załączeniu przystawki odbioru mocy nie można wysunąć podpór","strona":193,"przyczyny":[
+  {"p":"Nie jest załączona przystawka odbioru mocy","k":["Sprawdzić przystawkę odbioru mocy"]},
+  {"p":"Dźwignia sterownicza została poruszona przed autotestem drabiny","k":["Obserwować wyświetlany tekst na wyświetlaczu","Zwolnić dźwignię sterowniczą i po około sekundzie nacisnąć przycisk Wskazówka/błąd"]},
+  {"p":"Przed lub w czasie testu drabiny wszystkie dźwignie sterujące podporami nie były w pozycji neutralnej","k":["Zastosować się do informacji podanej na monitorze","Zwolnić dźwignię sterującą i po ok. 1 sekundzie ponownie uruchomić"]},
+  {"p":"Nie zostały zwolnione (odciążone) siłowniki blokady resorów","k":["Wsuwać podporę, aż zgaśnie żółta lampka kontrolna Podpora w tyle pojazdu. Następnie podporę ponownie wysunąć"]},
+  {"p":"Błąd w układzie hydraulicznym lub elektrycznym","k":["Poinformować serwis","Serwisowi zlecić wymianę wskazanego wyłącznika"]}]},
+ {"grupa":"Przed rozpoczęciem pracy","usterka":"Podpora opuszcza się, żółta lampka kontrolna Podpora w tyle pojazdu nadal miga","strona":193,"przyczyny":[
+  {"p":"Zbyt mały nacisk podpory na podłoże spowodowany nierównością terenu","k":["Włożyć podkłady pod talerze podpór"]},
+  {"p":"Zbyt duże pochylenie lub skręcenie pojazdu","k":["Zmniejszyć pochylenie lub skręcenie pojazdu; wykorzystać do tego mostki najazdowe"]},
+  {"p":"Zerwana lina blokady resorów","k":["Wymienić linę. Zawsze zakładać przy tym rękawice ochronne!"]},
+  {"p":"Błąd w układzie hydraulicznym lub elektrycznym","k":["Poinformować serwis"]}]},
+ {"grupa":"Przed rozpoczęciem pracy","usterka":"Komunikat tekstowy: PRACA DRABINĄ ZABLOKOWANA. POWAŻNY BŁĄD.","strona":193,"przyczyny":[
+  {"p":"Podczas testu drabiny układ sterujący stwierdził uszkodzenie elementu niezbędnego do pracy. Na monitorze zostanie podana informacja, który element został uszkodzony","k":["Poinformować serwis"]},
+  {"p":"W przypadku stwierdzenia przez układ sterujący uszkodzenia mniej ważnego elementu drabina jest gotowa do pracy, a informacja o uszkodzonych elementach będzie pokazywana na monitorze","k":["Poinformować serwis"]}]},
+ {"grupa":"W czasie pracy","usterka":"Informacja o uszkodzeniu wyłącznika lub czujnika","strona":194,"przyczyny":[
+  {"p":"Zabrudzenie czujnika","k":["Usunąć śnieg, lód lub brud z czujnika"]},
+  {"p":"Uszkodzenie czujnika","w":"W zależności od roli uszkodzonego elementu:","k":["Pracować drabiną ze szczególną ostrożnością","Drabinę złożyć i przerwać pracę","Przeczytać komunikaty dotyczące awarii i zalecane wskazówki"],"po":"Jeżeli pomimo to nie da się usunąć awarii:","k2":["Powiadomić serwis"]}]},
+ {"grupa":"W czasie pracy","usterka":"Praca z pamięcią niemożliwa","strona":194,"przyczyny":[
+  {"p":"Uszkodzenie czujnika","w":"W zależności od istotności uszkodzonego czujnika:","k":["Pracować drabiną ze szczególną ostrożnością","Drabinę złożyć i przerwać pracę","Przeczytać komunikaty dotyczące awarii i zalecane wskazówki"],"po":"Po zakończeniu pracy:","k2":["Powiadomić serwis"]}]},
+ {"grupa":"W czasie pracy","usterka":"Uszkodzenie jednej funkcji","strona":194,"przyczyny":[
+  {"p":"Uszkodzenie bezpiecznika","k":["Sprawdzić bezpieczniki na listwie bezpiecznikowej","Uszkodzony bezpiecznik wymienić"]}]},
+ {"grupa":"W czasie pracy","usterka":"Pomimo pozytywnego testu praca drabiną nie jest możliwa","strona":194,"przyczyny":[
+  {"p":"Zwarcie lub przerwanie kabla z komunikatem na monitorze","k":["Powiadomić serwis"]},
+  {"p":"Uszkodzenie układu hydraulicznego","k":["Powiadomić serwis"]}]},
+ {"grupa":"W czasie pracy","usterka":"Przy wysuwaniu i wsuwaniu drabina pracuje nierównomiernie","strona":194,"przyczyny":[
+  {"p":"Szarpanie rolek i ślizgów","k":["Sprawdzić ślizgi i rolki","Rolki i ślizgi sprawdzić i oczyścić zgodnie z zaleceniami rozdziału Konserwacja - drabina"]}]},
+ {"grupa":"Po zakończeniu pracy","usterka":"Nie można wsunąć podpór","strona":195,"przyczyny":[
+  {"p":"Nie jest załączony czujnik łoża transportowego drabiny lub nie działa czujnik wsunięcia przęseł","k":["Drabinę całkowicie wsunąć i położyć centralnie na łożu transportowym"]},
+  {"p":"Poruszono dźwignią sterowania podporami podczas składania drabiny na łoże transportowe","k":["Puścić dźwignię sterowniczą i po ok. 2 sekundach ponownie nacisnąć"],"po":"Jeżeli uszkodzenie nadal występuje:","k2":["Zastosować się do wskazówek na monitorze","Powiadomić serwis"]}]},
+ {"grupa":"Po zakończeniu pracy","usterka":"Pojazd z automatyczną skrzynią biegów: pojazd nie rusza, bieg pozostaje w pozycji „N”","strona":195,"przyczyny":[
+  {"p":"Podpory nie są całkowicie wsunięte; czerwona kontrolka w kabinie Podpory świeci się","k":["Zaciągnąć hamulec ręczny i załączyć przystawkę mocy","W pełni wsunąć podpory z tylnego stanowiska sterowania"],"uw":"Żółta kontrolka Podpory musi zgasnąć na obu stanowiskach"},
+  {"p":"Wyłączniki elektromagnetyczne zostały fabrycznie źle zamontowane lub są uszkodzone, czerwona kontrolka w kabinie Podpory świeci się","k":["Zastosować się do wskazówek na monitorze"],"po":"Jeżeli uszkodzenie nadal występuje:","k2":["Powiadomić serwis"]},
+  {"p":"Przystawka mocy jest załączona; kontrolka w kabinie kierowcy Przystawka mocy - włączona świeci się","k":["Wyłączyć Przystawkę mocy"]}]},
+ {"grupa":"Podczas jazdy","usterka":"Czerwona kontrolka w kabinie Podpory świeci się","strona":195,"przyczyny":[
+  {"p":"Podpory nie są całkowicie wsunięte","k":["Zatrzymać pojazd, zaciągnąć hamulec ręczny i załączyć przystawkę mocy","W pełni wsunąć podpory z tylnego stanowiska sterowania"],"uw":"Żółta kontrolka Podpory musi zgasnąć na obu stanowiskach"},
+  {"p":"Wyłączniki elektromagnetyczne zostały fabrycznie źle zamontowane lub są uszkodzone","k":["Ponownie zamontować wyłączniki elektromagnetyczne"],"po":"Jeżeli uszkodzenie nadal występuje:","k2":["Powiadomić serwis"]}]},
+ {"grupa":"Zdalne sterowanie (modem)","usterka":"Uszkodzenie połączenia z modemem","strona":196,"przyczyny":[
+  {"p":"Brak połączenia lub połączenie jest bardzo słabe","k":["Zmienić miejsce","Spróbować połączyć się później"]},
+  {"p":"Umowa dotycząca zdalnego diagnozowania jest nieważna","k":["Sprawdzić umowę serwisową"]}]},
+ {"grupa":"Zdalne sterowanie (modem)","usterka":"Brak karty SIM","strona":196,"przyczyny":[
+  {"p":"Karta SIM włożona nieprawidłowo lub uszkodzona","w":"Przy odłączonej przystawce odbioru mocy:","k":["Sprawdzić czy karta włożona jest prawidłowo","Wymienić kartę SIM"]}]},
+ {"grupa":"Zdalne sterowanie (modem)","usterka":"Zły PIN","strona":196,"przyczyny":[
+  {"p":"Zły PIN po wymianie karty SIM","k":["Powiadomić serwis"]}]},
+ {"grupa":"Zdalne sterowanie (modem)","usterka":"Uszkodzenie modemu","strona":196,"przyczyny":[
+  {"p":"Uszkodzenie sprzętu","k":["Powiadomić serwis"]},
+  {"p":"Modem wyłączony","k":["Włączyć używając przycisku Zdalne diagnozowanie - Gotowość do pracy"]}]}
+]

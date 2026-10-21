@@ -227,6 +227,50 @@ body { background: var(--glow), var(--bg); background-attachment: fixed; color: 
 .driver-kit-title{font-size:14.5px;font-weight:700}
 .driver-kit-sub{font-size:11.5px;opacity:.85;margin-top:1px}
 .driver-kit-arrow{font-size:20px;opacity:.85}
+.bib-banner{background:var(--surface);color:var(--text);border:1px solid var(--border-2)}
+.bib-banner .driver-kit-sub{color:var(--text-muted);opacity:1}
+.bib-tabs{display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto}
+.bib-tabs button{flex:1;padding:9px 6px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer}
+.bib-tabs button.active{background:var(--text);border-color:var(--text);color:var(--bg)}
+.bib-tabs.hidden{display:none}
+.bib-cause{padding:10px 0;border-bottom:1px solid var(--border)}
+.bib-cause:last-of-type{border-bottom:none}
+.bib-cause-k{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text-faint);margin-bottom:3px}
+.bib-cause-p{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:6px}
+.bib-step{display:flex;gap:8px;font-size:14px;line-height:1.45;color:var(--text);padding:3px 0}
+.bib-step>span:first-child{color:var(--accent);font-weight:700;flex-shrink:0}
+.bib-intro{font-size:13px;color:var(--text-muted);margin:6px 0 2px}
+.bib-src{display:inline-block;margin-top:10px;font-size:12.5px;font-weight:600;color:var(--accent);cursor:pointer}
+.bib-row{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;cursor:pointer}
+.bib-row:active{opacity:.7}
+.bib-row-t{flex:1;min-width:0;font-size:14.5px;font-weight:600;color:var(--text);line-height:1.3}
+.bib-row-s{font-size:12px;color:var(--text-muted);margin-top:2px;font-weight:400}
+.bib-row-c{color:var(--text-faint);font-size:15px}
+.bib-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.bib-card img{display:block;width:100%;cursor:zoom-in;background:#fff}
+.bib-card-t{padding:10px 14px 2px;font-size:14px;font-weight:700;color:var(--text)}
+.bib-card-d{padding:0 14px 12px;font-size:12.5px;color:var(--text-muted);line-height:1.45}
+.bib-note{font-size:14px;line-height:1.45;color:var(--text);padding:8px 0;border-bottom:1px solid var(--border)}
+.bib-hit{display:block;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;cursor:pointer}
+.bib-hit:active{opacity:.7}
+.bib-hit-path{font-size:11.5px;color:var(--text-muted);margin-bottom:4px}
+.bib-hit-x{font-size:13.5px;line-height:1.45;color:var(--text)}
+.bib-hit mark,.bib-reader mark{background:rgba(255,204,0,.45);color:inherit;border-radius:3px;padding:0 1px}
+.bib-reader{padding:6px 18px 24px}
+.bib-reader .bib-page{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-faint);margin:22px 0 8px;padding-top:12px;border-top:1px solid var(--border)}
+.bib-reader .bib-page:first-child{margin-top:4px;border-top:none;padding-top:0}
+.bib-reader h3{font-size:16px;font-weight:700;color:var(--text);margin:16px 0 6px}
+.bib-reader p{font-size:14.5px;line-height:1.5;color:var(--text);margin:6px 0}
+.bib-reader p.b{font-weight:700}
+.bib-reader p.warn{background:var(--accent-bg);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:8px 10px}
+.bib-reader p.cap{font-size:12px;color:var(--text-muted)}
+.bib-reader .li{display:flex;gap:8px;font-size:14.5px;line-height:1.5;color:var(--text);padding:2px 0 2px 4px}
+.bib-reader .li>span:first-child{color:var(--text-faint)}
+.bib-reader .bib-step{font-size:14.5px}
+.bib-reader .flash{animation:bibFlash 2.2s ease}
+@keyframes bibFlash{0%,40%{background:rgba(255,204,0,.35)}100%{background:transparent}}
+.bib-pageimg{margin:12px 0 4px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff}
+.bib-pageimg img{display:block;width:100%;height:auto;aspect-ratio:595/842;cursor:zoom-in}
 .dk-cabtilt-banner{margin:12px 0 22px;padding:14px 16px;border-radius:var(--radius);background:var(--surface);border:2px solid var(--accent);display:flex;align-items:center;gap:12px;cursor:pointer}
 .dk-cabtilt-banner:active{opacity:.8}
 .dk-note{margin:12px 0 0;padding:12px 16px;border-radius:var(--radius);background:var(--surface);border:2px solid var(--text-faint)}
@@ -821,6 +865,13 @@ select.edit-input{-webkit-appearance:none;appearance:none}
       </div>
       <div class="driver-kit-arrow">›</div>
     </div>
+    <div class="driver-kit-banner bib-banner hidden" id="bib-banner" onclick="showBiblioteka()">
+      <div class="driver-kit-info">
+        <div class="driver-kit-title">Biblioteka SCD-42</div>
+        <div class="driver-kit-sub">Usterki · instrukcja · kontrolki · szkolenie</div>
+      </div>
+      <div class="driver-kit-arrow">›</div>
+    </div>
     <div class="spec-panel" id="spec-panel">
       <div class="spec-toggle" onclick="this.parentElement.classList.toggle('open')">
         <span class="spec-toggle-title">Specyfikacja techniczna</span>
@@ -896,6 +947,56 @@ select.edit-input{-webkit-appearance:none;appearance:none}
   <div class="scroll-content">
     <div id="dk-list" style="padding:0 16px"></div>
     <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══ BIBLIOTEKA SCD-42 ═══ -->
+<div class="view" id="view-bib">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="showVehicle(BIB_VEHICLE)" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>SCD-42</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text">Biblioteka</div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="bib-search-input" type="text" placeholder="Szukaj: usterka, kontrolka, podpory..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button class="search-clear-btn" id="bib-search-clear" onclick="clearBibSearch()">✕</button>
+    </div>
+  </div>
+  <div class="bib-tabs" id="bib-tabs">
+    <button type="button" data-tab="usterki" onclick="showBibTab('usterki')">Usterki</button>
+    <button type="button" data-tab="instrukcja" onclick="showBibTab('instrukcja')">Instrukcja</button>
+    <button type="button" data-tab="kontrolki" onclick="showBibTab('kontrolki')">Kontrolki</button>
+    <button type="button" data-tab="szkolenie" onclick="showBibTab('szkolenie')">Szkolenie</button>
+  </div>
+  <div class="scroll-content">
+    <div id="bib-body" style="padding:4px 16px 16px"></div>
+  </div>
+</div>
+
+<div class="view" id="view-bib-section">
+  <div class="nav-header">
+    <div class="nav-header-inner">
+      <button class="nav-btn" onclick="backFromBibSection()" style="color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span id="bib-section-back">Biblioteka</span>
+      </button>
+      <div class="nav-title">
+        <div class="nav-title-text" id="bib-section-title"></div>
+      </div>
+      <div class="nav-right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div id="bib-section-body" class="bib-reader"></div>
   </div>
 </div>
 
@@ -2972,6 +3073,11 @@ function showVehicle(id){
   } else {
     equipBanner.classList.add('hidden');
   }
+  // Biblioteka tylko dla SCD-42; wczytujemy ją od razu w tle, żeby wyszukiwarka wozu miała ją pod ręką
+  document.getElementById('bib-banner').classList.toggle('hidden', id!==BIB_VEHICLE);
+  if(id===BIB_VEHICLE){
+    bibLoad().catch(function(){});
+  }
   var dkBanner=document.getElementById('driver-kit-banner');
   if(DRIVER_KIT[id] && DRIVER_KIT[id].length){
     dkBanner.classList.remove('hidden');
@@ -3387,7 +3493,14 @@ function handleVehicleSearch(){
   var v=D.vehicles[curV];
   var res=D.items.filter(function(it){ return it.v===curV && itemMatchesQuery(it,nq); });
   var specRows=vehicleOwnSpecRows(v,nq);
-  var total=res.length+specRows.length;
+  var bib={html:'', count:0};
+  if(curV===BIB_VEHICLE){
+    if(!BIB){
+      bibLoad().then(handleVehicleSearch).catch(function(){});
+    }
+    bib=bibResultsHtml(q);
+  }
+  var total=res.length+specRows.length+bib.count;
   document.getElementById('v-results-count').textContent=total?(total+' '+(total===1?'wynik':'wyników')+' w '+v.name):'';
   var list=document.getElementById('v-results-list');
   list.innerHTML='';
@@ -3403,6 +3516,11 @@ function handleVehicleSearch(){
       return '<div class="spec-row"><span class="spec-k">'+escAttr(r.k)+'</span><span class="spec-v" style="font-size:12px;text-align:right">'+escAttr(r.val)+'</span></div>';
     }).join('')+'</div>';
     list.appendChild(card);
+  }
+  if(bib.count){
+    var bibWrap=document.createElement('div');
+    bibWrap.innerHTML='<div class="list-label" style="margin:16px 0 0;padding:0">Biblioteka SCD-42</div>'+bib.html;
+    list.appendChild(bibWrap);
   }
 }
 // Kursor od razu w polu wyszukiwania po wejściu do wozu z głównej.
@@ -6862,6 +6980,405 @@ function closePhotoLightbox(){
 loadTheme();renderHome();
 document.getElementById('search-input').addEventListener('input',handleSearch);
 document.getElementById('quiz-search-input').addEventListener('input',handleQuizSearch);
+/* ── BIBLIOTEKA SCD-42 ──
+   Treść z instrukcji Magirusa, kontrolek i szkolenia leży w osobnym pliku (biblioteka/scd42.json),
+   wczytywanym dopiero przy wejściu w SCD-42 - żeby nie obciążać startu aplikacji.
+   Service worker zapisuje plik i oglądane strony, więc potem działa też bez zasięgu.
+
+   scd42.json
+   ├─ usterki[]    {grupa, usterka, strona, przyczyny[{p, w?, k[], po?, k2[]?, uw?}]}
+   ├─ rozdzialy[]  {id, rozdzial, tytul, strony[{nr, img?, a[[typ, tekst]]}]}   typ: h/b/p/s/li/cap; img=1 gdy strona ma rysunek
+   ├─ kontrolki[]  {img, tytul, opis}
+   └─ szkolenie    {notatki[], zdjecia[{img, opis}]} */
+var BIB_VEHICLE='v3';
+var BIB_URL='biblioteka/scd42.json';
+var BIB_IMG='biblioteka/scd42/';
+var BIB_MAX_HITS=40;     // tyle akapitów instrukcji pokazujemy w wynikach
+var BIB_MIN_WORD=2;      // krótsze słowa w zapytaniu pomijamy
+var BIB_SNIPPET=180;     // długość fragmentu w wynikach (znaki)
+var BIB_SCROLL_DELAY=220; // switchView zeruje przewinięcie po 150 ms - przewijamy do akapitu dopiero po nim
+var BIB_QUICK=[          // skróty "gdy coś nie działa" do rozdziałów instrukcji
+  {id:'r124', t:'Awaria hydrauliki - pompa awaryjna'},
+  {id:'r128', t:'Awaria sterowania elektrycznego - tryb awaryjny'},
+  {id:'r142', t:'Kosz RC 300 - praca w trybie awaryjnym'},
+  {id:'r178', t:'Bezpieczniki'},
+  {id:'r197', t:'Rozruch - rozładowany akumulator'}
+];
+var BIB=null, bibLoading=null, bibIndexList=[], bibTab='usterki', bibBackView='view-bib';
+
+function bibLoad(){
+  if(BIB){
+    return Promise.resolve(BIB);
+  }
+  if(!bibLoading){
+    bibLoading=fetch(BIB_URL).then(function(r){ return r.json(); }).then(function(d){
+      BIB=d;
+      bibBuildIndex();
+      return d;
+    }).catch(function(e){
+      bibLoading=null;
+      throw e;
+    });
+  }
+  return bibLoading;
+}
+
+// Płaska lista wszystkiego, co da się znaleźć, z tekstem już znormalizowanym (bez ogonków)
+function bibBuildIndex(){
+  bibIndexList=[];
+  BIB.usterki.forEach(function(u, i){
+    var txt=[u.usterka].concat(u.przyczyny.map(function(p){
+      return [p.p, p.w||'', (p.k||[]).join(' '), p.po||'', (p.k2||[]).join(' '), p.uw||''].join(' ');
+    })).join(' ');
+    bibIndexList.push({kind:'usterka', i:i, n:norm(txt)});
+  });
+  BIB.szkolenie.notatki.forEach(function(t, i){
+    bibIndexList.push({kind:'notatka', i:i, x:t, n:norm(t)});
+  });
+  BIB.szkolenie.zdjecia.forEach(function(z, i){
+    bibIndexList.push({kind:'zdjecie', i:i, x:z.opis, n:norm(z.opis)});
+  });
+  BIB.kontrolki.forEach(function(k, i){
+    bibIndexList.push({kind:'kontrolka', i:i, n:norm(k.tytul+' '+k.opis)});
+  });
+  BIB.rozdzialy.forEach(function(s){
+    s.strony.forEach(function(st){
+      st.a.forEach(function(a, ai){
+        bibIndexList.push({kind:'akapit', sec:s.id, page:st.nr, ai:ai, x:a[1], n:norm(a[1])});
+      });
+    });
+  });
+}
+
+function bibWords(q){
+  return norm(q.trim()).split(/\s+/).filter(function(w){ return w.length>=BIB_MIN_WORD; });
+}
+
+function bibMatches(entry, words){
+  return words.length && words.every(function(w){ return entry.n.indexOf(w)>=0; });
+}
+
+// Pogrubia trafione słowa. norm() zamienia znak na znak, więc pozycje w tekście się zgadzają.
+function bibMark(text, words){
+  var n=norm(text), hits=[];
+  words.forEach(function(w){
+    var from=0, pos;
+    while((pos=n.indexOf(w, from))>=0){
+      hits.push([pos, pos+w.length]);
+      from=pos+w.length;
+    }
+  });
+  if(!hits.length){
+    return escAttr(text);
+  }
+  hits.sort(function(a,b){ return a[0]-b[0]; });
+  var out='', last=0;
+  hits.forEach(function(h){
+    if(h[0]<last){
+      return;
+    }
+    out+=escAttr(text.slice(last, h[0]))+'<mark>'+escAttr(text.slice(h[0], h[1]))+'</mark>';
+    last=h[1];
+  });
+  return out+escAttr(text.slice(last));
+}
+
+// Fragment tekstu wokół pierwszego trafienia, żeby wynik był krótki
+function bibSnippet(text, words){
+  var n=norm(text), pos=-1;
+  words.forEach(function(w){
+    var p=n.indexOf(w);
+    if(p>=0 && (pos<0 || p<pos)){
+      pos=p;
+    }
+  });
+  if(text.length<=BIB_SNIPPET || pos<0){
+    return text;
+  }
+  var start=Math.max(0, pos-60);
+  var cut=text.slice(start, start+BIB_SNIPPET);
+  return (start?'…':'')+cut+(start+BIB_SNIPPET<text.length?'…':'');
+}
+
+function bibSection(id){
+  return BIB.rozdzialy.find(function(s){ return s.id===id; });
+}
+
+function bibTitleCase(t){
+  var s=t.charAt(0)+t.slice(1).toLowerCase();
+  return s.replace(/\b(rc|m|l|v)\b/g, function(x){ return x.toUpperCase(); });
+}
+
+function bibPageImg(nr){
+  return BIB_IMG+'strony/s'+('00'+nr).slice(-3)+'.jpg';
+}
+
+/* ── Ekran biblioteki ── */
+function showBiblioteka(tab){
+  if(tab){
+    bibTab=tab;
+  }
+  document.getElementById('bib-search-input').value='';
+  document.getElementById('bib-search-clear').classList.remove('visible');
+  switchView('view-bib');
+  var body=document.getElementById('bib-body');
+  if(!BIB){
+    body.innerHTML='<div class="empty" style="padding:40px 10px">Wczytywanie biblioteki…</div>';
+  }
+  bibLoad().then(function(){
+    renderBibTab();
+  }).catch(function(){
+    body.innerHTML='<div class="empty" style="padding:40px 10px">Nie udało się wczytać biblioteki. Sprawdź internet - po pierwszym wczytaniu działa też offline.</div>';
+  });
+}
+
+function showBibTab(tab){
+  bibTab=tab;
+  renderBibTab();
+  var sc=document.querySelector('#view-bib .scroll-content');
+  if(sc){
+    sc.scrollTop=0;
+  }
+}
+
+function renderBibTab(){
+  if(document.getElementById('bib-search-input').value.trim()){
+    handleBibSearch();
+    return;
+  }
+  document.getElementById('bib-tabs').classList.remove('hidden');
+  document.querySelectorAll('#bib-tabs button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.tab===bibTab);
+  });
+  var body=document.getElementById('bib-body');
+  if(bibTab==='usterki'){
+    body.innerHTML=bibUsterkiHtml();
+  } else if(bibTab==='instrukcja'){
+    body.innerHTML=bibInstrukcjaHtml();
+  } else if(bibTab==='kontrolki'){
+    body.innerHTML=bibKontrolkiHtml();
+  } else {
+    body.innerHTML=bibSzkolenieHtml();
+  }
+}
+
+function bibStepsHtml(steps, words){
+  return (steps||[]).map(function(k){
+    return '<div class="bib-step"><span>→</span><span>'+bibMark(k, words)+'</span></div>';
+  }).join('');
+}
+
+function bibUsterkaCard(u, i, words, open){
+  var causes=u.przyczyny.map(function(p){
+    return '<div class="bib-cause">'+
+      '<div class="bib-cause-k">Możliwa przyczyna</div>'+
+      '<div class="bib-cause-p">'+bibMark(p.p, words)+'</div>'+
+      (p.w?'<div class="bib-intro">'+escAttr(p.w)+'</div>':'')+
+      bibStepsHtml(p.k, words)+
+      (p.po?'<div class="bib-intro">'+escAttr(p.po)+'</div>':'')+
+      bibStepsHtml(p.k2, words)+
+      (p.uw?'<div class="bib-intro">'+escAttr(p.uw)+'</div>':'')+
+    '</div>';
+  }).join('');
+  return '<div class="result-card'+(open?' open':'')+'" id="bib-u-'+i+'">'+
+    '<div class="result-head" onclick="this.parentElement.classList.toggle(\'open\')">'+
+      '<div class="result-dot"></div>'+
+      '<div class="result-info"><div class="result-name">'+bibMark(u.usterka, words)+'</div>'+
+      '<div class="result-path">'+escAttr(u.grupa)+' · '+u.przyczyny.length+' '+(u.przyczyny.length===1?'przyczyna':'przyczyny')+'</div></div>'+
+      '<div class="result-chev">›</div>'+
+    '</div>'+
+    '<div class="result-body">'+causes+
+      '<span class="bib-src" onclick="openPhotoLightbox(\''+bibPageImg(u.strona)+'\')">Instrukcja, str. '+u.strona+' ›</span>'+
+    '</div>'+
+  '</div>';
+}
+
+function bibUsterkiHtml(){
+  var html='<div class="list-label" style="padding:0;margin:8px 0 8px">Gdy coś nie działa</div>';
+  BIB_QUICK.forEach(function(q){
+    var s=bibSection(q.id);
+    if(!s){
+      return;
+    }
+    html+='<div class="bib-row" onclick="openBibSection(\''+q.id+'\')"><div class="bib-row-t">'+escAttr(q.t)+
+      '<div class="bib-row-s">str. '+s.strony[0].nr+'</div></div><div class="bib-row-c">›</div></div>';
+  });
+  var group=null;
+  BIB.usterki.forEach(function(u, i){
+    if(u.grupa!==group){
+      group=u.grupa;
+      html+='<div class="list-label" style="padding:0;margin:18px 0 8px">Usterki - '+escAttr(group.toLowerCase())+'</div>';
+    }
+    html+=bibUsterkaCard(u, i, [], false);
+  });
+  return html;
+}
+
+function bibInstrukcjaHtml(){
+  var html='<div class="bib-card-d" style="padding:4px 2px 4px">'+escAttr(BIB.zrodlo)+'. Wasz wóz to M42L-AS (2022) - wyposażenie może się nieco różnić od opisu.</div>';
+  var ch=null;
+  BIB.rozdzialy.forEach(function(s){
+    if(s.rozdzial!==ch){
+      ch=s.rozdzial;
+      html+='<div class="list-label" style="padding:0;margin:18px 0 8px">'+escAttr(ch)+'</div>';
+    }
+    var first=s.strony[0].nr, last=s.strony[s.strony.length-1].nr;
+    html+='<div class="bib-row" onclick="openBibSection(\''+s.id+'\')"><div class="bib-row-t">'+escAttr(bibTitleCase(s.tytul))+
+      '<div class="bib-row-s">str. '+first+(last>first?'-'+last:'')+'</div></div><div class="bib-row-c">›</div></div>';
+  });
+  return html;
+}
+
+function bibKontrolkiHtml(){
+  return BIB.kontrolki.map(function(k){
+    var src=BIB_IMG+'kontrolki/'+k.img;
+    return '<div class="bib-card"><div class="bib-card-t">'+escAttr(k.tytul)+'</div>'+
+      '<div class="bib-card-d">'+escAttr(k.opis)+'</div>'+
+      '<img loading="lazy" src="'+src+'" onclick="openPhotoLightbox(this.src)"></div>';
+  }).join('');
+}
+
+function bibSzkolenieHtml(){
+  var html=BIB.szkolenie.zdjecia.map(function(z, i){
+    return '<div class="bib-card" id="bib-z-'+i+'"><img loading="lazy" src="'+BIB_IMG+'szkolenie/'+z.img+'" onclick="openPhotoLightbox(this.src)">'+
+      '<div class="bib-card-d" style="padding-top:10px">'+escAttr(z.opis)+'</div></div>';
+  }).join('');
+  html+='<div class="list-label" style="padding:0;margin:18px 0 4px">Notatki ze szkolenia</div>';
+  html+=BIB.szkolenie.notatki.map(function(t, i){
+    return '<div class="bib-note" id="bib-n-'+i+'">'+escAttr(t)+'</div>';
+  }).join('');
+  return html;
+}
+
+/* ── Czytnik rozdziału: tekst strona po stronie, pod każdą stroną jej oryginał z rysunkami ── */
+function openBibSection(id, page, ai, words){
+  var s=bibSection(id);
+  if(!s){
+    return;
+  }
+  bibBackView=document.querySelector('.view.active').id;
+  document.getElementById('bib-section-back').textContent=bibBackView==='view-vehicle'?'SCD-42':'Biblioteka';
+  document.getElementById('bib-section-title').textContent=bibTitleCase(s.tytul);
+  words=words||[];
+  var html='';
+  s.strony.forEach(function(st){
+    html+='<div class="bib-page">'+escAttr(s.rozdzial)+' · str. '+st.nr+'</div>';
+    st.a.forEach(function(a, i){
+      html+=bibParaHtml(a, words, 'bp-'+st.nr+'-'+i);
+    });
+    if(st.img){
+      html+='<div class="bib-pageimg"><img loading="lazy" src="'+bibPageImg(st.nr)+'" alt="Strona '+st.nr+'" onclick="openPhotoLightbox(this.src)"></div>';
+    }
+  });
+  document.getElementById('bib-section-body').innerHTML=html;
+  scrollPos['view-bib-section']=0;
+  switchView('view-bib-section');
+  if(page==null){
+    return;
+  }
+  var target=document.getElementById('bp-'+page+'-'+ai);
+  if(target){
+    setTimeout(function(){
+      target.scrollIntoView({block:'center'});
+      target.classList.add('flash');
+    }, BIB_SCROLL_DELAY);
+  }
+}
+
+function bibParaHtml(a, words, id){
+  var kind=a[0], x=bibMark(a[1], words);
+  if(kind==='h'){
+    return '<h3 id="'+id+'">'+x+'</h3>';
+  }
+  if(kind==='s'){
+    return '<div class="bib-step" id="'+id+'"><span>→</span><span>'+x+'</span></div>';
+  }
+  if(kind==='li'){
+    return '<div class="li" id="'+id+'"><span>–</span><span>'+x+'</span></div>';
+  }
+  var cls=kind==='b'?'b':(kind==='cap'?'cap':'');
+  if(/^(OSTRZEŻENIE|UWAGA|NIEBEZPIECZEŃSTWO|OSTROŻNIE)/.test(a[1])){
+    cls='b warn';
+  }
+  return '<p class="'+cls+'" id="'+id+'">'+x+'</p>';
+}
+
+function backFromBibSection(){
+  if(bibBackView==='view-vehicle'){
+    showVehicle(BIB_VEHICLE);
+    return;
+  }
+  switchView(bibBackView);
+}
+
+/* ── Wyszukiwanie: wspólne dla ekranu biblioteki i wyszukiwarki w SCD-42 ── */
+function bibResultsHtml(q){
+  var words=bibWords(q);
+  if(!BIB || !words.length){
+    return {html:'', count:0};
+  }
+  var hits=bibIndexList.filter(function(e){ return bibMatches(e, words); });
+  var by={usterka:[], notatka:[], zdjecie:[], kontrolka:[], akapit:[]};
+  hits.forEach(function(h){ by[h.kind].push(h); });
+  var html='';
+  var label=function(t, n){ return '<div class="list-label" style="padding:0;margin:14px 0 8px">'+t+' ('+n+')</div>'; };
+
+  if(by.usterka.length){
+    html+=label('Usterki', by.usterka.length);
+    by.usterka.forEach(function(h){ html+=bibUsterkaCard(BIB.usterki[h.i], 's'+h.i, words, true); });
+  }
+  if(by.notatka.length || by.zdjecie.length){
+    html+=label('Szkolenie', by.notatka.length+by.zdjecie.length);
+    by.zdjecie.forEach(function(h){
+      var z=BIB.szkolenie.zdjecia[h.i];
+      html+='<div class="bib-card"><img loading="lazy" src="'+BIB_IMG+'szkolenie/'+z.img+'" onclick="openPhotoLightbox(this.src)">'+
+        '<div class="bib-card-d" style="padding-top:10px">'+bibMark(z.opis, words)+'</div></div>';
+    });
+    by.notatka.forEach(function(h){
+      html+='<div class="bib-hit" onclick="showBiblioteka(\'szkolenie\')"><div class="bib-hit-path">Notatki ze szkolenia</div><div class="bib-hit-x">'+bibMark(h.x, words)+'</div></div>';
+    });
+  }
+  if(by.akapit.length){
+    html+=label('Instrukcja', by.akapit.length);
+    by.akapit.slice(0, BIB_MAX_HITS).forEach(function(h){
+      var s=bibSection(h.sec);
+      html+='<div class="bib-hit" onclick="openBibSection(\''+h.sec+'\','+h.page+','+h.ai+',bibWords(\''+escAttr(q).replace(/'/g,"\\'")+'\'))">'+
+        '<div class="bib-hit-path">'+escAttr(bibTitleCase(s.tytul))+' · str. '+h.page+'</div>'+
+        '<div class="bib-hit-x">'+bibMark(bibSnippet(h.x, words), words)+'</div></div>';
+    });
+    if(by.akapit.length>BIB_MAX_HITS){
+      html+='<div class="bib-card-d" style="padding:4px 2px">Pokazano '+BIB_MAX_HITS+' z '+by.akapit.length+' - dopisz kolejne słowo, żeby zawęzić.</div>';
+    }
+  }
+  if(by.kontrolka.length){
+    html+=label('Kontrolki', by.kontrolka.length);
+    by.kontrolka.forEach(function(h){
+      var k=BIB.kontrolki[h.i];
+      html+='<div class="bib-card"><div class="bib-card-t">'+bibMark(k.tytul, words)+'</div><div class="bib-card-d">'+bibMark(k.opis, words)+'</div>'+
+        '<img loading="lazy" src="'+BIB_IMG+'kontrolki/'+k.img+'" onclick="openPhotoLightbox(this.src)"></div>';
+    });
+  }
+  return {html:html, count:hits.length};
+}
+
+function handleBibSearch(){
+  var q=document.getElementById('bib-search-input').value;
+  document.getElementById('bib-search-clear').classList.toggle('visible', !!q);
+  if(!q.trim()){
+    renderBibTab();
+    return;
+  }
+  document.getElementById('bib-tabs').classList.add('hidden');
+  var r=bibResultsHtml(q);
+  document.getElementById('bib-body').innerHTML=r.count?r.html:'<div class="empty" style="padding:40px 10px">Brak wyników dla „'+escAttr(q)+'”</div>';
+}
+
+function clearBibSearch(){
+  document.getElementById('bib-search-input').value='';
+  handleBibSearch();
+}
+
+document.getElementById('bib-search-input').addEventListener('input',handleBibSearch);
 document.getElementById('v-search-input').addEventListener('input',handleVehicleSearch);
 </script>
 
